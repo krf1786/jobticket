@@ -251,7 +251,7 @@
 
   .job-info-grid{
     display:grid;
-    grid-template-columns: 1.05fr .8fr .52fr 1.05fr;
+    grid-template-columns: 1.05fr .52fr 1.05fr .8fr;
     gap:10px;
   }
   .materials-layout{
@@ -516,16 +516,16 @@
           <input type="date" id="dateField" />
         </div>
         <div class="field">
-          <label>Time</label>
-          <input type="time" id="timeField" />
-        </div>
-        <div class="field">
           <label>Qty</label>
           <input type="number" id="qtyField" value="" min="0" placeholder="0"/>
         </div>
         <div class="field">
           <label>Due Date</label>
           <input type="date" id="dueField" onchange="checkDueDate()"/>
+        </div>
+        <div class="field">
+          <label>Time</label>
+          <input type="time" id="timeField" />
         </div>
       </div>
     </section>
