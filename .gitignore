@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.playwright-cli/
+output/
+# Never commit live responses, ticket data, or deployment credentials.
+reference/
+graph.env
+.env
+*.db
+*.db-*
+uploads/

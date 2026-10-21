@@ -1,0 +1,41 @@
+{
+  "captured_at_utc": "2026-10-21T22:00:38Z",
+  "base_commit": "ce6d1142c7a4b9a0e1aedcd2b0525c3cb9692a56",
+  "responses": [
+    {
+      "url": "https://graphlab.info/jobticket/",
+      "sha256": "97bb6c281bc95149b674685dc17e7f026129793d1616ff46c8f1d4c5ffa434ed",
+      "role": "blank scratch page"
+    },
+    {
+      "url": "https://graphlab.info/jobticket/sb0000",
+      "sha256": "f3752636c874a791ccaf3ad0d45e0326d584e1812f846e68882408c57ea0c046",
+      "role": "saved-mode reference; payload excluded"
+    }
+  ],
+  "normalization": [
+    "Replace exactly one generated <title> with __TITLE__ \u00b7 Job Ticket",
+    "Replace exactly one window.__TICKET__ JSON block with __BOOTSTRAP__"
+  ],
+  "normalized_responses_identical": true,
+  "asset_base_url": "https://graphlab.info/jobticket/static/",
+  "license_sources": [
+    "https://cdn.jsdelivr.net/npm/@fontsource/inter@5/LICENSE",
+    "https://raw.githubusercontent.com/tailwindlabs/tailwindcss/v3.4.17/LICENSE"
+  ],
+  "local_candidate": {
+    "filename": "install-jobticket.sh",
+    "modified_at_utc": "2026-09-02T14:02:09.784678+00:00",
+    "sha256": "892ff488a3afedc4e491fc2b255b710675b5d9b0e396354c18fcb0cbe8e5e256",
+    "assessment": "Older template; backend deployment equivalence not verified; not included or executed"
+  },
+  "files": {
+    "frontend/ticket.html": "bf0ad0ab27a84ce2d6b69f805e950f49d47f262b14d0808ec19b3d429cc11af1",
+    "frontend/static/fonts.css": "701248aa011a9e8ed0d69c8847b04e193cd67693f695868ad16fd738fe7e9f42",
+    "frontend/TAILWIND-LICENSE.txt": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985",
+    "frontend/static/fonts/OFL.txt": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345",
+    "frontend/static/fonts/inter-latin-400-normal.woff2": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc",
+    "frontend/static/fonts/inter-latin-600-normal.woff2": "f9a06e79cd3a2a20951c0f0e28f66dd0e6d3fda73911d640a2125c8fcb78f21a",
+    "frontend/static/fonts/inter-latin-700-normal.woff2": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491"
+  }
+}
