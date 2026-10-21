@@ -28,8 +28,10 @@ baseline. No live service has been changed.
    even if those edits finish saving before the push returns. Poll responses
    started before a newer edit or explicit push are also ignored.
 
-The visual template, both red number displays, API paths/payloads, historical
-HTML files, and scratch-mode behavior are unchanged. The backend is still
+At fix commit `6ef71bb`, the visual template, both red number displays,
+API paths/payloads, historical HTML files, and scratch-mode behavior were unchanged.
+The later [material-details change](material-details.md) adds a field and layout
+while preserving these three fixes. The backend is still
 unverified. Local revisions protect this browser's save sequencing; they do
 not establish server-side atomic snapshots, cross-tab/client concurrency, or
 the state of Microsoft Teams/SharePoint.

@@ -18,15 +18,15 @@ push, or new-ticket navigation was performed.
 - Save, upload, Teams push, and sync API routes return 405.
 - Requests for `.git/config` and paths outside the asset allowlist return 404.
 
-`node --check` passed for both browser scripts. Re-capturing the two original
+`node --check` passed for all three browser scripts. Re-capturing the two original
 responses and comparing with `frontend/ticket.html` at commit `57f8f6b`
 produced no differences. The working template now includes the three documented
-review fixes. The three historical HTML variants still match the original
+review fixes and the requested material-details columns. The three historical HTML variants still match the original
 repository base commit byte for byte.
 
 ## Browser checks
 
-After applying the fixes, Playwright Chromium completed **22 existing checks**, with **11 mocked API requests**,
+After adding material details, Playwright Chromium again completed **22 existing checks**, with **11 mocked API requests**,
 **0 JavaScript page errors**, and **0 external requests attempted**. The test
 blocks non-local requests before navigating and intercepts all API traffic.
 
@@ -38,7 +38,7 @@ autosave; multipart image upload and URL persistence; failed-save feedback;
 Teams readiness gating, mocked status, push success and failure; reset; and
 print visibility of both numbers with the toolbar hidden.
 
-The additional cancellation and timing suite completed **12 regression cases**
+The cancellation and timing suite again completed **12 regression cases**
 with zero failures, page errors, or external requests. Each defective behavior
 was observed failing before its fix; the confirmed Reset case served as a
 passing control. [Review-fix evidence](review-fixes.md) records the successive
@@ -46,7 +46,16 @@ red/green results and reproducible command. Browser timing is controlled with
 [Playwright Clock](https://playwright.dev/docs/clock), and HTTP responses are
 released explicitly rather than relying on network speed.
 
-The saved-view screenshot was visually reviewed. A print PDF was generated.
+The new material-details suite completed **6 scenarios** after all six failed
+on the pre-change template. It covers old tickets, multiline entry, save and
+restore, aligned row deletion, Reset cancellation, waiting for save before
+Teams push, scratch behavior, 320px/390px layout, and literal-text print wrapping.
+It reported zero failures, page errors, or external requests. See
+[material-details.md](material-details.md) for commands and the additive state
+contract. The 40 total browser checks/scenarios use no real backend writes.
+
+The desktop, narrow-screen, and print screenshots were visually reviewed.
+A local print PDF was generated.
 These contain only the synthetic `DEMO01` ticket, not the production reference.
 Generated artifacts remain under ignored `output/playwright/`.
 
@@ -71,7 +80,8 @@ or Teams/SharePoint integration.
 ## Publication review
 
 The PR contains the source capture, assets, documentation, local verification,
-and the three scoped client fixes. No historical HTML is modified. A targeted scan found no
+the three scoped client fixes, and the material-details UI/state change.
+No historical HTML is modified. A targeted scan found no
 private keys, GitHub tokens, AWS access keys, JWTs, assigned client/API secrets,
 or generated `window.__TICKET__` payloads in the added text files. The captured
 source was also reviewed directly. No credentials, environment files, raw live

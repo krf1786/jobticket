@@ -22,10 +22,12 @@ the current checked-in file hashes. Raw responses are not committed. The
 scripts perform no live requests.
 
 The working `frontend/ticket.html` now includes three user-approved fixes for
-Reset cancellation, overlapping saves, and Teams push sequencing. It is no
+Reset cancellation, overlapping saves, and Teams push sequencing, plus the
+subsequently requested material-details columns. It is no
 longer byte-identical to the captured live template. The original baseline
 remains addressable by its full Git commit; it is not replaced or rewritten.
-See [review-fixes.md](review-fixes.md) for scope and regression evidence.
+See [review-fixes.md](review-fixes.md) and [material-details.md](material-details.md)
+for scope and regression evidence.
 
 ## Local source investigation
 
@@ -60,7 +62,7 @@ that no other copy exists.
   Mocked UI checks do not establish live Teams integration health.
 
 The original commit preserves the frontend as observed. The current branch
-adds only the documented client fixes; it is not a redesign, backend
+adds the documented client fixes and materials UI change; it is not a backend
 reconstruction, production release, or claim of full backend synchronization.
 In scratch mode the save layer returns early, so saved-mode
 number initialization and navigation handlers do not run. Saved-mode API

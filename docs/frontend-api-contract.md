@@ -19,9 +19,20 @@ with script-safe JSON. Never embed raw request data or credentials in either.
 | `sync.ready` | True adds Teams status, a push button, and a 30-second status poll. |
 
 State has strings `jobName`, `date`, `qty`, `due`, `time`, `notes`; a `materials`
-array of strings; a `steps` array of `{op, instr}` objects; and `image`, a URL
+array of strings; a new `materialDetails` array of strings aligned by material
+row index; a `steps` array of `{op, instr}` objects; and `image`, a URL
 or null. Blank arrays are restored as one blank row. The frontend sends quantity
-as a string and uses the native date/time input values.
+as a string and uses the native date/time input values. Tickets without
+`materialDetails` retain their original materials and show blank details.
+Missing, non-array, or non-string detail values become blank fields.
+
+`materialDetails` is a branch addition, not an observed live contract. The
+historical installer's PUT handler stores arbitrary JSON objects, but deployed
+schema equivalence has not been verified. A deployed validator or renderer may
+drop or reject this field; older clients may omit it on their next save.
+The client includes it in the normal state PUT before requesting a Teams push.
+Production storage, bootstrap restoration, Teams PDF rendering, and mixed-client
+compatibility must be verified against the actual backend before deployment.
 
 ## Requests made by the saved-mode client
 
@@ -35,7 +46,9 @@ All paths below start with `prefix + '/api/' + encodeURIComponent(jobId)`.
 | `POST /push` | No body; explicit Update Teams copy click; waits for all current local edits to save successfully. No request is dispatched if saving fails. | Successful HTTP status and JSON `ok` are required. A completion for an older local revision cannot mark newer edits current. |
 
 These save/push sequencing fixes are documented separately in
-[review-fixes.md](review-fixes.md); route paths and payload shapes are unchanged.
+[review-fixes.md](review-fixes.md). Those fixes left route paths and payload
+shapes unchanged; the subsequent [material-details change](material-details.md)
+adds only the state field described above and no new endpoint.
 Local revision counters are not sent to the server and do not provide
 cross-client locking or server-side snapshot/version guarantees.
 
