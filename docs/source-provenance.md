@@ -7,7 +7,8 @@ Captured October 21, 2026, from read-only HTTP GET responses for:
   reference, `saving: true`, `sync.ready: false` at capture time.
 - `/jobticket/static/fonts.css` and the three Inter WOFF2 files it references.
 
-Only the generated page title and `window.__TICKET__` JSON were replaced with
+In the original capture commit `57f8f6b28005d7511b67fc95c40b6bbd7695bd69`,
+only the generated page title and `window.__TICKET__` JSON were replaced with
 the original template markers `__TITLE__` and `__BOOTSTRAP__`. The two resulting
 templates were byte-identical. All other HTML, inline JavaScript, embedded CSS,
 labels, print styles, and client behavior were retained without refactoring.
@@ -16,8 +17,15 @@ ID, customer data, image URL, sync state, or configuration is embedded as a
 runtime payload. The local preview uses a separate synthetic `DEMO01` fixture.
 
 [`source-manifest.json`](source-manifest.json) records original response hashes,
-asset origins, capture time, and the checked-in file hashes. Raw responses are
-not committed. The scripts perform no live requests.
+asset origins, capture time, the immutable original template commit/hash, and
+the current checked-in file hashes. Raw responses are not committed. The
+scripts perform no live requests.
+
+The working `frontend/ticket.html` now includes three user-approved fixes for
+Reset cancellation, overlapping saves, and Teams push sequencing. It is no
+longer byte-identical to the captured live template. The original baseline
+remains addressable by its full Git commit; it is not replaced or rewritten.
+See [review-fixes.md](review-fixes.md) for scope and regression evidence.
 
 ## Local source investigation
 
@@ -51,9 +59,10 @@ that no other copy exists.
 - `sync.ready: false` on the reference means Teams UI was gated off there.
   Mocked UI checks do not establish live Teams integration health.
 
-The frontend is preserved as observed, including existing behavior. It is not
-a bug-fix release, redesign, backend reconstruction, or claim of full backend
-synchronization. In scratch mode the save layer returns early, so saved-mode
+The original commit preserves the frontend as observed. The current branch
+adds only the documented client fixes; it is not a redesign, backend
+reconstruction, production release, or claim of full backend synchronization.
+In scratch mode the save layer returns early, so saved-mode
 number initialization and navigation handlers do not run. Saved-mode API
 calls remain tied to bootstrap `jobId` until navigation, even while the number
 field is edited. Those behaviors are carried forward unchanged.

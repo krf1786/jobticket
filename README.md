@@ -5,11 +5,14 @@ This repository now includes a reusable capture of the frontend served by
 It includes the editable red job number at upper left, its red mirror beside
 the job name, server-save/upload client code, and conditional Teams-copy UI.
 
-The capture is in [`frontend/ticket.html`](frontend/ticket.html). The original
+The working frontend is in [`frontend/ticket.html`](frontend/ticket.html), with
+three reviewed save/reset/Teams fixes applied after capture. The exact original
+capture remains in [commit `57f8f6b`](https://github.com/krf1786/jobticket/blob/57f8f6b28005d7511b67fc95c40b6bbd7695bd69/frontend/ticket.html).
+See [review fixes and regressions](docs/review-fixes.md). The original
 `jobticket.html`, `Job_Ticket2.html`, and `Job_Ticket3.html` remain unchanged as
 historical standalone versions.
 
-**This is a frontend source capture, not a deployable replacement for the live
+**This is a frontend capture with local fixes, not a deployable replacement for the live
 service.** The production backend, database, uploads, Microsoft credentials,
 and runtime ticket payloads are not included. No production deployment is
 configured or performed by this update.
@@ -39,19 +42,21 @@ Fonts are included locally, so no CDN is needed to render the preview.
 ## Verify and reproduce
 
 ```sh
-# Python 3 and Node.js; no external network calls.
+# Python 3, Node.js and a Git clone with the capture commit; no external network calls.
 python3 scripts/verify_capture.py
 
 # Optional: reproduce from two existing, private local GET response files.
 # Keep those responses outside the repository. No download or live API calls occur.
 python3 scripts/capture_frontend.py /path/to/blank.html /path/to/saved.html \
   --output /tmp/ticket.html
-cmp frontend/ticket.html /tmp/ticket.html
+git show 57f8f6b28005d7511b67fc95c40b6bbd7695bd69:frontend/ticket.html > /tmp/baseline-ticket.html
+cmp /tmp/baseline-ticket.html /tmp/ticket.html
 ```
 
 The capture script removes exactly the generated title and bootstrap JSON,
 then requires both normalized responses to match. It does not print ticket
-data. Review source changes before refreshing the hash manifest.
+data. Compare re-captures with the immutable baseline, not the patched working
+template. The manifest records both hashes separately.
 
 See [source provenance and limitations](docs/source-provenance.md),
 [frontend API expectations](docs/frontend-api-contract.md), and

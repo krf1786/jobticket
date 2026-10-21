@@ -1030,32 +1030,44 @@
   }
 
   /* ---- save, debounced ---- */
-  var timer = null, inFlight = false, again = false, dirty = false, booting = true;
+  var timer = null, inFlight = null, dirty = false, booting = true;
+  var revision = 0, savedRevision = 0;
 
   function scheduleSave() {
     if (booting) return;          /* restoring the form is not a user edit */
+    revision += 1;
     dirty = true;
     status('Saving…', 'busy');
+    if (teams) setTeams('update queued', 'pending');
     clearTimeout(timer);
     timer = setTimeout(save, 800);
   }
 
   function save() {
-    if (inFlight) { again = true; return; }
-    inFlight = true;
+    clearTimeout(timer);
+    timer = null;
+    /* Every caller waits for the same PUT, then drains any newer revisions.
+       A failed PUT resolves false and leaves all unsaved revisions dirty. */
+    if (inFlight) return inFlight.then(function (ok) { return ok ? save() : false; });
+    if (!dirty) return Promise.resolve(true);
+    var requestRevision = revision;
     var body = JSON.stringify(collect());
-    fetch(API, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: body })
+    inFlight = fetch(API, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: body })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function () {
-        dirty = false;
-        status('Saved ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), 'ok');
+        savedRevision = requestRevision;
+        dirty = revision !== savedRevision;
+        if (dirty) status('Saving…', 'busy');
+        else status('Saved ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), 'ok');
         if (teams) setTeams('update queued', 'pending');
+        return true;
       })
-      .catch(function () { status('Not saved — check connection', 'error'); })
-      .then(function () {
-        inFlight = false;
-        if (again) { again = false; setTimeout(save, 200); }
+      .catch(function () { status('Not saved — check connection', 'error'); return false; })
+      .then(function (ok) {
+        inFlight = null;
+        return ok;
       });
+    return inFlight.then(function (ok) { return ok ? save() : false; });
   }
 
   /* ---- what counts as a change ---- */
@@ -1087,7 +1099,7 @@
   };
 
   /* ---- Teams snapshot ---- */
-  var teams = null, teamsTimer = null;
+  var teams = null, teamsTimer = null, pushing = false, pushGeneration = 0;
   if (B.sync && B.sync.ready) {
     teams = document.createElement('span');
     teams.id = 'teamsStatus';
@@ -1118,7 +1130,11 @@
   }
 
   function pollSync() {
+    if (dirty || pushing) return;
+    var polledRevision = revision, polledPushGeneration = pushGeneration;
     fetch(API + '/sync').then(function (r) { return r.json(); }).then(function (j) {
+      /* An old poll cannot override edits or a newer explicit push. */
+      if (dirty || pushing || polledRevision !== revision || polledPushGeneration !== pushGeneration) return;
       if (j.error) { setTeams('last push failed', 'error'); return; }
       if (j.stale) { setTeams('update queued', 'pending'); return; }
       setTeams(j.pushedAt ? 'copy current' : 'not pushed yet', j.pushedAt ? 'ok' : null);
@@ -1126,24 +1142,40 @@
   }
 
   function pushNow() {
-    setTeams('pushing…', 'pending');
-    if (dirty) { save(); }
-    setTimeout(function () {
-      fetch(API + '/push', { method: 'POST' })
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          if (j.ok) setTeams('copy current', 'ok');
-          else setTeams('push failed', 'error');
-        })
-        .catch(function () { setTeams('push failed', 'error'); });
-    }, dirty ? 900 : 0);
+    if (pushing) return;
+    pushing = true;
+    pushGeneration += 1;
+    btn.disabled = true;
+    setTeams(dirty ? 'saving…' : 'pushing…', 'pending');
+
+    function pushCurrent() {
+      return save().then(function (ok) {
+        if (!ok) { setTeams('not pushed — save failed', 'error'); return; }
+        /* Include edits that arrived while the previous PUT was awaited. */
+        if (dirty) return pushCurrent();
+        var pushedRevision = revision;
+        setTeams('pushing…', 'pending');
+        return fetch(API + '/push', { method: 'POST' })
+          .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+          .then(function (j) {
+            if (!j.ok) throw new Error('Push failed');
+            /* Edits after dispatch cannot be certified by this older result. */
+            if (dirty || revision !== pushedRevision) setTeams('update queued', 'pending');
+            else setTeams('copy current', 'ok');
+          });
+      });
+    }
+
+    return pushCurrent()
+      .catch(function () { setTeams('push failed', 'error'); })
+      .then(function () { pushing = false; btn.disabled = false; });
   }
 
   var origRemove = window.removeImage;
   window.removeImage = function () { currentImageUrl = null; origRemove(); scheduleSave(); };
 
-  var origReset = window.resetTicket;
-  window.resetTicket = function () { currentImageUrl = null; origReset(); scheduleSave(); };
+  /* resetTicket confirms before calling removeImage; that hook saves only
+     confirmed resets. Cancellation must not touch image state or autosave. */
 
   /* ---- boot ---- */
   var noEl = $('jobNo');

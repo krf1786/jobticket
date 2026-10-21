@@ -18,6 +18,9 @@ def main():
     manifest = json.loads((ROOT / "docs/source-manifest.json").read_text())
     for relative, expected in manifest["files"].items():
         assert hashlib.sha256((ROOT / relative).read_bytes()).hexdigest() == expected, relative
+    captured = manifest["captured_template"]
+    baseline = subprocess.check_output(["git", "show", captured["commit"] + ":" + captured["path"]], cwd=ROOT)
+    assert hashlib.sha256(baseline).hexdigest() == captured["sha256"], "Original capture changed"
     source = TEMPLATE.read_text()
     assert source.count("__TITLE__") == source.count("__BOOTSTRAP__") == 1
     assert "window.__TICKET__ = __BOOTSTRAP__;" in source
@@ -69,7 +72,7 @@ def main():
         server.shutdown()
         server.server_close()
         worker.join()
-    print(f"PASS: {len(manifest['files'])} asset hashes, reusable template, safe JSON embedding, 3 JavaScript syntax checks, preview routes and API rejection")
+    print(f"PASS: immutable capture hash, {len(manifest['files'])} current asset hashes, reusable template, safe JSON embedding, 3 JavaScript syntax checks, preview routes and API rejection")
 
 
 if __name__ == "__main__":
