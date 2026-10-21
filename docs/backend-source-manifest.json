@@ -1,0 +1,17 @@
+{
+  "captured_at_utc": "2026-10-21T23:28:00Z",
+  "origin": "Read-only deployed source inspection; exact match to previously inspected September 2 installer modules",
+  "excluded": [
+    "credentials",
+    "environment files",
+    "database",
+    "uploads",
+    "runtime job data",
+    "service credentials"
+  ],
+  "original_sha256": {
+    "app.py": "5356e1704c70dec42e82f1117ac9eb1d5b4e52eaaa6e74cdd9c5abdb973312b0",
+    "graph.py": "de9ba0b3aedefc630ae071f68264ef99270a42be897b3969322c6740ca6f4f09",
+    "pdf.py": "db0bfff5a133c0e0eda8a6cf8cdc15e0ad310bf5d5baa59c94c0d68b6da89885"
+  }
+}
