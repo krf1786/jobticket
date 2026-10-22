@@ -52,12 +52,12 @@
     "screen_and_print_screenshots_reviewed": true
   },
   "release_boundary": {
-    "frontend_deployed": false,
-    "frontend_candidate_sha256": "395547481472968e3925a065bc191e09f276df3f298efe9f1c2fd91427231481",
+    "frontend_deployed": true,
     "pr_merged": false,
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
-    "production_teams_delivery_verified": false
+    "production_teams_delivery_verified": false,
+    "frontend_sha256": "395547481472968e3925a065bc191e09f276df3f298efe9f1c2fd91427231481"
   },
   "excluded": [
     "private job payloads",
@@ -67,5 +67,52 @@
     "uploads",
     "process identifiers",
     "test fixture payloads"
-  ]
+  ],
+  "frontend_deployment": {
+    "source_commit": "ee356916517260605149d81b4578d48ee3f1023d",
+    "started_at_utc": "2026-10-22T00:36:55.273390+00:00",
+    "verified_at_utc": "2026-10-22T00:41:01.777257+00:00",
+    "status": "live_verified",
+    "public_url": "https://graphlab.info/jobticket/",
+    "synthetic_test_url": "https://graphlab.info/jobticket/VERIFY-MATERIALS-20261021",
+    "changed_runtime_file": "ticket.html",
+    "before_template_sha256": "bf0ad0ab27a84ce2d6b69f805e950f49d47f262b14d0808ec19b3d429cc11af1",
+    "after_template_sha256": "395547481472968e3925a065bc191e09f276df3f298efe9f1c2fd91427231481",
+    "backup_directory": "/root/jobticket/release-backups/frontend-20261022T003654Z",
+    "database_backup_integrity": "ok",
+    "public_scratch_and_saved_hash_verified": true,
+    "service_restarted": false,
+    "live_rollback_executed": false,
+    "backend_unchanged": true,
+    "existing_ticket_rows_unchanged": true,
+    "live_browser_checks": 19,
+    "checks": [
+      "Existing synthetic ticket matches the prior owned test record",
+      "Public root remains visibly unsaved scratch mode",
+      "Public scratch details/completion edits make no API writes",
+      "Live UI restores saved material details",
+      "Live UI restores saved completion",
+      "Teams controls remain unavailable",
+      "Live browser detail edit survives autosave and reload",
+      "Uncheck persists through reload and clears completion highlight",
+      "Checked state persists and the whole row is very light green",
+      "Live material layout keeps wider details and far-right completion usable at 1200px",
+      "Live material layout keeps wider details and far-right completion usable at 390px",
+      "Live material layout keeps wider details and far-right completion usable at 320px",
+      "Live print has distinct checked and unchecked marks",
+      "Live print shows the complete multiline detail",
+      "PDF generated locally from the live page includes details and both completion marks",
+      "Synthetic ticket restored exactly to its clearly labeled pre-release test state",
+      "No live browser JavaScript errors",
+      "No unapproved browser request attempted",
+      "All live browser writes targeted only the owned synthetic ticket"
+    ],
+    "page_errors": [],
+    "blocked_requests": [],
+    "screen_and_print_reviewed": true,
+    "pdf_validation": "Local Chromium PDF from live page; details and checked/unchecked marks verified; no production PDF dependency installed",
+    "verification_retry_note": "Initial cleanup assertion found only the pre-existing automatic Time-field default. Verified against original source, restored the owned synthetic field, corrected fixture cleanup, and reran all browser checks successfully. No template regression or code change.",
+    "synthetic_ticket_label_updated": true,
+    "teams_transport_calls": 0
+  }
 }

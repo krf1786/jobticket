@@ -2,7 +2,8 @@
 
 This user-requested branch change follows the original capture (`57f8f6b`) and
 the save/reset/Teams fixes (`6ef71bb`). It is not part of the captured live baseline
-and has not been deployed.
+and was published with completion controls on October 22, 2026. See the
+[frontend release record](frontend-release.md) for the exact source/hash and live checks.
 
 Each row in Materials / Components now uses about 28% of its editable width
 for the Material dropdown and the rest for **Material details**. A compact

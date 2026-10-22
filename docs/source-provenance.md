@@ -65,7 +65,7 @@ are absent in production; no Teams transport was performed or enabled.
 
 The [backend release record](backend-release.md) separates the narrowly authorized
 backend deployment/live synthetic persistence checks from local integration tests
-and the still-unreleased frontend. It does not claim full Teams synchronization.
+and the subsequent separately approved [frontend release](frontend-release.md). It does not claim full Teams synchronization.
 
 In scratch mode the save layer returns early, so saved-mode
 number initialization and navigation handlers do not run. Saved-mode API

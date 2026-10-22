@@ -3,8 +3,9 @@
 The backend safeguards from code commit
 [`9d93b5976f0d7c8928fbb4014fd363a7039604b1`](https://github.com/krf1786/jobticket/commit/9d93b5976f0d7c8928fbb4014fd363a7039604b1)
 were deployed successfully at 00:11:55 UTC. Only the running `app.py` was replaced,
-followed by a verified service restart and healthy response. The frontend remains
-an unreleased candidate, PR #1 is unmerged, and `main` is unchanged.
+followed by a verified service restart and healthy response. At that point the frontend remained unreleased. It was subsequently published
+under separate approval; see [frontend-release.md](frontend-release.md). PR #1
+remains unmerged and `main` is unchanged.
 
 [Sanitized release evidence](release-evidence.json) records hashes, checks and
 scope. Private execution receipts and database backups remain outside Git.
@@ -60,9 +61,10 @@ The test finished at 00:13:12 UTC with **14 checks passing**:
 - Teams and renderer remain disabled and the synthetic ticket has no push record.
 
 There were zero Teams transport calls, uploads, existing-job edits, credential
-changes or integration installations. The still-old live frontend does not expose
-the new controls; live persistence was verified through the API and its bootstrap,
-while candidate browser interactions were verified locally.
+changes or integration installations. At the time of these backend tests, the live frontend did not yet expose the
+new controls: persistence was verified through the API and bootstrap, while
+browser interactions were verified locally. The subsequent frontend release
+adds live browser verification, recorded separately.
 
 ## Local verification and review limits
 
@@ -80,18 +82,14 @@ GitHub marks those threads outdated but unresolved; no fresh review of the repai
 code was returned. Zero check runs were reported for code commit `9d93b59`.
 These facts are not a new review approval or a CI pass.
 
-## Remaining release action
+## Subsequent frontend release and remaining integration limits
 
-The layout can be published only after separate approval. Back up the current
-live `ticket.html`, recheck its baseline hash and backend health, then atomically
-replace it with the verified `frontend/ticket.html`. The template is read per
-request, so no backend restart is needed. Verify scratch and synthetic saved
-rendering; restore the original template on failure. This template swap/rollback
-was tested locally without changing stored state. Existing tabs should reload to
-use the new controls; legacy row conflicts intentionally show the old save-error
-state until they reload.
+The separately approved template replacement completed successfully on October 22.
+[The frontend release record](frontend-release.md) documents its exact source,
+backup/rollback and 19 live browser checks. Git push or PR merge is not the
+deployment mechanism, and this PR remains unmerged.
 
-Git push or PR merge is not the deployment mechanism. Teams remains unavailable
-because production Graph configuration and optional PDF dependencies are absent.
-Their setup and real SharePoint delivery require separate work and authorization.
-No production Teams/PDF delivery success is claimed by this release record.
+Teams remains unavailable because production Graph configuration and optional
+PDF dependencies are absent. Their setup and real SharePoint delivery require
+separate work and authorization. No production Teams/PDF delivery success is
+claimed by this release record.

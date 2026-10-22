@@ -91,7 +91,7 @@ responses, database, uploads, browser state, or session configuration are added.
 
 ## Completion follow-up — October 22, 2026
 
-The current candidate narrows Material to about 28% of editable width and adds
+The current frontend narrows Material to about 28% of editable width and adds
 far-right completion checkboxes, light green row highlighting and a parallel
 boolean state array. The material suite now has 10 scenarios; together with the
 22 existing checks and 12 save/reset/Teams races, the frontend total is 44.
@@ -103,4 +103,6 @@ assertion verifies checked and unchecked marks independently of row color.
 The approved backend-only deployment and 14 live synthetic persistence checks
 subsequently succeeded. [The release record](backend-release.md) separates those
 results from mocked frontend tests and intercepted local Graph transport. The
-frontend itself remains unpublished and Teams remains disabled.
+frontend was subsequently published under separate approval; 19 live browser
+checks passed. [Frontend release evidence](frontend-release.md) records the
+template hash, safe test scope and print verification. Teams remains disabled.

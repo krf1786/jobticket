@@ -18,8 +18,8 @@ historical standalone versions.
 
 The verified deployed Python backend is now preserved in [`backend/`](backend/),
 with narrow compatibility and PDF revision fixes. Runtime databases, uploads,
-Microsoft credentials and ticket payloads are excluded. The frontend is still
-an unmerged release candidate. See [backend repairs](docs/backend-fixes.md) for
+Microsoft credentials and ticket payloads are excluded. The approved frontend was published on October 22, 2026; the PR remains
+unmerged. See the [frontend release record](docs/frontend-release.md). See [backend repairs](docs/backend-fixes.md) for
 behavior, test evidence and the deployment boundary.
 
 ## Local preview
