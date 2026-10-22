@@ -4,9 +4,11 @@ This user-requested branch change follows the original capture (`57f8f6b`) and
 the save/reset/Teams fixes (`6ef71bb`). It is not part of the captured live baseline
 and has not been deployed.
 
-Each row in Materials / Components now divides its editable area equally:
-the existing Description dropdown on the left and a separate **Material details**
-column on the right. The row number, delete button, and reference image remain.
+Each row in Materials / Components now uses about 28% of its editable width
+for the Material dropdown and the rest for **Material details**. A compact
+Completed checkbox sits at the far right, after the delete control. The main
+job description bar, row number and reference image remain. This narrower split
+and completion control supersede the original equal-width layout.
 Details wrap and grow with their content; Enter adds a newline there, while
 Enter in the material dropdown still adds a row. Print uses plain-text mirrors
 for both values so long content wraps without an input or textarea clipping it.
@@ -25,14 +27,21 @@ The original `materials: string[]` contract remains intact. A parallel
 ```json
 {
   "materials": ["Clear acrylic", "White acrylic"],
-  "materialDetails": ["Cut to 12 × 24 in\nPolish edges", "3 mm, matte finish"]
+  "materialDetails": ["Cut to 12 × 24 in\nPolish edges", "3 mm, matte finish"],
+  "materialCompleted": [true, false]
 }
 ```
 
-Both arrays are collected from the same ordered DOM rows. Deletion keeps them
+`materialCompleted: boolean[]` uses the same row index. All three arrays are
+collected from the same ordered DOM rows. Only literal `true` restores as checked;
+missing or invalid completion values default to unchecked. Checked rows have
+a very light green (`#f0fdf4`) background across every cell. Unchecking restores
+the normal background. The accessible label is Completed plus the row number.
+Print shows explicit `[x]`/`[ ]` marks as well as the highlight, so color is not
+the only completion indicator. Deletion keeps them
 aligned. Missing details restore as blank, so existing tickets need no client
 migration. Cancelled Reset changes nothing and issues no save; confirmed Reset
-produces one blank material and one blank detail. Scratch mode remains unsaved.
+produces one blank material, one blank detail and an unchecked completion flag. Scratch mode remains unsaved.
 The existing revision-aware save queue handles detail edits and completes their
 PUT before the explicit Teams push.
 
@@ -51,11 +60,12 @@ not proof of production Teams delivery.
 ## Local regression evidence
 
 `scripts/material-details-checks.js` executes the real template with synthetic
-state and mocked local API responses. All six scenarios failed before the
-field existed; all six pass after this change, with no page errors or external
+state and mocked local API responses. The original six scenarios failed before the
+details field existed and passed after it was added. The current ten scenarios
+also cover the narrower layout and completion controls, with no page errors or external
 requests. Coverage includes:
 
-- Legacy tickets without details and equal-width adjacent columns.
+- Legacy tickets without details/completion and the narrower material column.
 - Multiline entry, newline versus add-row behavior, PUT serialization, reload
   restoration, and aligned row deletion/accessibility labels.
 - Cancelled and confirmed Reset.
@@ -73,6 +83,12 @@ playwright-cli -s=material-details --raw run-code \
 playwright-cli -s=material-details close
 ```
 
-The JSON result must report `passed: 6`, `failed: 0`, and empty `pageErrors`
+The JSON result must report `passed: 10`, `failed: 0`, and empty `pageErrors`
 and `externalRequests`. Check that result, not only the CLI exit code.
 Screenshots and PDF are synthetic, under ignored `output/playwright/`.
+
+The completion follow-up first failed six browser scenarios (two width checks
+and four completion cases) against the prior template, with four compatibility
+controls passing. After implementation all ten pass. Coverage includes toggle,
+whole-row highlight, serialization/reload, row addition/deletion, cancel/confirm
+Reset, old-ticket defaults, 320px/390px alignment, scratch mode and print marks.

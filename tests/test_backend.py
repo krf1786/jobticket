@@ -152,6 +152,38 @@ class BackendTests(unittest.TestCase):
         self.assertEqual(self.state()['materials'], ['Replacement material'])
         self.assertEqual(self.state().get('materialDetails'), [''])
 
+    def test_legacy_preserves_completion_and_details_independently(self):
+        self.put(dict(self.base, materialCompleted=[True, False]))
+        self.put(self.legacy(notes='Old tab edit'))
+        self.assertEqual(self.state().get('materialCompleted'), [True, False])
+        self.assertEqual(self.state()['materialDetails'], self.base['materialDetails'])
+        self.put(dict(self.base, materialDetails=['Updated details', '']))
+        self.assertEqual(self.state().get('materialCompleted'), [True, False])
+        self.assertEqual(self.state()['materialDetails'][0], 'Updated details')
+
+    def test_legacy_row_changes_with_completion_reject_without_writing(self):
+        self.put(dict(self.base, materialDetails=['', ''], materialCompleted=[True, False]))
+        before = self.app.api_get('TEST01')
+        for payload in (self.legacy(materials=['Changed']), dict(self.base, materials=['Changed'], materialDetails=[''])):
+            with self.subTest(payload=payload):
+                with self.assertRaises(self.app.HTTPException) as error:
+                    self.put(payload)
+                self.assertEqual(error.exception.status_code, 409)
+                self.assertEqual(self.app.api_get('TEST01'), before)
+
+    def test_explicit_completion_uncheck_delete_and_reset(self):
+        self.put(dict(self.base, materialCompleted=[True, True]))
+        for materials, details, completed in [(['Clear acrylic', 'White acrylic'], ['Polish edges', 'Matte finish'], [False, True]), (['White acrylic'], ['Matte finish'], [True]), ([''], [''], [False])]:
+            self.put(dict(self.base, materials=materials, materialDetails=details, materialCompleted=completed))
+            self.assertEqual(self.state()['materialCompleted'], completed)
+            self.assertEqual(self.state()['materials'], materials)
+
+    def test_legacy_rows_with_unchecked_completion_can_change(self):
+        self.put(dict(self.base, materialDetails=['', ''], materialCompleted=[False, False]))
+        self.put(self.legacy(materials=['Replacement']))
+        self.assertEqual(self.state().get('materialCompleted'), [False])
+        self.assertEqual(self.state()['materialDetails'], [''])
+
     def test_save_during_pdf_render_remains_stale(self):
         entered, release = threading.Event(), threading.Event()
         captured = []

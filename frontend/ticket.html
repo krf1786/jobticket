@@ -260,6 +260,12 @@
   table.materials-data{table-layout:fixed;}
   .materials-data input,.materials-data textarea{min-width:0;}
   table.materials-data tbody td{vertical-align:top;}
+  .material-name-heading{width:24%;}
+  table.materials-data .material-completion-cell{text-align:center;vertical-align:top;padding:5px 2px;}
+  table.materials-data input.material-completed{display:inline-block;width:18px;height:18px;min-height:18px;margin:1px 0;accent-color:#15803d;cursor:pointer;}
+  table.materials-data tr.material-is-completed > td{background:#f0fdf4;}
+  table.materials-data tr.material-is-completed input:not([type="checkbox"]),table.materials-data tr.material-is-completed textarea{background:transparent;}
+  .material-completion-print{display:none;font-family:monospace;font-weight:700;white-space:nowrap;}
   .material-details-cell{border-left:1px solid #e2e8f0;}
   table.data textarea.material-details{display:block;overflow-wrap:anywhere;}
   .material-print{display:none;white-space:pre-wrap;overflow-wrap:anywhere;padding:2px 5px;}
@@ -464,6 +470,8 @@
     table.data input[list]{background-image:none;padding-right:6px;}
     .materials-data input,.materials-data textarea{display:none !important;}
     .material-print{display:block;}
+    .material-completion-print{display:block;}
+    table.materials-data tr.material-is-completed > td{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
     .field input,.field textarea{border-color:#cbd5e1;}
     .job-name-input{border-bottom:1.5px solid rgba(255,255,255,.4);}
     .img-actions,.img-btn{display:none !important;}
@@ -483,6 +491,7 @@
     .field{min-width:0;}
     .materials-layout{grid-template-columns:minmax(0,1fr);}
     .materials-layout .img-box{width:188px;justify-self:end;}
+    .material-name-heading{width:20%;}
     .section-title{flex-wrap:wrap;}
     .section-hint{flex-basis:100%;margin-left:0;}
     table.data{table-layout:fixed;}
@@ -589,7 +598,7 @@
     <section>
       <h2 class="section-title">
         <span class="num">02</span>Materials / Components
-        <span class="section-hint no-print">Press Enter to add a row · Start typing in Description for suggestions</span>
+        <span class="section-hint no-print">Press Enter to add a row · Start typing in Material for suggestions</span>
       </h2>
       <div class="materials-layout">
         <div class="materials-table-wrap">
@@ -597,9 +606,10 @@
             <thead>
               <tr>
                 <th style="width:32px">#</th>
-                <th>Description</th>
+                <th class="material-name-heading">Material</th>
                 <th>Material details</th>
                 <th style="width:28px" class="no-print"></th>
+                <th style="width:36px" title="Completed" aria-label="Completed">Done</th>
               </tr>
             </thead>
             <tbody id="matBody"></tbody>
@@ -686,12 +696,16 @@
       <td><input type="text" list="acrylicOptions" placeholder="Type or pick…" data-row-input="mat" autocomplete="off" aria-label="Material ${rowNum}"/><span class="material-print material-name-print" aria-hidden="true"></span></td>
       <td class="material-details-cell"><textarea class="material-details" placeholder="Add details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
       <td class="no-print"><button class="row-delete" onclick="deleteMaterialRow(this)" title="Delete row">×</button></td>
+      <td class="material-completion-cell"><input type="checkbox" class="material-completed" aria-label="Completed ${rowNum}"/><span class="material-completion-print" aria-hidden="true">[ ]</span></td>
     `;
   }
 
   function updateMaterialRow(tr){
     const material = tr.querySelector('input');
     const details = tr.querySelector('.material-details');
+    const completed = tr.querySelector('.material-completed').checked;
+    tr.classList.toggle('material-is-completed', completed);
+    tr.querySelector('.material-completion-print').textContent = completed ? '[x]' : '[ ]';
     tr.querySelector('.material-name-print').textContent = material.value;
     tr.querySelector('.material-details-print').textContent = details.value;
     details.style.height = 'auto';
@@ -736,6 +750,7 @@
       if(numCell) numCell.textContent = idx + 1;
       row.querySelector('input').setAttribute('aria-label', 'Material ' + (idx + 1));
       row.querySelector('.material-details').setAttribute('aria-label', 'Material details ' + (idx + 1));
+      row.querySelector('.material-completed').setAttribute('aria-label', 'Completed ' + (idx + 1));
     });
   }
 
@@ -1004,6 +1019,9 @@
     var materialDetails = [].map.call(document.querySelectorAll('#matBody tr'), function (tr) {
       return tr.querySelector('.material-details').value;
     });
+    var materialCompleted = [].map.call(document.querySelectorAll('#matBody tr'), function (tr) {
+      return tr.querySelector('.material-completed').checked;
+    });
     var steps = [].map.call(document.querySelectorAll('#prodBody tr'), function (tr) {
       var i = tr.querySelector('input'), t = tr.querySelector('textarea');
       return { op: i ? i.value : '', instr: t ? t.value : '' };
@@ -1018,6 +1036,7 @@
       notes:   $('notes').value,
       materials: mats.length ? mats : [''],
       materialDetails: materialDetails.length ? materialDetails : [''],
+      materialCompleted: materialCompleted.length ? materialCompleted : [false],
       steps: steps.length ? steps : [{ op: '', instr: '' }],
       image: (img && img.src && img.style.display !== 'none') ? currentImageUrl : null
     };
@@ -1037,12 +1056,14 @@
 
     var mats = (s.materials && s.materials.length) ? s.materials : [''];
     var materialDetails = Array.isArray(s.materialDetails) ? s.materialDetails : [];
+    var materialCompleted = Array.isArray(s.materialCompleted) ? s.materialCompleted : [];
     $('matBody').innerHTML = '';
     mats.forEach(function (val, idx) {
       var tr = addMaterialRow(false);
       var inp = tr.querySelector('input');
       if (inp) inp.value = val || '';
       tr.querySelector('.material-details').value = typeof materialDetails[idx] === 'string' ? materialDetails[idx] : '';
+      tr.querySelector('.material-completed').checked = materialCompleted[idx] === true;
       updateMaterialRow(tr);
     });
 

@@ -7,18 +7,21 @@ claims about the captured baseline. Only `backend/app.py` changes behavior;
 
 ## Older tabs and material details
 
-Whole-state saves from older editors omit `materialDetails`. For an existing
+Whole-state saves from older editors omit `materialDetails` and/or
+`materialCompleted`. The protection applies to each omitted field independently. For an existing
 ticket with that field, omission preserves details when `materials` is unchanged.
-If an old editor changes material rows while nonempty details exist, the entire
+If an old editor changes material rows while nonempty omitted details or checked
+completion exist, the entire
 save is rejected with HTTP 409 and a reload instruction. Matching by material
 name would be unsafe for duplicate names, renaming, reordering and deletion.
 The old UI shows its existing save-error state; users need to reload the updated
 editor before changing protected rows. No unrelated fields are partially saved.
 
-An explicit `materialDetails` field remains authoritative. The updated editor
+Explicit `materialDetails` and `materialCompleted` fields remain authoritative. The updated editor
 can deliberately clear details, delete rows or reset the form. Old tickets that
 never had details keep their original behavior. Old editors can change rows
-whose existing details are all blank; the stored blank array is realigned.
+whose omitted details are all blank and completion flags are unchecked; the
+stored blank/false arrays are realigned.
 This is additive-field protection, not general multi-editor conflict resolution.
 
 ## PDF revision and upload ordering
@@ -54,3 +57,9 @@ browser autosave/restoration/deletion/reset, unmodified PDF renderer, and Graph
 code with external transport intercepted. It checks literal details and all
 180 lines across a multipage PDF, and confirms a newer save stays queued while
 an older PDF upload finishes. This is not a production Teams delivery test.
+
+The completion follow-up adds four backend cases: omission preservation across
+both old frontend generations, checked-row conflict rejection, explicit
+uncheck/delete/reset, and all-unchecked row changes. Three failed before the
+compatibility extension (four assertions including subcases); the explicit
+payload control passed. All 17 backend test methods now pass.

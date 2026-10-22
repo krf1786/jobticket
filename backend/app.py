@@ -160,20 +160,25 @@ def get_ticket(job_id: str) -> Optional[sqlite3.Row]:
         return conn.execute("SELECT * FROM tickets WHERE job_id = ?", (job_id,)).fetchone()
 
 
-def preserve_material_details(state: dict, previous: dict) -> None:
-    """An omitted field is an old client, not an instruction to erase details."""
-    if "materialDetails" in state or "materialDetails" not in previous:
-        return
-    details = previous["materialDetails"]
-    if state.get("materials") == previous.get("materials"):
-        state["materialDetails"] = details
-        return
-    if isinstance(details, list) and any(isinstance(value, str) and value for value in details):
-        # Index-based details cannot safely be mapped after an old tab renames,
-        # reorders or removes rows (especially duplicate material names).
-        raise HTTPException(409, "This ticket has material details. Reload the updated editor before changing material rows.")
-    materials = state.get("materials")
-    state["materialDetails"] = [""] * len(materials) if isinstance(materials, list) else []
+def preserve_material_fields(state: dict, previous: dict) -> None:
+    """Omitted additive row fields belong to old clients, not deliberate clears."""
+    for field, blank in (("materialDetails", ""), ("materialCompleted", False)):
+        if field in state or field not in previous:
+            continue
+        values = previous[field]
+        if state.get("materials") == previous.get("materials"):
+            state[field] = values
+            continue
+        meaningful = isinstance(values, list) and any(
+            (isinstance(value, str) and bool(value)) if field == "materialDetails" else value is True
+            for value in values
+        )
+        if meaningful:
+            # Index-based state cannot safely follow old-tab renames, reorders
+            # or removals, especially when material names are duplicated.
+            raise HTTPException(409, "This ticket has material details or completion. Reload the updated editor before changing material rows.")
+        materials = state.get("materials")
+        state[field] = [blank] * len(materials) if isinstance(materials, list) else []
 
 
 def create_ticket(job_id: str, job_name: str) -> sqlite3.Row:
@@ -242,7 +247,7 @@ async def api_put(job: str, request: Request):
         previous = conn.execute("SELECT data, updated_at FROM tickets WHERE job_id = ?", (job_id,)).fetchone()
         now = time.time()
         if previous:
-            preserve_material_details(state, json.loads(previous["data"]))
+            preserve_material_fields(state, json.loads(previous["data"]))
             # updated_at doubles as the saved revision. Keep it strictly
             # increasing even for same-tick saves or a backwards clock step.
             now = max(now, math.nextafter(previous["updated_at"], math.inf))

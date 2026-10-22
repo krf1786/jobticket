@@ -55,6 +55,7 @@ for _ in range(100):
 check(server.started, 'Exact backend runs on isolated loopback service')
 fixture = {'jobName': 'VERIFY01 release fixture', 'materials': ['Clear acrylic', 'White acrylic'],
            'materialDetails': ['DETAIL-BEGIN-01\nPolish edges; literal <b>text</b>', 'DETAIL-SECOND-02'],
+           'materialCompleted': [True, False],
            'steps': [{'op': 'Cut', 'instr': 'Synthetic only'}], 'notes': '', 'image': None}
 def put(state, job='VERIFY01'):
     response = client.put('/jobticket/api/' + job, json=state)
@@ -68,14 +69,16 @@ try:
         saved = json.loads(db.execute('SELECT data FROM tickets WHERE job_id=?', ('VERIFY01',)).fetchone()['data'])
     check(saved == fixture, 'SQLite persisted the full additive state without schema changes')
     put(fixture, 'MIXED01')
-    old_client = {k: v for k, v in fixture.items() if k != 'materialDetails'}
+    old_client = {k: v for k, v in fixture.items() if k not in ('materialDetails', 'materialCompleted')}
     put(old_client, 'MIXED01')
     check(state('MIXED01')['materialDetails'] == fixture['materialDetails'], 'Legacy PUT preserves omitted details')
+    check(state('MIXED01')['materialCompleted'] == [True, False], 'Legacy PUT preserves omitted completion')
     before = client.get('/jobticket/api/MIXED01').json()
     rejected = client.put('/jobticket/api/MIXED01', json=dict(old_client, materials=['Changed row']))
     check(rejected.status_code == 409 and client.get('/jobticket/api/MIXED01').json() == before, 'Legacy material-row change rejects without a write')
-    put(dict(fixture, materialDetails=['', '']), 'MIXED01')
+    put(dict(fixture, materialDetails=['', ''], materialCompleted=[False, False]), 'MIXED01')
     check(state('MIXED01')['materialDetails'] == ['', ''], 'Explicit updated payload clears details')
+    check(state('MIXED01')['materialCompleted'] == [False, False], 'Explicit updated payload unchecks completion')
     old = {'jobName': 'LEGACY01 synthetic', 'materials': ['Existing acrylic'], 'steps': [{'op': '', 'instr': ''}]}
     put(old, 'LEGACY01')
     with sync_playwright() as pw:
@@ -86,6 +89,8 @@ try:
         page.route('**/*', lambda route: route.continue_() if route.request.url.startswith(BASE + '/') else (external.append(route.request.url), route.abort())[-1])
         page.goto(BASE + '/jobticket/VERIFY01', wait_until='networkidle')
         check(page.locator('.material-details').evaluate_all('(nodes) => nodes.map(n => n.value)') == fixture['materialDetails'], 'Actual server bootstrap restores both details')
+        check(page.get_by_role('checkbox', name='Completed 1', exact=True).is_checked(), 'Actual server bootstrap restores completion')
+        page.get_by_role('checkbox', name='Completed 1', exact=True).uncheck()
         page.locator('.material-details').first.fill('DETAIL-EDITED-03')
         for _ in range(100):
             if state()['materialDetails'][0] == 'DETAIL-EDITED-03': break
@@ -93,13 +98,16 @@ try:
         check(state()['materialDetails'][0] == 'DETAIL-EDITED-03', 'Browser autosave round-trips through real API and SQLite')
         page.reload(wait_until='networkidle')
         check(page.locator('.material-details').first.input_value() == 'DETAIL-EDITED-03', 'Reload restores the actual persisted edit')
+        check(state()['materialCompleted'] == [False, False] and not page.get_by_role('checkbox', name='Completed 1', exact=True).is_checked(), 'Completion toggle survives actual API save/reload')
         page.locator('#matBody .row-delete').first.click()
         for _ in range(100):
             if len(state()['materials']) == 1: break
             page.wait_for_timeout(30)
         check(state()['materials'] == ['White acrylic'] and state()['materialDetails'] == ['DETAIL-SECOND-02'], 'Deletion persists aligned arrays through real backend')
+        check(state()['materialCompleted'] == [False], 'Deletion persists aligned completion')
         page.goto(BASE + '/jobticket/LEGACY01', wait_until='networkidle')
-        check(page.locator('#matBody input').input_value() == 'Existing acrylic' and page.locator('.material-details').input_value() == '', 'Old persisted ticket restores without migration')
+        check(page.locator('#matBody input[data-row-input="mat"]').input_value() == 'Existing acrylic' and page.locator('.material-details').input_value() == '', 'Old persisted ticket restores without migration')
+        check(not page.get_by_role('checkbox', name='Completed 1', exact=True).is_checked(), 'Old persisted ticket defaults completion to unchecked')
         before = state('LEGACY01')
         page.evaluate('window.confirm = () => false')
         page.get_by_role('button', name='⟲ Reset').click()
@@ -111,6 +119,7 @@ try:
             if state('LEGACY01').get('materialDetails') == ['']: break
             page.wait_for_timeout(30)
         check(state('LEGACY01')['materials'] == [''] and state('LEGACY01')['materialDetails'] == [''], 'Confirmed Reset persists both blank arrays')
+        check(state('LEGACY01')['materialCompleted'] == [False], 'Confirmed Reset persists unchecked completion')
         check(not page_errors and not external, 'Actual-backend browser had no errors or non-local requests')
         browser.close()
 
@@ -119,7 +128,8 @@ try:
     (ROOT / 'backend-material-details.pdf').write_bytes(blob)
     pdf_text = '\n'.join(page.extract_text() for page in PdfReader(io.BytesIO(blob)).pages)
     check(all(s in pdf_text for s in ['DETAIL-BEGIN-01', 'DETAIL-SECOND-02', 'Polish edges', 'literal <b>text</b>', 'Clear acrylic']), 'Unmodified deployed PDF renderer prints persisted details as literal text')
-    long = dict(fixture, materials=['Acrylic'], materialDetails=['\n'.join(f'Detail line {n:03}: cut and polish' for n in range(1,181))])
+    check('[x]' in pdf_text and '[ ]' in pdf_text, 'Real PDF visibly distinguishes checked and unchecked rows without color')
+    long = dict(fixture, materials=['Acrylic'], materialCompleted=[True], materialDetails=['\n'.join(f'Detail line {n:03}: cut and polish' for n in range(1,181))])
     put(long)
     long_pdf = pdf.render(BASE + '/jobticket/VERIFY01')
     (ROOT / 'backend-long-details.pdf').write_bytes(long_pdf)

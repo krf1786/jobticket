@@ -88,3 +88,14 @@ private keys, GitHub tokens, AWS access keys, JWTs, assigned client/API secrets,
 or generated `window.__TICKET__` payloads in the added text files. The captured
 source was also reviewed directly. No credentials, environment files, raw live
 responses, database, uploads, browser state, or session configuration are added.
+
+## Completion follow-up — October 22, 2026
+
+The current candidate narrows Material to about 28% of editable width and adds
+far-right completion checkboxes, light green row highlighting and a parallel
+boolean state array. The material suite now has 10 scenarios; together with the
+22 existing checks and 12 save/reset/Teams races, the frontend total is 44.
+Backend coverage is 17 unit regression methods and 40 isolated integration
+assertions with real HTTP/SQLite/browser/PDF paths. External Graph transport is
+intercepted. Four-page output retains all 180 long-detail lines; a separate PDF
+assertion verifies checked and unchecked marks independently of row color.

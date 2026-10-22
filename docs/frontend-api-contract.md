@@ -21,16 +21,17 @@ with script-safe JSON. Never embed raw request data or credentials in either.
 
 State has strings `jobName`, `date`, `qty`, `due`, `time`, `notes`; a `materials`
 array of strings; a new `materialDetails` array of strings aligned by material
-row index; a `steps` array of `{op, instr}` objects; and `image`, a URL
+row index; `materialCompleted: boolean[]` aligned by the same index; a `steps` array of `{op, instr}` objects; and `image`, a URL
 or null. Blank arrays are restored as one blank row. The frontend sends quantity
 as a string and uses the native date/time input values. Tickets without
 `materialDetails` retain their original materials and show blank details.
-Missing, non-array, or non-string detail values become blank fields.
+Missing, non-array, or non-string detail values become blank fields. Completion
+is checked only for literal `true`; absent/invalid values restore unchecked.
 
 `materialDetails` is a frontend branch addition stored in the backend's existing
-JSON state. The repaired backend preserves it when an older payload omits the
-field and keeps the same materials. An older payload that changes material rows
-with nonempty saved details receives HTTP 409 without any write. Updated payloads
+JSON state. The repaired backend preserves it and completion when an older payload omits
+either field and keeps the same materials. An older payload that changes material rows
+with nonempty omitted details or checked completion receives HTTP 409 without any write. Updated payloads
 include the field explicitly and can clear/delete/reset normally. This protects
 additive details; it is not general multi-client conflict resolution. See
 [backend-fixes.md](backend-fixes.md).

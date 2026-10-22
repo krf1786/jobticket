@@ -7,8 +7,9 @@ the job name, server-save/upload client code, and conditional Teams-copy UI.
 
 The working frontend is in [`frontend/ticket.html`](frontend/ticket.html), with
 three reviewed save/reset/Teams fixes and the requested material-details columns
-applied after capture. Each material dropdown uses half the row's editable space;
-the adjacent **Material details** field supports multiline text. The exact original
+applied after capture. Material dropdowns now use about 28% of the editable
+width, leaving most space for multiline **Material details**. A far-right
+**Completed** checkbox saves per row and highlights it very light green. The exact original
 capture remains in [commit `57f8f6b`](https://github.com/krf1786/jobticket/blob/57f8f6b28005d7511b67fc95c40b6bbd7695bd69/frontend/ticket.html).
 See [review fixes and regressions](docs/review-fixes.md) and
 [material details and compatibility](docs/material-details.md). The original

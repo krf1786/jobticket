@@ -9,6 +9,7 @@ async (page) => {
 
   async function run(name, fixture, test, scratch = false) {
     const p = await page.context().newPage();
+    p.setDefaultTimeout(3000);
     let stored = fixture, holdSave = false;
     const saves = [], pushes = [];
     const advance = async ms => { await p.clock.runFor(ms); await p.waitForTimeout(30); };
@@ -60,11 +61,11 @@ async (page) => {
   }
 
   await run('Legacy tickets retain materials with blank adjacent details', { materials: ['Clear acrylic', 'White acrylic'] }, async t => {
-    assert(JSON.stringify(await t.p.locator('#matBody input').evaluateAll(nodes => nodes.map(n => n.value))) === '["Clear acrylic","White acrylic"]', 'Legacy material names changed');
+    assert(JSON.stringify(await t.p.locator('#matBody input[data-row-input="mat"]').evaluateAll(nodes => nodes.map(n => n.value))) === '["Clear acrylic","White acrylic"]', 'Legacy material names changed');
     assert(JSON.stringify(await t.p.locator('.material-details').evaluateAll(nodes => nodes.map(n => n.value))) === '["",""]', 'Missing details were not restored as blank');
     assert(await t.p.getByRole('columnheader', { name: 'Material details', exact: true }).count() === 1, 'Separate Material details heading missing');
     const widths = await t.p.locator('#matBody tr').first().evaluate(row => Array.from(row.cells).slice(1, 3).map(cell => cell.getBoundingClientRect().width));
-    assert(Math.abs(widths[0] - widths[1]) < 2, 'Material and details do not share the available width equally');
+    assert(widths[0] / (widths[0] + widths[1]) >= .25 && widths[0] / (widths[0] + widths[1]) <= .31, 'Material column should use about 28 percent of editable width');
     await t.advance(1000);
     assert(t.saves.length === 0, 'Restoring legacy data unexpectedly saved');
   });
@@ -74,9 +75,9 @@ async (page) => {
     await t.p.locator('.material-details').first().fill(details);
     await t.p.locator('.material-details').first().press('Enter');
     assert(await t.p.locator('#matBody tr').count() === 1, 'Enter in details added a material row instead of a newline');
-    await t.p.locator('#matBody input').first().press('Enter');
+    await t.p.locator('#matBody input[data-row-input="mat"]').first().press('Enter');
     assert(await t.p.locator('#matBody tr').count() === 2, 'Enter in dropdown stopped adding rows');
-    await t.p.locator('#matBody input').nth(1).fill('White acrylic');
+    await t.p.locator('#matBody input[data-row-input="mat"]').nth(1).fill('White acrylic');
     await t.p.locator('.material-details').nth(1).fill('3 mm, matte finish');
     await t.advance(800);
     await t.eventually(() => t.saves.length > 0, 'Details edits were not saved');
@@ -127,7 +128,7 @@ async (page) => {
         return { overflow: document.documentElement.scrollWidth > window.innerWidth + 1, columns: [row.cells[1], row.cells[2]].map(c => { const r = c.getBoundingClientRect(); return { x: r.x, right: r.right, width: r.width }; }), clipped: detail.scrollHeight > detail.clientHeight + 2 };
       });
       assert(!layout.overflow && layout.columns[1].right <= width, 'Material row overflows the narrow viewport');
-      assert(Math.abs(layout.columns[0].width - layout.columns[1].width) < 2 && layout.columns[0].right <= layout.columns[1].x + 1, 'Narrow material columns overlap or lose the equal split');
+      assert(layout.columns[0].width < layout.columns[1].width * .5 && layout.columns[0].right <= layout.columns[1].x + 1, 'Narrow material columns overlap or lose the narrower material split');
       assert(!layout.clipped, 'Wrapped material details are clipped on screen');
     }
     await t.p.screenshot({ path: 'output/playwright/materials-mobile.png', fullPage: true });
@@ -142,7 +143,7 @@ async (page) => {
     assert(await t.p.locator('.material-details').first().isHidden(), 'Print still uses a clipping textarea');
     assert(await t.p.locator('.material-name-print').textContent() === 'Long material description for print', 'Print lost the material name');
     const printLayout = await printed.evaluate(node => ({ clipped: node.scrollWidth > node.clientWidth + 1, widths: [node.closest('tr').cells[1], node.closest('tr').cells[2]].map(cell => cell.getBoundingClientRect().width) }));
-    assert(!printLayout.clipped && Math.abs(printLayout.widths[0] - printLayout.widths[1]) < 2, 'Print text overflows or columns are not equal');
+    assert(!printLayout.clipped && printLayout.widths[0] < printLayout.widths[1] * .5, 'Print text overflows or material column is not narrower');
     await t.p.screenshot({ path: 'output/playwright/materials-print.png', fullPage: true });
     await t.p.pdf({ path: 'output/playwright/materials-print.pdf', printBackground: true, preferCSSPageSize: true });
     await t.p.emulateMedia({ media: 'screen' });
@@ -155,6 +156,64 @@ async (page) => {
     await t.advance(1000);
     assert(t.saves.length === 0 && t.pushes.length === 0, 'Scratch detail edit called an API');
     assert(await t.p.locator('#saveStatus').textContent() === 'Scratch ticket · not saved', 'Scratch status changed');
+  }, true);
+
+  await run('Completion toggles highlight, saves, restores and stays aligned', { materials: ['Clear acrylic', 'White acrylic'], materialDetails: ['First detail', 'Second detail'] }, async t => {
+    const first = t.p.getByRole('checkbox', { name: 'Completed 1', exact: true });
+    assert(await first.count() === 1 && !(await first.isChecked()), 'Legacy row must start unchecked');
+    const ordinary = await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.cells[1]).backgroundColor);
+    await first.check();
+    assert(await t.p.locator('#matBody tr').first().evaluate(r => r.classList.contains('material-is-completed') && Array.from(r.cells).every(c => getComputedStyle(c).backgroundColor === 'rgb(240, 253, 244)')), 'Whole completed row must be very light green');
+    await t.advance(800);
+    await t.eventually(() => t.stored().materialCompleted?.[0] === true, 'Checked state was not saved');
+    assert(JSON.stringify(t.stored().materialCompleted) === '[true,false]', 'Completion state is not aligned');
+    await t.p.reload(); await t.advance(1);
+    assert(await first.isChecked(), 'Reload lost completion');
+    await first.uncheck(); await t.advance(800);
+    await t.eventually(() => t.stored().materialCompleted[0] === false, 'Uncheck was not saved');
+    assert(await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.cells[1]).backgroundColor) === ordinary, 'Uncheck did not restore background');
+    await t.p.getByRole('checkbox', { name: 'Completed 2', exact: true }).check();
+    await t.p.locator('#matBody .row-delete').first().click(); await t.advance(800);
+    await t.eventually(() => t.stored().materials.length === 1, 'Deletion did not save');
+    assert(t.stored().materials[0] === 'White acrylic' && t.stored().materialCompleted[0] === true, 'Deletion misaligned completion');
+    assert(await t.p.getByRole('checkbox', { name: 'Completed 1', exact: true }).isChecked(), 'Completion accessibility label was not renumbered');
+    await t.p.locator('#matBody input[data-row-input="mat"]').first().press('Enter'); await t.advance(800);
+    await t.eventually(() => t.stored().materialCompleted.length === 2, 'Addition did not save');
+    assert(t.stored().materialCompleted[1] === false, 'New row should be unchecked');
+  });
+
+  await run('Reset cancellation keeps completion and confirmed reset clears it', { materials: ['Acrylic'], materialCompleted: [true] }, async t => {
+    await t.p.evaluate(() => { window.confirm = () => false; });
+    await t.p.getByRole('button', { name: 'Reset', exact: false }).click(); await t.advance(1000);
+    assert(t.saves.length === 0 && await t.p.getByRole('checkbox', { name: 'Completed 1', exact: true }).isChecked(), 'Cancelled reset changed completion');
+    await t.p.evaluate(() => { window.confirm = () => true; });
+    await t.p.getByRole('button', { name: 'Reset', exact: false }).click(); await t.advance(800);
+    await t.eventually(() => t.saves.length > 0, 'Reset did not save');
+    assert(JSON.stringify(t.stored().materialCompleted) === '[false]', 'Reset did not clear completion');
+  });
+
+  await run('Completion remains visible at the far right on narrow screens and print', { materials: ['Acrylic', 'White acrylic'], materialDetails: ['Finished material', 'Not finished'], materialCompleted: [true, false] }, async t => {
+    for (const width of [1200, 390, 320]) {
+      await t.p.setViewportSize({ width, height: 1000 }); await t.advance(20);
+      const layout = await t.p.locator('#matBody tr').first().evaluate(r => {
+        const box = r.querySelector('.material-completed').getBoundingClientRect(), detail = r.cells[2].getBoundingClientRect();
+        return { overflow: document.documentElement.scrollWidth > innerWidth + 1, x: box.x, right: box.right, width: box.width, detailRight: detail.right, last: r.lastElementChild.contains(r.querySelector('.material-completed')) };
+      });
+      assert(!layout.overflow && layout.last && layout.x >= layout.detailRight && layout.right <= width && layout.width >= 18, 'Completion control is not usable at the far right');
+    }
+    await t.p.setViewportSize({ width: 1200, height: 1300 }); await t.advance(20);
+    await t.p.screenshot({ path: 'output/playwright/completed-screen.png', fullPage: true });
+    await t.p.emulateMedia({ media: 'print' }); await t.advance(20);
+    assert(await t.p.locator('.material-completion-print').first().isVisible(), 'Print completion indicator is missing');
+    assert(await t.p.locator('.material-completion-print').first().textContent() === '[x]' && await t.p.locator('.material-completion-print').nth(1).textContent() === '[ ]', 'Printed checked state relies on color only');
+    assert(await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.cells[2]).backgroundColor) === 'rgb(240, 253, 244)', 'Print lost completed row highlight');
+    await t.p.screenshot({ path: 'output/playwright/completed-print.png', fullPage: true });
+    await t.p.pdf({ path: 'output/playwright/completed-print.pdf', printBackground: true, preferCSSPageSize: true });
+  });
+
+  await run('Scratch completion is local and unsaved', {}, async t => {
+    await t.p.getByRole('checkbox', { name: 'Completed 1', exact: true }).check(); await t.advance(1000);
+    assert(t.saves.length === 0 && t.pushes.length === 0, 'Scratch completion made an API call');
   }, true);
 
   await page.clock.resume();

@@ -61,8 +61,8 @@ async (page) => {
   await page.locator('#jobName').fill('Synthetic production example');
   await page.locator('#qtyField').fill('3');
   await page.locator('#notes').fill('Synthetic verification notes');
-  await page.locator('#matBody input').first().fill('Sample material');
-  await page.locator('#matBody input').first().press('Enter');
+  await page.locator('#matBody input[data-row-input="mat"]').first().fill('Sample material');
+  await page.locator('#matBody input[data-row-input="mat"]').first().press('Enter');
   await page.locator('#prodBody input').first().fill('Sample operation');
   await page.locator('#prodBody textarea').first().fill('Sample instructions');
   await waitSaved();
