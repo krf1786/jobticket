@@ -69,7 +69,8 @@ and the subsequent separately approved [frontend release](frontend-release.md). 
 
 The captured scratch-mode save layer returned before number initialization,
 leaving job-name extraction inactive there. The subsequent [header repair](header-fix.md)
-initializes the display in both modes and runs saved-name extraction after restore.
+initializes the display in both modes while preserving the saved bootstrap ID
+on reload, even if the restored name mentions another number.
 Scratch persistence remains disabled. Saved-mode API calls remain tied to bootstrap
 `jobId` until navigation, even while the number field is edited.
 

@@ -63,18 +63,18 @@ async (page) => {
     assert(t.puts.length === 0, 'Header bootstrap caused an unwanted save');
     await t.p.emulateMedia({ media: 'print' }); await t.pair('DEMO01');
   });
-  await run('Restored saved name is extracted after state restoration', true, { jobName: 'SB2468 - Restored synthetic' }, async t => {
-    await t.pair('SB2468'); await t.p.waitForTimeout(1000);
+  await run('Saved identity wins over a different number in the restored name', true, { jobName: 'SB2468 - Restored synthetic' }, async t => {
+    await t.pair('DEMO01'); await t.p.waitForTimeout(1000);
     assert(t.puts.length === 0, 'Name extraction during restore should not autosave');
-    await t.p.reload(); await t.pair('SB2468');
+    await t.p.reload(); await t.pair('DEMO01');
     assert(await t.p.getByRole('checkbox', { name: 'Completed 1', exact: true }).isChecked(), 'Header restore disturbed completion');
-    await t.p.emulateMedia({ media: 'print' }); await t.pair('SB2468');
+    await t.p.emulateMedia({ media: 'print' }); await t.pair('DEMO01');
   });
-  await run('Saved name edits survive autosave/reload and preserve navigation', true, { jobName: 'Synthetic' }, async t => {
+  await run('Saved name edits persist while reload restores ticket identity and navigation', true, { jobName: 'Synthetic' }, async t => {
     await t.p.locator('#jobName').fill('sb 4321 - Edited synthetic'); await t.pair('SB4321');
     await t.p.waitForFunction(() => /^Saved/.test(saveStatus.textContent));
     assert(t.puts.length > 0 && t.state().jobName === 'sb 4321 - Edited synthetic', 'Saved name edit did not persist');
-    await t.p.reload(); await t.pair('SB4321');
+    await t.p.reload(); await t.pair('DEMO01');
     await t.p.locator('#jobName').press('Enter'); await t.p.waitForURL('**/SB4321?*');
     assert(t.navigations.length === 1 && new URL(t.p.url()).searchParams.get('name') === t.state().jobName, 'Saved Enter navigation changed');
   });

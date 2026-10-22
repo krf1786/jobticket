@@ -1005,8 +1005,8 @@
     pill.textContent = text;
   }
 
-  /* Header behavior is shared by scratch and saved tickets. Saved state must
-     be restored before deriving a number from the job name. */
+  /* Header behavior is shared by scratch and saved tickets. On saved-page
+     load, bootstrap identity wins over numbers mentioned in a restored name. */
   function initializeHeader() {
     var noEl = $('jobNo');
     var noRightEl = $('jobNoRight');
@@ -1063,7 +1063,7 @@
         var url = B.prefix + '/' + encodeURIComponent(v) + '?name=' + encodeURIComponent(nameEl.value.trim());
         window.location.href = url;
       });
-      pullJobNoFromName();
+      if (!B.jobId) pullJobNoFromName();
     }
   }
 

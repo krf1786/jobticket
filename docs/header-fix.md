@@ -10,8 +10,8 @@ header handlers were registered. Its left input was empty with a gray placeholde
 and its right mirror stayed empty even after an SB number was typed in the job
 name. This defect was inherited from the captured source; the material-layout
 change did not remove the header. Existing tests covered the saved-page header
-but missed scratch header interaction. Saved boot also attempted name extraction
-before restoring `state.jobName`, so an extracted number could revert on reload.
+but missed scratch header interaction. Saved headers intentionally start from the actual bootstrap job ID; a stored
+job name can mention a different SB number and must not silently replace it.
 
 ## Scoped repair
 
@@ -21,8 +21,8 @@ pressing Enter there does not save or create a ticket. The empty left placeholde
 uses the existing red color; the right number appears when a real number is entered.
 No placeholder is treated as an actual ticket identity.
 
-Saved mode restores form state before initializing/extracting the header. A name
-containing `SB4321`, `SB 4321` or `SB-4321` fills both corners in uppercase. Direct
+Saved mode initializes both numbers from the actual bootstrap job ID after
+reload, even when the restored name mentions another number. Typing a name containing `SB4321`, `SB 4321` or `SB-4321` fills both corners in uppercase. Direct
 number edits update the right mirror. The existing saved-page Enter navigation
 remains intact. Save requests remain bound to the current bootstrap job ID until
 navigation; this repair does not silently save another ticket.
@@ -34,8 +34,12 @@ unchanged. The original long-identifier input-width behavior is outside this fix
 ## Regression evidence
 
 `scripts/header-checks.js` adds six focused scenarios. Before the repair, four
-failed for scratch initialization and saved-name reload; two saved-header/navigation
-controls passed. All six pass after the repair, including red sizes/colors,
+failed for scratch initialization and the initial candidate’s saved-name
+expectations; two saved-header/navigation controls passed. Live read-only
+validation then exposed an incorrect assumption in that initial candidate: a
+restored name could override the saved ticket ID. That attempt was rolled back
+with zero ticket writes. Two additional failing identity assertions reproduced
+the issue locally, and the final repair preserves bootstrap identity on reload. All six pass after the repair, including red sizes/colors,
 SB extraction, direct edits, saved reload, Enter handling and print. All requests
 use synthetic localhost fixtures; navigation destinations are intercepted.
 
@@ -51,5 +55,6 @@ The JSON report must show `passed: 6`, `failed: 0`, and empty page-error and
 external-request arrays. This extends the full frontend suite from 44 to 50
 scenarios. Backend and real local API/PDF checks remain separate evidence.
 
-Live publication and verification are recorded in the release evidence after
+The first attempt at 01:00 UTC was rolled back after the saved-reference check;
+no API writes had occurred. Final live publication and verification are recorded in the release evidence after
 completion. No production reference-ticket edits or Teams transport are used.
