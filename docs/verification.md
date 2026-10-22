@@ -112,3 +112,13 @@ template hash, safe test scope and print verification. Teams remains disabled.
 The [header repair](header-fix.md) adds six focused scenarios to cover scratch
 job-name extraction, both red numbers, direct editing, saved-name reload, saved
 Enter navigation and print. These extend the frontend suite to 50 scenarios.
+
+The corrected code commit `4e5555194d9259672cddf122dc2f539acd6ae784` passed all
+50 frontend scenarios, 17 backend unit regressions and 40 isolated integration
+assertions. After separately approved publication at 14:08:55 UTC, 21 live header
+checks passed with four writes confined to the owned synthetic ticket. Its state
+was restored exactly, and all 13 other ticket rows were unchanged at the final
+server audit. Both red headers and material completion marks were inspected in a
+PDF generated locally from the live page. See the [header release](header-fix.md)
+for hashes, rollback and the earlier candidate's read-only validation failure.
+Production Teams/PDF transport remains disabled and unverified.

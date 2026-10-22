@@ -43,13 +43,14 @@
     "teams_transport_calls": 0
   },
   "local_verification": {
-    "frontend_checks": 44,
+    "frontend_checks": 50,
     "backend_unit_tests": 17,
     "backend_integration_checks": 40,
     "graph_transport": "intercepted",
     "long_detail_pdf_pages": 4,
     "long_detail_pdf_lines_verified": 180,
-    "screen_and_print_screenshots_reviewed": true
+    "screen_and_print_screenshots_reviewed": true,
+    "verified_code_commit": "4e5555194d9259672cddf122dc2f539acd6ae784"
   },
   "release_boundary": {
     "frontend_deployed": true,
@@ -57,7 +58,7 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "395547481472968e3925a065bc191e09f276df3f298efe9f1c2fd91427231481"
+    "frontend_sha256": "326bbf9fd6a495ad842e761411842471c2bda31ee10cea358df8014a9e1511f2"
   },
   "excluded": [
     "private job payloads",
@@ -114,5 +115,59 @@
     "verification_retry_note": "Initial cleanup assertion found only the pre-existing automatic Time-field default. Verified against original source, restored the owned synthetic field, corrected fixture cleanup, and reran all browser checks successfully. No template regression or code change.",
     "synthetic_ticket_label_updated": true,
     "teams_transport_calls": 0
+  },
+  "header_deployment": {
+    "source_commit": "4e5555194d9259672cddf122dc2f539acd6ae784",
+    "started_at_utc": "2026-10-22T14:08:55.344604+00:00",
+    "verified_at_utc": "2026-10-22T14:13:49.955899+00:00",
+    "status": "live_verified",
+    "before_template_sha256": "395547481472968e3925a065bc191e09f276df3f298efe9f1c2fd91427231481",
+    "after_template_sha256": "326bbf9fd6a495ad842e761411842471c2bda31ee10cea358df8014a9e1511f2",
+    "database_backup_integrity": "ok",
+    "public_scratch_and_saved_hash_verified": true,
+    "service_restarted": false,
+    "existing_ticket_rows_unchanged": true,
+    "live_browser_checks": 21,
+    "screen_and_print_reviewed": true,
+    "pdf_validation": "Local Chromium PDF from live page; both red numbers, material details and completion marks inspected; production renderer remains unavailable",
+    "synthetic_state_restored_exactly": true,
+    "synthetic_puts_this_release": 4,
+    "teams_transport_calls": 0,
+    "public_url": "https://graphlab.info/jobticket/",
+    "changed_runtime_file": "ticket.html",
+    "backup_directory": "/root/jobticket/release-backups/header-20261022T140854Z",
+    "live_rollback_executed": false,
+    "backend_unchanged": true,
+    "checks": [
+      "Scratch left placeholder is red at the original 46px size",
+      "Typing SB4321 in the scratch job name populates both red corners",
+      "Scratch direct number edit updates the right mirror",
+      "Scratch name extraction normalizes both corners",
+      "Scratch Enter creates no ticket and makes no save",
+      "Both scratch numbers retain red styling in print",
+      "Read-only SB0000 still shows both original red job numbers",
+      "Read-only SB0000 keeps both red numbers in print",
+      "Scratch and reference inspection performed no API write",
+      "Owned saved test starts from its stored job identity",
+      "Saved job-name edit immediately updates both red corners",
+      "Saved reload retains actual ticket identity and the edited job name",
+      "Explicit name editing after reload again fills both corners",
+      "Header save preserves material details and completion",
+      "Explicitly edited name-derived numbers retain both red print displays",
+      "Local PDF of live page includes both numbers plus the job-name occurrence",
+      "Saved direct number edit retains its mirror",
+      "A later name edit updates both corners again",
+      "Owned synthetic ticket restored exactly, including its original blank time",
+      "No page errors or unapproved network attempts",
+      "Teams remains disabled"
+    ],
+    "page_errors": [],
+    "blocked_requests": [],
+    "earlier_attempt": {
+      "source_commit": "7b1357a503ad1dc452bceb1bce6ebe773b785066",
+      "status": "rolled_back_after_read_only_saved_identity_check",
+      "ticket_writes": 0,
+      "redeployed": false
+    }
   }
 }

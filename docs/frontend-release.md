@@ -1,5 +1,9 @@
 # Frontend release — October 22, 2026
 
+This records the initial material-layout publication. The subsequent
+[verified header correction](header-fix.md#verified-publication) is the current
+live template; the hash and rollback below refer to this earlier release.
+
 The approved layout is live at <https://graphlab.info/jobticket/>. Only the
 runtime `ticket.html` was replaced, atomically, at **00:36:55 UTC**. The source
 was PR head [`ee356916517260605149d81b4578d48ee3f1023d`](https://github.com/krf1786/jobticket/commit/ee356916517260605149d81b4578d48ee3f1023d),
