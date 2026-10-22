@@ -58,8 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "618aa4ea8709aaa286ab6be690148cc069cc17f90bdb77a08f8eb5df64004958",
-    "current_frontend_code_commit": "1181e42a2c9317504bb5aa7c517186c0e0521b30"
+    "frontend_sha256": "28dd824bb9b5a3058d3b05898fa87b7485bb683dad12f2b4c9918b5cbe42b016",
+    "current_frontend_code_commit": "82fec39d2b9041c2ac5af581d671ddc44eb014fc"
   },
   "excluded": [
     "private job payloads",
@@ -222,5 +222,38 @@
     "blocked_requests": [],
     "teams_transport_calls": 0,
     "verification_boundary": "Current frontend/browser and source checks only. Earlier backend unit/integration totals are historical. Production Teams/PDF delivery remains disabled and unverified."
+  },
+  "date_autofill_deployment": {
+    "source_commit": "82fec39d2b9041c2ac5af581d671ddc44eb014fc",
+    "started_at_utc": "2026-10-22T15:39:12.024266+00:00",
+    "verified_at_utc": "2026-10-22T15:39:43.345651+00:00",
+    "status": "live_verified",
+    "changed_runtime_file": "ticket.html",
+    "before_template_sha256": "618aa4ea8709aaa286ab6be690148cc069cc17f90bdb77a08f8eb5df64004958",
+    "after_template_sha256": "28dd824bb9b5a3058d3b05898fa87b7485bb683dad12f2b4c9918b5cbe42b016",
+    "backup_directory": "/root/jobticket/release-backups/date-autofill-20261022T153912Z",
+    "database_backup_integrity": "ok",
+    "public_scratch_and_saved_hash_verified": true,
+    "backend_unchanged": true,
+    "service_restarted": false,
+    "live_rollback_executed": false,
+    "all_14_ticket_rows_unchanged": true,
+    "local_frontend_scenarios": 57,
+    "live_browser_checks": 9,
+    "api_writes": 0,
+    "checks": [
+      "Fresh scratch ticket displays today in the local timezone",
+      "Cancelled Reset preserves the chosen date",
+      "Confirmed Reset autofills today again",
+      "Existing saved date remains unchanged on load",
+      "Existing saved date remains unchanged on reload",
+      "America/New_York default uses the local day across UTC midnight",
+      "Asia/Tokyo default uses the local day across UTC midnight",
+      "Saved synthetic ticket state is unchanged",
+      "No JavaScript errors or write attempts"
+    ],
+    "page_errors": [],
+    "blocked_requests": [],
+    "teams_transport_calls": 0
   }
 }

@@ -26,7 +26,7 @@ The latest [compact-row and Return-key follow-up](docs/material-row-release.md)
 matches material row height to Production Steps and adds the next numbered row
 when Enter is pressed in Material details (Shift+Enter inserts a newline).
 
-Date defaults to today's local date, including after Reset; saved dates are preserved.
+[Date defaults to today's local date](docs/date-autofill-release.md), including after Reset; saved dates are preserved.
 
 ## Local preview
 

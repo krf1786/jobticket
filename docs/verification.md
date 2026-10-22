@@ -163,3 +163,6 @@ Reset after local midnight. Four date regressions failed before repair. All
 requests. Source hashes, inline JavaScript syntax, safe bootstrap embedding and
 preview API rejection also passed. Backend code and production Teams/PDF
 configuration are unchanged.
+
+The [date-default publication](date-autofill-release.md) passed nine live checks
+with zero API writes. All 14 ticket rows remained unchanged.
