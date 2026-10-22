@@ -58,8 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "28dd824bb9b5a3058d3b05898fa87b7485bb683dad12f2b4c9918b5cbe42b016",
-    "current_frontend_code_commit": "82fec39d2b9041c2ac5af581d671ddc44eb014fc"
+    "frontend_sha256": "a7f65bd7dfe0c12eec7bf177ae37a2ebaa52d69c6590cda10c0ecc0286b7e7c8",
+    "current_frontend_code_commit": "83ab625a5f3ae66bb6dd189657000f4770841954"
   },
   "excluded": [
     "private job payloads",
@@ -255,5 +255,46 @@
     "page_errors": [],
     "blocked_requests": [],
     "teams_transport_calls": 0
+  },
+  "reference_image_deployment": {
+    "source_commit": "83ab625a5f3ae66bb6dd189657000f4770841954",
+    "started_at_utc": "2026-10-22T22:12:10.842713+00:00",
+    "verified_at_utc": "2026-10-22T22:13:18.196460+00:00",
+    "status": "live_verified",
+    "changed_runtime_file": "ticket.html",
+    "before_template_sha256": "28dd824bb9b5a3058d3b05898fa87b7485bb683dad12f2b4c9918b5cbe42b016",
+    "after_template_sha256": "a7f65bd7dfe0c12eec7bf177ae37a2ebaa52d69c6590cda10c0ecc0286b7e7c8",
+    "backup_directory": "/root/jobticket/release-backups/reference-image-20261022T221210Z",
+    "database_backup_integrity": "ok",
+    "public_scratch_and_saved_hash_verified": true,
+    "backend_unchanged": true,
+    "service_restarted": false,
+    "live_rollback_executed": false,
+    "all_16_ticket_rows_unchanged": true,
+    "local_frontend_scenarios": 57,
+    "local_layout_image_checks": 12,
+    "live_browser_checks": 15,
+    "api_writes": 0,
+    "checks": [
+      "Image is below Notes at full available width on 1200px screen",
+      "Large image and full-width Materials fit the 1200px screen",
+      "Image is below Notes at full available width on 390px screen",
+      "Large image and full-width Materials fit the 390px screen",
+      "Image is below Notes at full available width on 320px screen",
+      "Large image and full-width Materials fit the 320px screen",
+      "Scratch upload shows the complete reference image without cropping",
+      "Remove image still restores the large upload box",
+      "Live print retains the large image with page-break protection",
+      "Read-only saved ticket retains both actual job-number displays",
+      "Saved ticket uses the enlarged reference-image location below Notes",
+      "Saved ticket without an image retains its upload control",
+      "Saved ticket reload retains the new layout",
+      "Reference ticket state is unchanged after read-only inspection",
+      "No JavaScript errors or API write attempts"
+    ],
+    "page_errors": [],
+    "blocked_requests": [],
+    "teams_transport_calls": 0,
+    "print_validation": "Locally generated Chromium Letter PDFs inspected as rasterized pages; short ticket one page; 65-line notes three pages with intact image. Production renderer unchanged/unverified."
   }
 }

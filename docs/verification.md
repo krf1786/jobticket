@@ -184,3 +184,6 @@ checks passed. Screen/mobile screenshots and rasterized Letter PDFs were
 inspected: a short ticket fits one page; a 65-line notes fixture uses three
 pages, retains every line, and keeps the reference image intact on the last
 page. These local print checks do not establish production PDF/Teams delivery.
+
+The [reference-image publication](reference-image-release.md) passed 15 live
+checks with zero API writes; all 16 saved ticket rows were unchanged.
