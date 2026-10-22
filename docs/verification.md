@@ -1,7 +1,8 @@
 # Verification — October 21, 2026
 
-All interactions used synthetic local data. No live API write, upload, Teams
-push, or new-ticket navigation was performed.
+The frontend checks below use synthetic local data. The subsequent approved
+backend repair and synthetic live persistence test are separately recorded in
+[backend-release.md](backend-release.md); no Teams delivery is claimed.
 
 ## Source and offline checks
 
@@ -80,7 +81,8 @@ or Teams/SharePoint integration.
 ## Publication review
 
 The PR contains the source capture, assets, documentation, local verification,
-the three scoped client fixes, and the material-details UI/state change.
+the three scoped client fixes, the material-details UI/state change, and the
+subsequently verified backend source/repairs with isolated regression tests.
 No historical HTML is modified. A targeted scan found no
 private keys, GitHub tokens, AWS access keys, JWTs, assigned client/API secrets,
 or generated `window.__TICKET__` payloads in the added text files. The captured

@@ -15,10 +15,11 @@ See [review fixes and regressions](docs/review-fixes.md) and
 `jobticket.html`, `Job_Ticket2.html`, and `Job_Ticket3.html` remain unchanged as
 historical standalone versions.
 
-**This is a frontend capture with local fixes, not a deployable replacement for the live
-service.** The production backend, database, uploads, Microsoft credentials,
-and runtime ticket payloads are not included. No production deployment is
-configured or performed by this update.
+The verified deployed Python backend is now preserved in [`backend/`](backend/),
+with narrow compatibility and PDF revision fixes. Runtime databases, uploads,
+Microsoft credentials and ticket payloads are excluded. The frontend is still
+an unmerged release candidate. See [backend repairs](docs/backend-fixes.md) for
+behavior, test evidence and the deployment boundary.
 
 ## Local preview
 
@@ -67,11 +68,11 @@ See [source provenance and limitations](docs/source-provenance.md),
 
 ## Deployment boundary
 
-No installer or production server is included. Do not replace the running
-service with these historical standalone files or the local preview server.
-Before any future deployment, obtain the current server source and confirm
-authentication, rendering, persistence, upload handling, and Teams/SharePoint
-configuration against it. Deployment requires a separate authorized task.
+No installer, credentials, production database or automated deployment is included.
+The running service uses a separate layout and does not deploy this PR on push.
+Do not run historical installers or replace it with the preview server. Backend
+repairs and frontend release are separate actions; see [backend documentation](backend/README.md)
+and the [release record](docs/backend-release.md) for the verified scope.
 
 Inter fonts retain their [OFL license](frontend/static/fonts/OFL.txt). Embedded
 Tailwind 3.4.17 CSS retains its notice and [MIT license](frontend/TAILWIND-LICENSE.txt).

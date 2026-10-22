@@ -1,8 +1,9 @@
 # Frontend API expectations
 
-These are observations from the captured client code, not a server
-implementation or a verified production API specification. The local installer
-corroborates some shapes but its deployed equivalence is unknown.
+These expectations were captured from the client and subsequently checked against
+the deployed backend modules preserved in `backend/`. Integration tests use real
+local SQLite/API/PDF code with external Graph transport intercepted. Production
+verification and its limits are recorded in [backend-release.md](backend-release.md).
 
 ## Template input
 
@@ -26,13 +27,13 @@ as a string and uses the native date/time input values. Tickets without
 `materialDetails` retain their original materials and show blank details.
 Missing, non-array, or non-string detail values become blank fields.
 
-`materialDetails` is a branch addition, not an observed live contract. The
-historical installer's PUT handler stores arbitrary JSON objects, but deployed
-schema equivalence has not been verified. A deployed validator or renderer may
-drop or reject this field; older clients may omit it on their next save.
-The client includes it in the normal state PUT before requesting a Teams push.
-Production storage, bootstrap restoration, Teams PDF rendering, and mixed-client
-compatibility must be verified against the actual backend before deployment.
+`materialDetails` is a frontend branch addition stored in the backend's existing
+JSON state. The repaired backend preserves it when an older payload omits the
+field and keeps the same materials. An older payload that changes material rows
+with nonempty saved details receives HTTP 409 without any write. Updated payloads
+include the field explicitly and can clear/delete/reset normally. This protects
+additive details; it is not general multi-client conflict resolution. See
+[backend-fixes.md](backend-fixes.md).
 
 ## Requests made by the saved-mode client
 
@@ -53,21 +54,21 @@ Local revision counters are not sent to the server and do not provide
 cross-client locking or server-side snapshot/version guarantees.
 
 The client does not fetch initial state from a JSON endpoint; it receives it
-in bootstrap. The historical installer also defines `GET /api/{job}`, health,
-and upload-serving routes. Those were not required or probed for this capture.
+in bootstrap. The verified backend also defines `GET /api/{job}`, health, and upload-serving
+routes. API GET returns 404 for missing jobs without creating them.
 
 Saved-mode number entry and job-name number extraction can navigate to
 `prefix + '/' + encodedNumber`, optionally with a `name` query parameter.
-The historical installer creates missing jobs on GET, so unknown job routes
+The deployed page route creates missing jobs on GET, so unknown job routes
 must not be used as harmless live test fixtures. Only the already-provided
 reference and blank root were read during capture.
 
-## Unverified server responsibilities
+## Remaining verification boundaries
 
-Authentication/authorization, job ID validation, persistence/concurrency,
-request limits, MIME/content validation, upload URLs, error schemas, Graph
-permissions, SharePoint destination resolution, sync retries and PDF rendering
-must be checked against the actual deployed service. The frontend's treatment
+Authentication/authorization, request/upload limits, MIME/content validation,
+and Graph permissions were not broadened or audited by this scoped change.
+SharePoint delivery remains unverified because production Graph configuration
+and the optional PDF dependencies are missing. The frontend's treatment
 of responses does not establish what the server guarantees.
 
 Local preview responses and browser mocks are explicitly synthetic and are

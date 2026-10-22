@@ -48,22 +48,25 @@ older Job Ticket workspace, or named Job Ticket downloads inspected. Hidden
 session stores were not searched. This is a bounded source search, not proof
 that no other copy exists.
 
-## Missing source and verification limits
+## Deployed backend follow-up
 
-- Current deployed backend source, dependency lockfiles, service/proxy config,
-  and deployment mechanism have not been obtained or verified.
-- Microsoft Graph/Teams/SharePoint credentials, job folder mappings, and
-  production PDF rendering are outside this capture.
-- Database contents, uploaded images, real ticket state, and generated runtime
-  bootstrap JSON are deliberately excluded.
-- No save, image upload, Teams push, sync polling, or new job route was exercised
-  on production. Browser interactions used only localhost and mocked responses.
-- `sync.ready: false` on the reference means Teams UI was gated off there.
-  Mocked UI checks do not establish live Teams integration health.
+Read-only inspection subsequently located `/root/jobticket` on the configured
+VPS and verified the running service source. `app.py`, `graph.py` and `pdf.py`
+matched the September 2 installer modules byte for byte. These reusable modules
+were committed unchanged in `bdc201b2ca30085a4973eba48cfbc728b624cf65` before the
+approved backend repairs. [backend-source-manifest.json](backend-source-manifest.json)
+records the original and repaired hashes. No installer was executed.
 
-The original commit preserves the frontend as observed. The current branch
-adds the documented client fixes and materials UI change; it is not a backend
-reconstruction, production release, or claim of full backend synchronization.
+The service is a single uvicorn worker behind the existing proxy. Its current
+runtime versions were inspected, but no original dependency lockfile was found.
+Database contents, uploaded images, credentials, environment files and generated
+bootstrap payloads remain excluded. Graph configuration and the optional renderer
+are absent in production; no Teams transport was performed or enabled.
+
+The [backend release record](backend-release.md) separates the narrowly authorized
+backend deployment/live synthetic persistence checks from local integration tests
+and the still-unreleased frontend. It does not claim full Teams synchronization.
+
 In scratch mode the save layer returns early, so saved-mode
 number initialization and navigation handlers do not run. Saved-mode API
 calls remain tied to bootstrap `jobId` until navigation, even while the number
@@ -77,6 +80,8 @@ October 21 found no Actions workflows, no webhooks, no recorded deployments,
 and no GitHub Pages site. No tracked deployment configuration was present.
 Repository Actions were enabled but had no workflows to execute.
 
-External server-side polling cannot be ruled out from repository metadata.
-The capture is therefore proposed on `capture/live-frontend-2026-10-21` in an
-unmerged PR; `main` and the running service are not updated by this work.
+The production runtime modules/template are untracked in its separate checkout;
+no Job Ticket polling/deploy job was found in the inspected service and root cron.
+This work stays on `capture/live-frontend-2026-10-21` in an unmerged PR. `main`
+is unchanged. Only separately authorized backend repairs may be deployed, as
+recorded in [backend-release.md](backend-release.md).

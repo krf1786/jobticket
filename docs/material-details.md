@@ -36,11 +36,17 @@ produces one blank material and one blank detail. Scratch mode remains unsaved.
 The existing revision-aware save queue handles detail edits and completes their
 PUT before the explicit Teams push.
 
-The historical installer stores arbitrary JSON state, but its equivalence to
-the deployed server is unknown. No server code or schema was added. Production
-persistence, restoration from server bootstrap, and Teams/SharePoint PDF output
-have **not** been verified. Old clients may discard the new field on save.
-These contracts require backend review before any future deployment.
+The deployed backend source was subsequently obtained and matched the local
+installer modules byte for byte. Its real SQLite/API and PDF rendering paths
+were tested in isolation with the candidate template. The backend stores details
+and the existing PDF renderer includes them, including long wrapped content.
+[Backend repairs](backend-fixes.md) now preserve omitted details from older tabs
+and reject ambiguous old-client row changes with HTTP 409. Explicit updated
+payloads can still clear, reset or delete rows.
+
+Live persistence evidence and remaining Teams limitations are recorded in
+[the release record](backend-release.md). Local intercepted Graph tests are
+not proof of production Teams delivery.
 
 ## Local regression evidence
 

@@ -11,7 +11,7 @@ Single-file FastAPI app. SQLite storage, one row per job.
   GET  /jobticket/uploads/{f}      serve uploaded image
   GET  /jobticket/health           liveness probe
 """
-import json, os, re, sqlite3, time, uuid, pathlib, threading
+import json, math, os, re, sqlite3, time, uuid, pathlib, threading
 from typing import Any, Optional
 
 from fastapi import FastAPI, HTTPException, Request, UploadFile, File
@@ -34,6 +34,7 @@ STATIC.mkdir(exist_ok=True)
 
 app = FastAPI(title="Job Ticket", docs_url=None, redoc_url=None)
 _lock = threading.Lock()
+_push_lock = threading.Lock()     # serialize render + upload in this single-worker service
 
 
 # ---------------------------------------------------------------- database
@@ -76,6 +77,13 @@ def snapshot_filename(job_name: str, job_id: str) -> str:
 
 def push_ticket(job_id: str) -> dict:
     """Render this ticket to PDF and drop it in the job's channel folder."""
+    # The PDF module serializes rendering only. Keep uploads in the same order
+    # too, so an older in-flight upload cannot overwrite a newer PDF.
+    with _push_lock:
+        return _push_ticket(job_id)
+
+
+def _push_ticket(job_id: str) -> dict:
     row = get_ticket(job_id)
     if row is None:
         return {"ok": False, "error": "no such job"}
@@ -86,14 +94,16 @@ def push_ticket(job_id: str) -> dict:
 
     folder = (row["job_name"] or job_id).strip()
     fname = snapshot_filename(row["job_name"], job_id)
+    rendered_revision = row["updated_at"]
     try:
         blob = pdf.render(f"http://127.0.0.1:{PORT}{PREFIX}/{job_id}")
         info = graph.upload(folder, fname, blob)
-        now = time.time()
         with _lock, db() as conn:
             conn.execute("UPDATE tickets SET pushed_at=?, push_error='' WHERE job_id=?",
-                         (now, job_id))
-        return {"ok": True, "pushedAt": now, "file": info}
+                         (rendered_revision, job_id))
+        # Rendering may have seen an even newer save. Acknowledge only the
+        # revision known before rendering; any later save remains queued.
+        return {"ok": True, "pushedAt": rendered_revision, "file": info}
     except Exception as e:
         msg = f"{type(e).__name__}: {e}"[:400]
         with _lock, db() as conn:
@@ -148,6 +158,22 @@ def default_state(job_name: str) -> dict:
 def get_ticket(job_id: str) -> Optional[sqlite3.Row]:
     with db() as conn:
         return conn.execute("SELECT * FROM tickets WHERE job_id = ?", (job_id,)).fetchone()
+
+
+def preserve_material_details(state: dict, previous: dict) -> None:
+    """An omitted field is an old client, not an instruction to erase details."""
+    if "materialDetails" in state or "materialDetails" not in previous:
+        return
+    details = previous["materialDetails"]
+    if state.get("materials") == previous.get("materials"):
+        state["materialDetails"] = details
+        return
+    if isinstance(details, list) and any(isinstance(value, str) and value for value in details):
+        # Index-based details cannot safely be mapped after an old tab renames,
+        # reorders or removes rows (especially duplicate material names).
+        raise HTTPException(409, "This ticket has material details. Reload the updated editor before changing material rows.")
+    materials = state.get("materials")
+    state["materialDetails"] = [""] * len(materials) if isinstance(materials, list) else []
 
 
 def create_ticket(job_id: str, job_name: str) -> sqlite3.Row:
@@ -212,10 +238,14 @@ async def api_put(job: str, request: Request):
         raise HTTPException(400, "body must be a JSON object")
 
     job_name = str(state.get("jobName") or "")
-    now = time.time()
     with _lock, db() as conn:
-        exists = conn.execute("SELECT 1 FROM tickets WHERE job_id = ?", (job_id,)).fetchone()
-        if exists:
+        previous = conn.execute("SELECT data, updated_at FROM tickets WHERE job_id = ?", (job_id,)).fetchone()
+        now = time.time()
+        if previous:
+            preserve_material_details(state, json.loads(previous["data"]))
+            # updated_at doubles as the saved revision. Keep it strictly
+            # increasing even for same-tick saves or a backwards clock step.
+            now = max(now, math.nextafter(previous["updated_at"], math.inf))
             conn.execute("UPDATE tickets SET job_name=?, data=?, updated_at=? WHERE job_id=?",
                          (job_name, json.dumps(state), now, job_id))
         else:
