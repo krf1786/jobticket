@@ -18,10 +18,11 @@ their existing Enter-for-newline behavior. Print uses plain-text mirrors
 for both values so long content wraps without an input or textarea clipping it.
 User text is assigned with `textContent`, including literal HTML-like text.
 
-Below 600px, the reference image moves under the table, the job information
-uses two columns, and the page fits the viewport instead of scaling a fixed
-letter-size sheet. The two material columns remain side by side. Desktop and
-print retain the existing letter-size page and reference-image placement.
+The reference-image box spans the full ticket width below Notes: 320px tall on
+desktop and 240px below 600px. Images retain their proportions without cropping.
+Materials now use the full available width. Below 600px, job information uses two
+columns and the page fits the viewport; the material columns remain side by side.
+Print retains the Letter page and keeps the reference-image box together.
 
 ## State and compatibility
 

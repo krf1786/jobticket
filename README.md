@@ -28,6 +28,9 @@ when Enter is pressed in Material details (Shift+Enter inserts a newline).
 
 [Date defaults to today's local date](docs/date-autofill-release.md), including after Reset; saved dates are preserved.
 
+The reference-image box now spans the ticket width below Notes, giving images a
+much larger preview while preserving their full proportions.
+
 ## Local preview
 
 Requires Python 3 (standard library only):

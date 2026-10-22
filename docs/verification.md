@@ -166,3 +166,21 @@ configuration are unchanged.
 
 The [date-default publication](date-autofill-release.md) passed nine live checks
 with zero API writes. All 14 ticket rows remained unchanged.
+
+## Larger reference image below Notes
+
+The shared reference-image box now follows Notes across the full available
+width: 320px tall on desktop and 240px on small screens. Materials also use the
+full width. Existing markup IDs and every JavaScript block are unchanged, so
+upload/change/remove/drop, saved-image restoration and API state keep their
+existing paths. Images use contain sizing and the printed image box avoids
+page splitting.
+
+All **57 frontend scenarios** passed. A local synthetic browser probe passed
+12 layout/image checks across 1200px, 390px and 320px, including actual scratch
+FileReader upload and existing saved-image restoration, next edit and reload.
+No page errors or external requests occurred. Source/syntax/bootstrap/preview
+checks passed. Screen/mobile screenshots and rasterized Letter PDFs were
+inspected: a short ticket fits one page; a 65-line notes fixture uses three
+pages, retains every line, and keeps the reference image intact on the last
+page. These local print checks do not establish production PDF/Teams delivery.

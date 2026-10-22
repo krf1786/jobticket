@@ -250,12 +250,7 @@
     grid-template-columns: 1.05fr .52fr 1.05fr .8fr;
     gap:10px;
   }
-  .materials-layout{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) 188px;
-    gap:10px;
-    align-items:start;
-  }
+  .materials-layout{min-width:0;}
   .materials-table-wrap{min-width:0;}
   table.materials-data{table-layout:fixed;}
   .materials-data input,.materials-data textarea{min-width:0;}
@@ -303,7 +298,7 @@
   .img-box{
     position:relative;
     width:100%;
-    height:132px;
+    height:320px;
     border:1.5px dashed var(--line);
     border-radius:6px;
     background:
@@ -475,7 +470,7 @@
     .field input,.field textarea{border-color:#cbd5e1;}
     .job-name-input{border-bottom:1.5px solid rgba(255,255,255,.4);}
     .img-actions,.img-btn{display:none !important;}
-    .img-box{cursor:default;}
+    .img-box{cursor:default;break-inside:avoid;page-break-inside:avoid;}
     .img-box:not(.has-image){
       background:#fff;
       border-color:#cbd5e1;
@@ -489,8 +484,7 @@
     .hdr,.toolbar,.content{padding-left:12px;padding-right:12px;}
     .job-info-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
     .field{min-width:0;}
-    .materials-layout{grid-template-columns:minmax(0,1fr);}
-    .materials-layout .img-box{width:188px;justify-self:end;}
+    .img-box{height:240px;}
     .material-name-heading{width:20%;}
     .section-title{flex-wrap:wrap;}
     .section-hint{flex-basis:100%;margin-left:0;}
@@ -616,6 +610,36 @@
             <tbody id="matBody"></tbody>
           </table>
         </div>
+
+      </div>
+    </section>
+
+    <!-- 03 PRODUCTION STEPS -->
+    <section>
+      <h2 class="section-title">
+        <span class="num">03</span>Production Steps
+        <span class="section-hint no-print">Press Enter to add a row</span>
+      </h2>
+      <table class="data">
+        <thead>
+          <tr>
+            <th style="width:32px">Step</th>
+            <th>Operation</th>
+            <th>Instructions</th>
+            <th style="width:28px" class="no-print"></th>
+          </tr>
+        </thead>
+        <tbody id="prodBody"></tbody>
+      </table>
+    </section>
+
+    <!-- 04 NOTES -->
+    <section>
+      <h2 class="section-title"><span class="num">04</span>Notes</h2>
+      <div class="notes-grid">
+        <div class="notes-col">
+          <textarea id="notes" placeholder="Additional notes, special instructions, floor reminders…"></textarea>
+        </div>
         <div class="img-box" id="imgBox" onclick="document.getElementById(&#39;imgInput&#39;).click()" title="Click to upload image">
           <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="handleImage(event)">
           <div class="img-placeholder" id="imgPlaceholder">
@@ -646,35 +670,6 @@
               </svg>
             </button>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 03 PRODUCTION STEPS -->
-    <section>
-      <h2 class="section-title">
-        <span class="num">03</span>Production Steps
-        <span class="section-hint no-print">Press Enter to add a row</span>
-      </h2>
-      <table class="data">
-        <thead>
-          <tr>
-            <th style="width:32px">Step</th>
-            <th>Operation</th>
-            <th>Instructions</th>
-            <th style="width:28px" class="no-print"></th>
-          </tr>
-        </thead>
-        <tbody id="prodBody"></tbody>
-      </table>
-    </section>
-
-    <!-- 04 NOTES -->
-    <section>
-      <h2 class="section-title"><span class="num">04</span>Notes</h2>
-      <div class="notes-grid">
-        <div class="notes-col">
-          <textarea id="notes" placeholder="Additional notes, special instructions, floor reminders…"></textarea>
         </div>
       </div>
     </section>
