@@ -122,3 +122,24 @@ server audit. Both red headers and material completion marks were inspected in a
 PDF generated locally from the live page. See the [header release](header-fix.md)
 for hashes, rollback and the earlier candidate's read-only validation failure.
 Production Teams/PDF transport remains disabled and unverified.
+
+## Compact material rows and details Return follow-up
+
+The requested follow-up reduces single-line material rows from 34px to the same
+21px as Production Steps. The checkbox is 16px with compact cell spacing; details
+start at one line and still grow and shrink with content. Mobile Material text
+keeps its existing 12px size with compact line spacing. Enter in Material details
+now adds the next numbered row and focuses its Material field. Shift+Enter inserts
+a newline; Production instructions retain ordinary Enter newlines.
+
+Fresh local verification passed all **51 frontend scenarios**: 22 baseline,
+12 save/reset/Teams regressions, 11 material scenarios, and 6 header scenarios.
+A focused browser probe first reproduced the height and Enter defects, then
+passed 9 checks after repair. It measured matching 21px material/production rows
+at 1200px, 390px and 320px, verified focus/text preservation and multiline behavior,
+and confirmed long details shrink back to the compact height. No page errors or
+external browser requests occurred. Source/asset hashes, three inline JavaScript
+syntax checks, safe bootstrap embedding, and preview API rejection also passed.
+Rendered screen and print output were inspected. These checks used synthetic
+localhost data and do not establish production Teams/PDF delivery. Backend code
+is unchanged; its earlier unit/integration totals above are historical results.

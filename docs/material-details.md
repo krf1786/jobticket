@@ -10,8 +10,11 @@ for the Material dropdown and the rest for **Material details**. A compact
 Completed checkbox sits at the far right, after the delete control. The main
 job description bar, row number and reference image remain. This narrower split
 and completion control supersede the original equal-width layout.
-Details wrap and grow with their content; Enter adds a newline there, while
-Enter in the material dropdown still adds a row. Print uses plain-text mirrors
+Single-line rows match the height of Production Steps, with a smaller 16px
+completion checkbox. Details wrap and grow with their content. Enter in either
+Material or Material details adds the next numbered row and focuses its Material
+field; Shift+Enter in details inserts a newline. Production instructions retain
+their existing Enter-for-newline behavior. Print uses plain-text mirrors
 for both values so long content wraps without an input or textarea clipping it.
 User text is assigned with `textContent`, including literal HTML-like text.
 
@@ -62,7 +65,7 @@ not proof of production Teams delivery.
 
 `scripts/material-details-checks.js` executes the real template with synthetic
 state and mocked local API responses. The original six scenarios failed before the
-details field existed and passed after it was added. The current ten scenarios
+details field existed and passed after it was added. The current eleven scenarios
 also cover the narrower layout and completion controls, with no page errors or external
 requests. Coverage includes:
 
@@ -74,6 +77,8 @@ requests. Coverage includes:
 - 320px and 390px layouts, textarea growth, literal-text print wrapping, and a
   locally generated print PDF.
 - Scratch editing without API writes.
+- Compact row heights matching Production Steps at desktop, 390px and 320px;
+  completion toggling and growth/shrink after wrapping.
 
 With the loopback preview running, use a fresh Playwright CLI session:
 
@@ -84,7 +89,7 @@ playwright-cli -s=material-details --raw run-code \
 playwright-cli -s=material-details close
 ```
 
-The JSON result must report `passed: 10`, `failed: 0`, and empty `pageErrors`
+The JSON result must report `passed: 11`, `failed: 0`, and empty `pageErrors`
 and `externalRequests`. Check that result, not only the CLI exit code.
 Screenshots and PDF are synthetic, under ignored `output/playwright/`.
 

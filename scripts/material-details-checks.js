@@ -73,10 +73,13 @@ async (page) => {
   await run('Details serialize, restore, wrap and stay aligned when rows change', { materials: ['Clear acrylic'] }, async t => {
     const details = 'Cut to 12 × 24 in\nPolish the edges';
     await t.p.locator('.material-details').first().fill(details);
+    await t.p.locator('.material-details').first().press('Shift+Enter');
+    assert(await t.p.locator('#matBody tr').count() === 1 && (await t.p.locator('.material-details').first().inputValue()).endsWith('\n'), 'Shift+Enter did not retain multiline details');
+    const preservedDetails = await t.p.locator('.material-details').first().inputValue();
     await t.p.locator('.material-details').first().press('Enter');
-    assert(await t.p.locator('#matBody tr').count() === 1, 'Enter in details added a material row instead of a newline');
-    await t.p.locator('#matBody input[data-row-input="mat"]').first().press('Enter');
-    assert(await t.p.locator('#matBody tr').count() === 2, 'Enter in dropdown stopped adding rows');
+    assert(await t.p.locator('#matBody tr').count() === 2 && await t.p.locator('#matBody tr').last().locator('.row-num').textContent() === '2', 'Enter in details did not add the next numbered row');
+    assert(await t.p.locator('.material-details').first().inputValue() === preservedDetails, 'Enter changed the existing details');
+    assert(await t.p.locator('#matBody input[data-row-input="mat"]').nth(1).evaluate(n => n === document.activeElement), 'Enter did not focus the next Material field');
     await t.p.locator('#matBody input[data-row-input="mat"]').nth(1).fill('White acrylic');
     await t.p.locator('.material-details').nth(1).fill('3 mm, matte finish');
     await t.advance(800);
@@ -199,7 +202,7 @@ async (page) => {
         const box = r.querySelector('.material-completed').getBoundingClientRect(), detail = r.cells[2].getBoundingClientRect();
         return { overflow: document.documentElement.scrollWidth > innerWidth + 1, x: box.x, right: box.right, width: box.width, detailRight: detail.right, last: r.lastElementChild.contains(r.querySelector('.material-completed')) };
       });
-      assert(!layout.overflow && layout.last && layout.x >= layout.detailRight && layout.right <= width && layout.width >= 18, 'Completion control is not usable at the far right');
+      assert(!layout.overflow && layout.last && layout.x >= layout.detailRight && layout.right <= width && layout.width >= 16, 'Completion control is not usable at the far right');
     }
     await t.p.setViewportSize({ width: 1200, height: 1300 }); await t.advance(20);
     await t.p.screenshot({ path: 'output/playwright/completed-screen.png', fullPage: true });
@@ -210,6 +213,29 @@ async (page) => {
     await t.p.screenshot({ path: 'output/playwright/completed-print.png', fullPage: true });
     await t.p.pdf({ path: 'output/playwright/completed-print.pdf', printBackground: true, preferCSSPageSize: true });
   });
+
+  await run('Short material rows match production, including after completion and wrapping', {}, async t => {
+    await t.p.evaluate(() => document.fonts.ready);
+    const height = locator => locator.evaluate(n => n.getBoundingClientRect().height);
+    const materialRow = t.p.locator('#matBody tr').first();
+    const productionRow = t.p.locator('#prodBody tr').first();
+    for (const width of [1200, 390, 320]) {
+      await t.p.setViewportSize({ width, height: 1000 }); await t.advance(20);
+      for (const completed of [false, true]) {
+        await t.p.locator('.material-completed').first().setChecked(completed);
+        assert(Math.abs(await height(materialRow) - await height(productionRow)) <= 1, 'Short material row is taller than production at width ' + width);
+      }
+    }
+    await t.p.setViewportSize({ width: 1200, height: 1300 }); await t.advance(20);
+    await t.p.locator('.material-details').first().fill('Long wrapping details. '.repeat(30));
+    assert(await height(materialRow) > await height(productionRow), 'Long details no longer expand');
+    await t.p.locator('.material-details').first().fill('Short detail');
+    assert(Math.abs(await height(materialRow) - await height(productionRow)) <= 1, 'Short details did not shrink back to production height');
+    await t.p.locator('#prodBody textarea').fill('Cut');
+    await t.p.locator('#prodBody textarea').press('Enter');
+    assert(await t.p.locator('#prodBody tr').count() === 1 && await t.p.locator('#prodBody textarea').inputValue() === 'Cut\n', 'Production instructions lost Enter newlines');
+    await t.p.screenshot({ path: 'output/playwright/compact-materials.png', fullPage: true });
+  }, true);
 
   await run('Scratch completion is local and unsaved', {}, async t => {
     await t.p.getByRole('checkbox', { name: 'Completed 1', exact: true }).check(); await t.advance(1000);

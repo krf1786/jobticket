@@ -261,8 +261,8 @@
   .materials-data input,.materials-data textarea{min-width:0;}
   table.materials-data tbody td{vertical-align:top;}
   .material-name-heading{width:24%;}
-  table.materials-data .material-completion-cell{text-align:center;vertical-align:top;padding:5px 2px;}
-  table.materials-data input.material-completed{display:inline-block;width:18px;height:18px;min-height:18px;margin:1px 0;accent-color:#15803d;cursor:pointer;}
+  table.materials-data .material-completion-cell{text-align:center;vertical-align:top;padding:0 2px;}
+  table.materials-data input.material-completed{display:block;width:16px;height:16px;min-height:16px;padding:0;margin:2px auto;accent-color:#15803d;cursor:pointer;}
   table.materials-data tr.material-is-completed > td{background:#f0fdf4;}
   table.materials-data tr.material-is-completed input:not([type="checkbox"]),table.materials-data tr.material-is-completed textarea{background:transparent;}
   .material-completion-print{display:none;font-family:monospace;font-weight:700;white-space:nowrap;}
@@ -497,6 +497,7 @@
     table.data{table-layout:fixed;}
     table.data input,table.data textarea{min-width:0;}
     table.materials-data input,table.materials-data textarea{font-size:12px;}
+    table.materials-data input[data-row-input="mat"]{line-height:1.2;}
     .footer{padding:4px 12px;flex-wrap:wrap;gap:4px;}
   }
 </style>
@@ -598,7 +599,7 @@
     <section>
       <h2 class="section-title">
         <span class="num">02</span>Materials / Components
-        <span class="section-hint no-print">Press Enter to add a row · Start typing in Material for suggestions</span>
+        <span class="section-hint no-print">Enter: add row · Shift+Enter: new line</span>
       </h2>
       <div class="materials-layout">
         <div class="materials-table-wrap">
@@ -694,7 +695,7 @@
     return `
       <td class="row-num">${rowNum}</td>
       <td><input type="text" list="acrylicOptions" placeholder="Type or pick…" data-row-input="mat" autocomplete="off" aria-label="Material ${rowNum}"/><span class="material-print material-name-print" aria-hidden="true"></span></td>
-      <td class="material-details-cell"><textarea class="material-details" placeholder="Add details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
+      <td class="material-details-cell"><textarea class="material-details" rows="1" placeholder="Add details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
       <td class="no-print"><button class="row-delete" onclick="deleteMaterialRow(this)" title="Delete row">×</button></td>
       <td class="material-completion-cell"><input type="checkbox" class="material-completed" aria-label="Completed ${rowNum}"/><span class="material-completion-print" aria-hidden="true">[ ]</span></td>
     `;
@@ -800,9 +801,10 @@
     const tbody = document.getElementById(tbodyId);
     if(!tbody) return;
     tbody.addEventListener('keydown', function(e){
-      // Material details and production instructions keep Enter for newlines.
-      if(e.key === 'Enter'){
-        if(e.target.tagName === 'TEXTAREA') return;
+      // Details use Shift+Enter for newlines; production instructions keep Enter.
+      if(e.key === 'Enter' && !e.isComposing){
+        if(e.target.tagName === 'TEXTAREA' &&
+           (!e.target.classList.contains('material-details') || e.shiftKey)) return;
         e.preventDefault();
         addRowFn(true);
       }
