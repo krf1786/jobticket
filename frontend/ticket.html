@@ -429,7 +429,7 @@
     background:rgba(255,255,255,.08);
     border-radius:6px 6px 0 0;
   }
-  .job-no-input::placeholder{color:rgba(255,255,255,.35);font-style:italic;}
+  .job-no-input::placeholder{color:#ef4444;font-style:italic;opacity:1;}
   .job-no-line{
     display:flex;
     align-items:center;
@@ -1005,9 +1005,72 @@
     pill.textContent = text;
   }
 
+  /* Header behavior is shared by scratch and saved tickets. Saved state must
+     be restored before deriving a number from the job name. */
+  function initializeHeader() {
+    var noEl = $('jobNo');
+    var noRightEl = $('jobNoRight');
+    function normalizeJobNo(v){
+      v = (v || '').trim();
+      var m = v.match(/^\s*([A-Za-z]{1,4}\d{2,6})\b/);
+      if (m) return m[1].toUpperCase();
+      var s = v.replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64).toUpperCase();
+      return s;
+    }
+    if (noEl && noRightEl) {
+      noEl.value = B.jobId || '';
+      noEl.style.display = '';
+      noRightEl.textContent = B.jobId || '';
+      noRightEl.style.display = B.jobId ? '' : 'none';
+      noEl.addEventListener('input', function(){
+        var v = normalizeJobNo(noEl.value);
+        noRightEl.textContent = v;
+        noRightEl.style.display = v ? '' : 'none';
+      });
+      noEl.addEventListener('keydown', function(e){
+        if (e.key !== 'Enter' || !B.saving) return;
+        e.preventDefault();
+        var v = normalizeJobNo(noEl.value);
+        if (!v || v === B.jobId) return;
+        var name = ($('jobName') ? $('jobName').value.trim() : '');
+        var url = B.prefix + '/' + encodeURIComponent(v) + (name ? '?name=' + encodeURIComponent(name) : '');
+        window.location.href = url;
+      });
+    }
+    /* ---- autopull SB#### from the job-name line into both corners (2026-09-02) ---- */
+    var nameEl = $('jobName');
+    function extractJobNoFromText(t) {
+      t = t || '';
+      var m = t.match(/\b(SB)[-\s]?(\d{2,6})\b/i);
+      return m ? m[1].toUpperCase() + m[2] : '';
+    }
+    function pullJobNoFromName() {
+      if (!nameEl || !noEl || !noRightEl) return;
+      var v = extractJobNoFromText(nameEl.value);
+      if (!v) return;
+      noEl.value = v;
+      noRightEl.textContent = v;
+      noEl.style.display = '';
+      noRightEl.style.display = '';
+    }
+    if (nameEl) {
+      nameEl.addEventListener('input', pullJobNoFromName);
+      nameEl.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' || !B.saving) return;
+        var v = extractJobNoFromText(nameEl.value);
+        if (!v || v === B.jobId) return;
+        e.preventDefault();
+        var url = B.prefix + '/' + encodeURIComponent(v) + '?name=' + encodeURIComponent(nameEl.value.trim());
+        window.location.href = url;
+      });
+      pullJobNoFromName();
+    }
+  }
+
   if (!B.saving) {
+    initializeHeader();
     status('Scratch ticket · not saved', 'idle');
-    return;                       /* blank ticket keeps the old behaviour exactly */
+    return;                       /* scratch header works; persistence stays disabled */
   }
 
   /* ---- read the form ---- */
@@ -1241,67 +1304,8 @@
      confirmed resets. Cancellation must not touch image state or autosave. */
 
   /* ---- boot ---- */
-  var noEl = $('jobNo');
-  var noRightEl = $('jobNoRight');
-  function normalizeJobNo(v){
-    v = (v || '').trim();
-    var m = v.match(/^\s*([A-Za-z]{1,4}\d{2,6})\b/);
-    if (m) return m[1].toUpperCase();
-    var s = v.replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64).toUpperCase();
-    return s;
-  }
-  if (noEl && noRightEl) {
-    if (B.jobId) {
-      noEl.value = B.jobId;
-      noRightEl.textContent = B.jobId;
-      noEl.addEventListener('input', function(){
-        var v = normalizeJobNo(noEl.value);
-        noRightEl.textContent = v;
-        noRightEl.style.display = v ? '' : 'none';
-      });
-      noEl.addEventListener('keydown', function(e){
-        if (e.key !== 'Enter') return;
-        e.preventDefault();
-        var v = normalizeJobNo(noEl.value);
-        if (!v || v === B.jobId) return;
-        var name = ($('jobName') ? $('jobName').value.trim() : '');
-        var url = B.prefix + '/' + encodeURIComponent(v) + (name ? '?name=' + encodeURIComponent(name) : '');
-        window.location.href = url;
-      });
-    } else {
-      noEl.style.display = 'none';
-      noRightEl.style.display = 'none';
-    }
-  }
-  /* ---- autopull SB#### from the job-name line into both corners (2026-09-02) ---- */
-  var nameEl = $('jobName');
-  function extractJobNoFromText(t) {
-    t = t || '';
-    var m = t.match(/\b(SB)[-\s]?(\d{2,6})\b/i);
-    return m ? m[1].toUpperCase() + m[2] : '';
-  }
-  function pullJobNoFromName() {
-    if (!nameEl || !noEl || !noRightEl) return;
-    var v = extractJobNoFromText(nameEl.value);
-    if (!v || (noEl.value || '').trim().toUpperCase() === v) return;
-    noEl.value = v;
-    noRightEl.textContent = v;
-    noEl.style.display = '';
-    noRightEl.style.display = '';
-  }
-  if (nameEl) {
-    nameEl.addEventListener('input', pullJobNoFromName);
-    nameEl.addEventListener('keydown', function (e) {
-      if (e.key !== 'Enter') return;
-      var v = extractJobNoFromText(nameEl.value);
-      if (!v || v === B.jobId) return;
-      e.preventDefault();
-      var url = B.prefix + '/' + encodeURIComponent(v) + '?name=' + encodeURIComponent(nameEl.value.trim());
-      window.location.href = url;
-    });
-    pullJobNoFromName();
-  }
   restore(B.state);
+  initializeHeader();
   setTimeout(function () {
     booting = false;
     dirty = false;

@@ -106,3 +106,9 @@ results from mocked frontend tests and intercepted local Graph transport. The
 frontend was subsequently published under separate approval; 19 live browser
 checks passed. [Frontend release evidence](frontend-release.md) records the
 template hash, safe test scope and print verification. Teams remains disabled.
+
+## Header follow-up
+
+The [header repair](header-fix.md) adds six focused scenarios to cover scratch
+job-name extraction, both red numbers, direct editing, saved-name reload, saved
+Enter navigation and print. These extend the frontend suite to 50 scenarios.

@@ -67,10 +67,11 @@ The [backend release record](backend-release.md) separates the narrowly authoriz
 backend deployment/live synthetic persistence checks from local integration tests
 and the subsequent separately approved [frontend release](frontend-release.md). It does not claim full Teams synchronization.
 
-In scratch mode the save layer returns early, so saved-mode
-number initialization and navigation handlers do not run. Saved-mode API
-calls remain tied to bootstrap `jobId` until navigation, even while the number
-field is edited. Those behaviors are carried forward unchanged.
+The captured scratch-mode save layer returned before number initialization,
+leaving job-name extraction inactive there. The subsequent [header repair](header-fix.md)
+initializes the display in both modes and runs saved-name extraction after restore.
+Scratch persistence remains disabled. Saved-mode API calls remain tied to bootstrap
+`jobId` until navigation, even while the number field is edited.
 
 ## Repository and deployment inspection
 
