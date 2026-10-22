@@ -147,3 +147,19 @@ is unchanged; its earlier unit/integration totals above are historical results.
 The [template-only publication](material-row-release.md) subsequently passed
 24 live checks. The owned synthetic ticket was restored exactly, and all 13
 other ticket rows were unchanged at the final audit. PR #1 remains unmerged.
+
+## Today's date default follow-up
+
+Blank Date fields default to the browser's local calendar day, including after
+confirmed Reset. Saved dates remain authoritative on load/reload, and cancelled
+Reset preserves the existing date. The initializer does not save on its own;
+the next normal edit includes the default date in the existing save workflow.
+
+The new `scripts/date-checks.js` suite passed six synthetic browser scenarios,
+including New York and Tokyo near UTC midnight, blank saved defaults and their
+next-edit persistence, historical saved dates, cancelled/confirmed Reset, and
+Reset after local midnight. Four date regressions failed before repair. All
+**57 frontend scenarios** passed after repair, with no browser errors or external
+requests. Source hashes, inline JavaScript syntax, safe bootstrap embedding and
+preview API rejection also passed. Backend code and production Teams/PDF
+configuration are unchanged.

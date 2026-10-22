@@ -832,12 +832,20 @@
     setupNotesAutoResize();
   })();
 
+  // ---------- Default to today's local calendar date ----------
+  function autofillTicketDate(){
+    const field = document.getElementById('dateField');
+    if(field && !field.value){
+      const now = new Date();
+      field.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    }
+  }
+
   // ---------- Static fallback date ----------
   (function(){
     try {
       const now = new Date();
-      const dateField = document.getElementById('dateField');
-      if(dateField && !dateField.value) dateField.value = now.toISOString().slice(0,10);
+      autofillTicketDate();
       const timeField = document.getElementById('timeField');
       if(timeField && !timeField.value) timeField.value = now.toTimeString().slice(0,5);
       const pd = document.getElementById('printDate');
@@ -933,6 +941,7 @@
     if(!confirm('Clear all fields and start fresh?')) return;
     const ids = ['jobName','dateField','timeField','qtyField','dueField','notes'];
     ids.forEach(id=>{ const el = document.getElementById(id); if(el) el.value=''; });
+    autofillTicketDate();
     removeImage();
 
     document.getElementById('matBody').innerHTML = '';
