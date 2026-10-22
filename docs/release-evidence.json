@@ -1,0 +1,71 @@
+{
+  "code_commit": "9d93b5976f0d7c8928fbb4014fd363a7039604b1",
+  "backend_deployment": {
+    "started_at_utc": "2026-10-22T00:11:55Z",
+    "status": "deployed_healthy",
+    "changed_runtime_file": "app.py",
+    "app_sha256": "b1a2ff788e6166ab06a69cdc4c3b55f936f17fab6f09b2e2a40e95672fae516e",
+    "unchanged_runtime_sha256": {
+      "graph.py": "de9ba0b3aedefc630ae071f68264ef99270a42be897b3969322c6740ca6f4f09",
+      "pdf.py": "db0bfff5a133c0e0eda8a6cf8cdc15e0ad310bf5d5baa59c94c0d68b6da89885",
+      "ticket.html": "bf0ad0ab27a84ce2d6b69f805e950f49d47f262b14d0808ec19b3d429cc11af1"
+    },
+    "service_restart_verified": true,
+    "service_healthy": true,
+    "existing_ticket_rows_unchanged": true,
+    "database_backup_integrity": "ok",
+    "backup_directory": "/root/jobticket/release-backups/backend-20261022T001155Z",
+    "rollback_rehearsed_locally": true,
+    "live_rollback_executed": false
+  },
+  "live_synthetic_test": {
+    "job_id": "VERIFY-MATERIALS-20261021",
+    "completed_at_utc": "2026-10-22T00:13:12.100233+00:00",
+    "status": "passed",
+    "passed": 14,
+    "checks": [
+      "Public API confirms designated test job absent immediately before creation",
+      "INSERT-only reservation created only the synthetic fixture",
+      "Live PUT and reload preserve material details and completion",
+      "Live saved-page bootstrap restores the persisted additive fields",
+      "Legacy payload omission preserves both fields",
+      "Details-only frontend preserves omitted completion",
+      "Legacy row change rejects with 409 and makes no write",
+      "Updated payload deliberately clears details and unchecks completion",
+      "Updated row deletion retains aligned details and completion",
+      "Updated reset payload clears row fields explicitly",
+      "Synthetic ticket left clearly labeled with verified sample fields",
+      "All pre-existing ticket rows remain byte-for-byte identical",
+      "Live frontend, Graph and PDF sources remain unchanged",
+      "Synthetic ticket was not pushed; Teams and renderer remain disabled"
+    ],
+    "existing_ticket_rows_unchanged": true,
+    "teams_transport_calls": 0
+  },
+  "local_verification": {
+    "frontend_checks": 44,
+    "backend_unit_tests": 17,
+    "backend_integration_checks": 40,
+    "graph_transport": "intercepted",
+    "long_detail_pdf_pages": 4,
+    "long_detail_pdf_lines_verified": 180,
+    "screen_and_print_screenshots_reviewed": true
+  },
+  "release_boundary": {
+    "frontend_deployed": false,
+    "frontend_candidate_sha256": "395547481472968e3925a065bc191e09f276df3f298efe9f1c2fd91427231481",
+    "pr_merged": false,
+    "teams_enabled": false,
+    "production_pdf_renderer_available": false,
+    "production_teams_delivery_verified": false
+  },
+  "excluded": [
+    "private job payloads",
+    "raw database contents and hashes derived from them",
+    "credentials",
+    "environment configuration",
+    "uploads",
+    "process identifiers",
+    "test fixture payloads"
+  ]
+}

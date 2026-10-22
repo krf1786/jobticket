@@ -99,3 +99,8 @@ Backend coverage is 17 unit regression methods and 40 isolated integration
 assertions with real HTTP/SQLite/browser/PDF paths. External Graph transport is
 intercepted. Four-page output retains all 180 long-detail lines; a separate PDF
 assertion verifies checked and unchecked marks independently of row color.
+
+The approved backend-only deployment and 14 live synthetic persistence checks
+subsequently succeeded. [The release record](backend-release.md) separates those
+results from mocked frontend tests and intercepted local Graph transport. The
+frontend itself remains unpublished and Teams remains disabled.
