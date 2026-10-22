@@ -50,3 +50,19 @@ image-below-Notes template. It does not restore the database or restart the
 service. Recheck scratch and saved rendering after rollback. PR #2 is updated
 and remains unmerged. Production PDF/Teams delivery remains disabled and
 unverified. See [sanitized evidence](release-evidence.json).
+
+## Image label removal
+
+The requested `Ref Image` overlay and its unused CSS were removed in
+`88668569ed30b80f1c6f551f353c32295c40ceea` and published by guarded atomic
+template replacement at 2026-10-22 23:56:36 UTC. Current template SHA-256:
+
+`97724720c29af92ad17de6ea2bb5b33f7358bc6eea721b93a66c608af752dee8`
+
+Source/syntax/preview safety checks and targeted local/live browser checks passed.
+The label is absent on screen and in print; the image and its controls remain.
+All JavaScript is unchanged. No API writes or browser errors occurred, and all
+ticket rows were unchanged during publication. Backend and service process are
+unchanged. The previous template, consistent SQLite backup and guarded
+`rollback.py` are in `/root/jobticket/release-backups/image-label-20261022T235636Z/`.
+Rollback was not invoked. PR #2 remains unmerged.

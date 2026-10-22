@@ -58,8 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "da5de083514982975c8bd8572749f83f710ee605345ae649f3bc59a7e172936e",
-    "current_frontend_code_commit": "5cbf34497197daa5785fd74a6fcc8637ecf2bfcb"
+    "frontend_sha256": "97724720c29af92ad17de6ea2bb5b33f7358bc6eea721b93a66c608af752dee8",
+    "current_frontend_code_commit": "88668569ed30b80f1c6f551f353c32295c40ceea"
   },
   "excluded": [
     "private job payloads",
@@ -352,5 +352,24 @@
     "blocked_requests": [],
     "teams_transport_calls": 0,
     "print_validation": "Local Chromium Letter PDFs inspected: short ticket one page; 45 material rows two pages with every detail retained and reference image intact on page one. Production PDF/Teams unchanged."
+  },
+  "image_label_deployment": {
+    "source_commit": "88668569ed30b80f1c6f551f353c32295c40ceea",
+    "started_at_utc": "2026-10-22T23:56:36.770259+00:00",
+    "status": "live_verified",
+    "before_template_sha256": "da5de083514982975c8bd8572749f83f710ee605345ae649f3bc59a7e172936e",
+    "after_template_sha256": "97724720c29af92ad17de6ea2bb5b33f7358bc6eea721b93a66c608af752dee8",
+    "backup_directory": "/root/jobticket/release-backups/image-label-20261022T235636Z",
+    "database_backup_integrity": "ok",
+    "all_ticket_rows_unchanged_during_publication": true,
+    "backend_unchanged": true,
+    "service_restarted": false,
+    "targeted_local_browser_check": "passed",
+    "targeted_live_browser_check": "passed",
+    "screen_and_print_overlay_absent": true,
+    "image_and_controls_preserved": true,
+    "api_writes": 0,
+    "page_errors": [],
+    "blocked_requests": []
   }
 }
