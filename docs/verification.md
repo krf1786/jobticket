@@ -187,3 +187,21 @@ page. These local print checks do not establish production PDF/Teams delivery.
 
 The [reference-image publication](reference-image-release.md) passed 15 live
 checks with zero API writes; all 16 saved ticket rows were unchanged.
+
+## Annotated overview layout follow-up
+
+The user's marked-up layout supersedes the image-below-Notes placement. Date,
+Qty, Due Date and Time sit above Materials in a left column; the image fills a
+right column below the full-width Job Information heading. Production Steps
+and Notes remain full width underneath. The overview stacks at 760px; native
+date/time fields keep a usable width. Images use contain sizing without intrinsic
+image dimensions inflating the grid. Print caps image height at 240px.
+
+All **57 frontend scenarios** and **45 focused layout/image checks** passed, with
+no JavaScript errors or external requests. The focused probe covered ten widths
+from 1200px through 320px, field order, compact material rows, portrait/landscape
+images and saved-image edit/reload. Source hashes, syntax, bootstrap and preview
+safety checks passed. All JavaScript blocks remain byte-identical to the previous
+release. Desktop/mobile screenshots were compared with the supplied layout.
+A synthetic five-row ticket fits one Letter page. A 45-material-row fixture uses
+two pages, retains all details, and keeps the reference image intact on page one.

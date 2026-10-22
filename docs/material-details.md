@@ -18,11 +18,13 @@ their existing Enter-for-newline behavior. Print uses plain-text mirrors
 for both values so long content wraps without an input or textarea clipping it.
 User text is assigned with `textContent`, including literal HTML-like text.
 
-The reference-image box spans the full ticket width below Notes: 320px tall on
-desktop and 240px below 600px. Images retain their proportions without cropping.
-Materials now use the full available width. Below 600px, job information uses two
-columns and the page fits the viewport; the material columns remain side by side.
-Print retains the Letter page and keeps the reference-image box together.
+The annotated overview places Date, Qty, Due Date and Time in one row above
+Materials on the left, with the reference image alongside on the right. The image
+starts at 240px tall and stretches with the left column on screen, preserving its
+proportions without cropping. Production Steps and Notes remain full width below.
+At 760px and below, the image stacks below fields/Materials; the fields use two
+columns at 600px and below. Print retains the Letter layout and caps the image
+at 240px so long material lists cannot stretch it across pages.
 
 ## State and compatibility
 
