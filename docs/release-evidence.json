@@ -58,7 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "326bbf9fd6a495ad842e761411842471c2bda31ee10cea358df8014a9e1511f2"
+    "frontend_sha256": "618aa4ea8709aaa286ab6be690148cc069cc17f90bdb77a08f8eb5df64004958",
+    "current_frontend_code_commit": "1181e42a2c9317504bb5aa7c517186c0e0521b30"
   },
   "excluded": [
     "private job payloads",
@@ -169,5 +170,57 @@
       "ticket_writes": 0,
       "redeployed": false
     }
+  },
+  "material_row_deployment": {
+    "source_commit": "1181e42a2c9317504bb5aa7c517186c0e0521b30",
+    "started_at_utc": "2026-10-22T14:57:40.097982+00:00",
+    "verified_at_utc": "2026-10-22T15:00:11.388035+00:00",
+    "status": "live_verified",
+    "changed_runtime_file": "ticket.html",
+    "before_template_sha256": "326bbf9fd6a495ad842e761411842471c2bda31ee10cea358df8014a9e1511f2",
+    "after_template_sha256": "618aa4ea8709aaa286ab6be690148cc069cc17f90bdb77a08f8eb5df64004958",
+    "backup_directory": "/root/jobticket/release-backups/material-rows-20261022T145740Z",
+    "database_backup_integrity": "ok",
+    "public_scratch_and_saved_hash_verified": true,
+    "backend_unchanged": true,
+    "service_restarted": false,
+    "live_rollback_executed": false,
+    "all_14_ticket_rows_unchanged_at_deployment": true,
+    "all_13_other_ticket_rows_unchanged_after_verification": true,
+    "local_frontend_scenarios": 51,
+    "local_focused_browser_checks": 9,
+    "live_browser_checks": 24,
+    "synthetic_api_writes": 3,
+    "synthetic_state_restored_exactly": true,
+    "checks": [
+      "1200px material rows match production when completed=False",
+      "1200px material rows match production when completed=True",
+      "390px material rows match production when completed=False",
+      "390px material rows match production when completed=True",
+      "320px material rows match production when completed=False",
+      "320px material rows match production when completed=True",
+      "Live completion checkbox uses compact 16px height",
+      "Details Return creates the next numbered row",
+      "Details Return preserves text and focuses next Material field",
+      "Material Return still creates the next numbered row",
+      "Details Shift+Return inserts a newline without a row",
+      "Long live details grow to fit",
+      "Short details shrink back to production row height",
+      "Production instructions retain Return newlines",
+      "Completed live rows retain light green highlight",
+      "Unchecked live rows return to normal",
+      "Scratch checks sent no API writes",
+      "Saved ticket retains actual identity in both red headers",
+      "Saved details Return adds exactly one row and autosaves aligned fields",
+      "Saved new row details and completion survive reload",
+      "Saved Shift+Return persists newline without adding another row",
+      "Live print retains full details and explicit completion mark",
+      "No live JavaScript errors or unapproved requests",
+      "Teams remains disabled"
+    ],
+    "page_errors": [],
+    "blocked_requests": [],
+    "teams_transport_calls": 0,
+    "verification_boundary": "Current frontend/browser and source checks only. Earlier backend unit/integration totals are historical. Production Teams/PDF delivery remains disabled and unverified."
   }
 }

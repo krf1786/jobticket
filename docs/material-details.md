@@ -98,3 +98,6 @@ and four completion cases) against the prior template, with four compatibility
 controls passing. After implementation all ten pass. Coverage includes toggle,
 whole-row highlight, serialization/reload, row addition/deletion, cancel/confirm
 Reset, old-ticket defaults, 320px/390px alignment, scratch mode and print marks.
+
+The [compact-row and Return follow-up](material-row-release.md) records the latest
+verified live template, test scope and guarded rollback.

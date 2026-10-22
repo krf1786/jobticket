@@ -143,3 +143,7 @@ syntax checks, safe bootstrap embedding, and preview API rejection also passed.
 Rendered screen and print output were inspected. These checks used synthetic
 localhost data and do not establish production Teams/PDF delivery. Backend code
 is unchanged; its earlier unit/integration totals above are historical results.
+
+The [template-only publication](material-row-release.md) subsequently passed
+24 live checks. The owned synthetic ticket was restored exactly, and all 13
+other ticket rows were unchanged at the final audit. PR #1 remains unmerged.

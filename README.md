@@ -22,6 +22,10 @@ Microsoft credentials and ticket payloads are excluded. The approved frontend wa
 unmerged. See the [frontend release record](docs/frontend-release.md). See [backend repairs](docs/backend-fixes.md) for
 behavior, test evidence and the deployment boundary.
 
+The latest [compact-row and Return-key follow-up](docs/material-row-release.md)
+matches material row height to Production Steps and adds the next numbered row
+when Enter is pressed in Material details (Shift+Enter inserts a newline).
+
 ## Local preview
 
 Requires Python 3 (standard library only):
