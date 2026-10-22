@@ -28,7 +28,7 @@ when Enter is pressed in Material details (Shift+Enter inserts a newline).
 
 [Date defaults to today's local date](docs/date-autofill-release.md), including after Reset; saved dates are preserved.
 
-The reference-image box sits to the right of the job fields and Materials, with
+The [reference-image box](docs/reference-sidebar-release.md) sits to the right of the job fields and Materials, with
 Production Steps and Notes full width underneath. The overview stacks on smaller
 screens, and images retain their full proportions.
 

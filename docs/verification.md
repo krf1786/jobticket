@@ -205,3 +205,6 @@ safety checks passed. All JavaScript blocks remain byte-identical to the previou
 release. Desktop/mobile screenshots were compared with the supplied layout.
 A synthetic five-row ticket fits one Letter page. A 45-material-row fixture uses
 two pages, retains all details, and keeps the reference image intact on page one.
+
+The [annotated sidebar publication](reference-sidebar-release.md) passed 30 live
+checks with zero API writes. All 16 ticket rows remained unchanged.
