@@ -58,8 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "c691d89d053c79b26284b36914061e917764a8c81acc04a4844ba1da1c1dd304",
-    "current_frontend_code_commit": "fabb5a13f5116d444786f5f9d590d0cd8f953530"
+    "frontend_sha256": "a572d7740587098dbe4850f59adc1c24d0fc65f0ead1fc3a05d6c7b69f019f97",
+    "current_frontend_code_commit": "25f7c47c919e3feaf8e4744c6ac78651511076f8"
   },
   "excluded": [
     "private job payloads",
@@ -454,6 +454,27 @@
     "public_scratch_and_saved_hash_verified": true,
     "javascript_unchanged": true,
     "local_frontend_scenarios": 57,
+    "local_toolbar_checks": 9,
+    "live_scratch_checks": 9,
+    "api_writes": 0,
+    "page_errors": [],
+    "blocked_requests": []
+  },
+  "check_due_button_removal_deployment": {
+    "source_commit": "25f7c47c919e3feaf8e4744c6ac78651511076f8",
+    "started_at_utc": "2026-10-23T02:57:11.107512+00:00",
+    "verified_at_utc": "2026-10-23T02:57:30.956364+00:00",
+    "status": "live_verified",
+    "before_template_sha256": "c691d89d053c79b26284b36914061e917764a8c81acc04a4844ba1da1c1dd304",
+    "after_template_sha256": "a572d7740587098dbe4850f59adc1c24d0fc65f0ead1fc3a05d6c7b69f019f97",
+    "backup_directory": "/root/jobticket/release-backups/check-due-button-20261023T025711Z",
+    "database_backup_integrity": "ok",
+    "all_16_ticket_rows_unchanged": true,
+    "backend_unchanged": true,
+    "service_restarted": false,
+    "rollback_executed": false,
+    "public_scratch_and_saved_hash_verified": true,
+    "javascript_unchanged": true,
     "local_toolbar_checks": 9,
     "live_scratch_checks": 9,
     "api_writes": 0,

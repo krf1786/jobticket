@@ -115,3 +115,22 @@ not invoked: `python3 /root/jobticket/release-backups/reset-button-20261023T0208
 It refuses to overwrite a newer template and restores only the previous template,
 without restoring data or restarting the service. Production PDF/Teams delivery
 remains disabled and unverified.
+
+## Check Due button removal
+
+Only the Check Due toolbar button was removed in
+`25f7c47c919e3feaf8e4744c6ac78651511076f8`. Print remains; all JavaScript and
+the Due Date field's change handler remain unchanged. Source hashes, syntax,
+bootstrap and preview safety checks passed. Nine local and nine live toolbar
+checks passed at 1200/390/320px, including Print activation and print visibility,
+with no API writes or browser errors. Toolbar screenshots were inspected.
+
+Published atomically at **2026-10-23 02:57:11 UTC** (October 22 locally), SHA-256
+`a572d7740587098dbe4850f59adc1c24d0fc65f0ead1fc3a05d6c7b69f019f97`.
+All 16 ticket rows were unchanged at the final audit. Backend and service
+process are unchanged. PR #2 remains unmerged; production PDF/Teams delivery
+remains disabled and unverified. Backup and guarded rollback are in
+`/root/jobticket/release-backups/check-due-button-20261023T025711Z/`. To roll back,
+run its `rollback.py`; it refuses to overwrite a newer template and restores
+only the previous template, without data restore or service restart. Rollback
+was not invoked.
