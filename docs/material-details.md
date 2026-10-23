@@ -5,7 +5,7 @@ the save/reset/Teams fixes (`6ef71bb`). It is not part of the captured live base
 and was published with completion controls on October 22, 2026. See the
 [frontend release record](frontend-release.md) for the exact source/hash and live checks.
 
-Each row in Materials / Components now uses about 28% of its editable width
+Each row in Materials / Components now uses a 176px desktop column (about 42% of its editable width)
 for the Material dropdown and the rest for **Material details**. A compact
 Completed checkbox sits at the far right, after the delete control. The main
 job description bar and reference image remain. Materials have no visible

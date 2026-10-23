@@ -67,7 +67,7 @@ async (page) => {
     assert(await t.p.getByRole('columnheader', { name: '#', exact: true }).count() === 0 && await t.p.locator('#matBody .row-num').count() === 0, 'Materials numbering column must be absent');
     assert(await t.p.locator('#prodBody .row-num').first().textContent() === '1', 'Production step numbering must remain');
     const widths = await t.p.locator('#matBody tr').first().evaluate(row => [row.querySelector('[data-row-input="mat"]').closest('td'), row.querySelector('.material-details-cell')].map(cell => cell.getBoundingClientRect().width));
-    assert(widths[0] / (widths[0] + widths[1]) >= .25 && widths[0] / (widths[0] + widths[1]) <= .31, 'Material column should use about 28 percent of editable width');
+    assert(widths[0] / (widths[0] + widths[1]) >= .40 && widths[0] / (widths[0] + widths[1]) <= .44, 'Material column should use about 42 percent of editable width');
     await t.advance(1000);
     assert(t.saves.length === 0, 'Restoring legacy data unexpectedly saved');
   });
@@ -133,7 +133,7 @@ async (page) => {
         return { overflow: document.documentElement.scrollWidth > window.innerWidth + 1, columns: [row.querySelector('[data-row-input="mat"]').closest('td'), row.querySelector('.material-details-cell')].map(c => { const r = c.getBoundingClientRect(); return { x: r.x, right: r.right, width: r.width }; }), clipped: detail.scrollHeight > detail.clientHeight + 2 };
       });
       assert(!layout.overflow && layout.columns[1].right <= width, 'Material row overflows the narrow viewport');
-      assert(layout.columns[0].width < layout.columns[1].width * .5 && layout.columns[0].right <= layout.columns[1].x + 1, 'Narrow material columns overlap or lose the narrower material split');
+      assert(layout.columns[0].width < layout.columns[1].width * 1.1 && layout.columns[0].right <= layout.columns[1].x + 1, 'Narrow material columns overlap or details lose their usable width');
       assert(!layout.clipped, 'Wrapped material details are clipped on screen');
     }
     await t.p.screenshot({ path: 'output/playwright/materials-mobile.png', fullPage: true });
@@ -148,7 +148,7 @@ async (page) => {
     assert(await t.p.locator('.material-details').first().isHidden(), 'Print still uses a clipping textarea');
     assert(await t.p.locator('.material-name-print').textContent() === 'Long material description for print', 'Print lost the material name');
     const printLayout = await printed.evaluate(node => ({ clipped: node.scrollWidth > node.clientWidth + 1, widths: [node.closest('tr').querySelector('[data-row-input="mat"]').closest('td'), node.closest('tr').querySelector('.material-details-cell')].map(cell => cell.getBoundingClientRect().width) }));
-    assert(!printLayout.clipped && printLayout.widths[0] < printLayout.widths[1] * .5, 'Print text overflows or material column is not narrower');
+    assert(!printLayout.clipped && printLayout.widths[0] < printLayout.widths[1] * .7, 'Print text overflows or material column is not narrower');
     await t.p.screenshot({ path: 'output/playwright/materials-print.png', fullPage: true });
     await t.p.pdf({ path: 'output/playwright/materials-print.pdf', printBackground: true, preferCSSPageSize: true });
     await t.p.emulateMedia({ media: 'screen' });
