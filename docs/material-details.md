@@ -8,11 +8,12 @@ and was published with completion controls on October 22, 2026. See the
 Each row in Materials / Components now uses about 28% of its editable width
 for the Material dropdown and the rest for **Material details**. A compact
 Completed checkbox sits at the far right, after the delete control. The main
-job description bar, row number and reference image remain. This narrower split
+job description bar and reference image remain. Materials have no visible
+number column; Production Steps retain their numbering. This narrower split
 and completion control supersede the original equal-width layout.
 Single-line rows match the height of Production Steps, with a smaller 16px
 completion checkbox. Details wrap and grow with their content. Enter in either
-Material or Material details adds the next numbered row and focuses its Material
+Material or Material details adds the next row and focuses its Material
 field; Shift+Enter in details inserts a newline. Production instructions retain
 their existing Enter-for-newline behavior. Print uses plain-text mirrors
 for both values so long content wraps without an input or textarea clipping it.

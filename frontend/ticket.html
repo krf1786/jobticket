@@ -670,7 +670,6 @@
           <table class="data materials-data">
             <thead>
               <tr>
-                <th style="width:32px">#</th>
                 <th class="material-name-heading">Material</th>
                 <th>Material details</th>
                 <th style="width:28px" class="no-print"></th>
@@ -773,7 +772,6 @@
   // ---------- Material rows ----------
   function createMaterialRowHTML(rowNum){
     return `
-      <td class="row-num">${rowNum}</td>
       <td><input type="text" list="acrylicOptions" placeholder="Type or pick…" data-row-input="mat" autocomplete="off" aria-label="Material ${rowNum}"/><span class="material-print material-name-print" aria-hidden="true"></span></td>
       <td class="material-details-cell"><textarea class="material-details" rows="1" placeholder="Add details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
       <td class="no-print"><button class="row-delete" onclick="deleteMaterialRow(this)" title="Delete row">×</button></td>
@@ -827,8 +825,6 @@
   function renumberMaterialRows(){
     const rows = document.querySelectorAll('#matBody tr');
     rows.forEach((row, idx) => {
-      const numCell = row.querySelector('.row-num');
-      if(numCell) numCell.textContent = idx + 1;
       row.querySelector('input').setAttribute('aria-label', 'Material ' + (idx + 1));
       row.querySelector('.material-details').setAttribute('aria-label', 'Material details ' + (idx + 1));
       row.querySelector('.material-completed').setAttribute('aria-label', 'Completed ' + (idx + 1));
