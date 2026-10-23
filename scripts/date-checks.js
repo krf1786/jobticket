@@ -1,3 +1,4 @@
+// Reset has no UI button; legacy reset helper checks invoke it directly.
 // Local preview only. Real Date/input/reset/save behavior with synthetic state.
 async (page) => {
   const origin = 'http://127.0.0.1:18765';
@@ -60,17 +61,17 @@ async (page) => {
   });
   await run('Cancelled Reset keeps date; confirmed Reset saves today', 'America/New_York', '2026-10-22T16:00:00Z', true, '2026-08-12', async t => {
     await t.p.evaluate(() => { window.confirm = () => false; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).click(); await t.advance(1000);
+    await t.p.evaluate(() => resetTicket()); await t.advance(1000);
     assert(await t.currentDate() === '2026-08-12' && t.saves.length === 0, 'Cancelled Reset changed date');
     await t.p.evaluate(() => { window.confirm = () => true; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).click(); await t.advance(1000);
+    await t.p.evaluate(() => resetTicket()); await t.advance(1000);
     assert(await t.currentDate() === '2026-10-22' && t.stored().date === '2026-10-22', 'Confirmed Reset left today blank or unsaved');
   });
   await run('Reset after local midnight recomputes the new day', 'America/New_York', '2026-10-22T03:59:30Z', false, '', async t => {
     await t.p.locator('#dateField').fill('2026-10-21');
     await t.advance(60000);
     await t.p.evaluate(() => { window.confirm = () => true; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).click();
+    await t.p.evaluate(() => resetTicket());
     assert(await t.currentDate() === '2026-10-22', 'Reset did not recompute today after midnight');
   });
   return { passed: results.filter(r => r.passed).length, failed: results.filter(r => !r.passed).length, results, pageErrors, externalRequests };

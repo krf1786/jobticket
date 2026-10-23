@@ -1,3 +1,4 @@
+// Reset has no UI button; legacy reset helper checks invoke it directly.
 // Run with Playwright CLI run-code --filename=scripts/material-details-checks.js.
 // Fresh session; preview.py --port 18765. Real UI, synthetic local HTTP only.
 async (page) => {
@@ -100,11 +101,11 @@ async (page) => {
 
   await run('Reset cancellation preserves details; confirmed Reset clears them', { materials: ['Clear acrylic'], materialDetails: ['Keep this detail'] }, async t => {
     await t.p.evaluate(() => { window.confirm = () => false; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).evaluate(b => b.click());
+    await t.p.evaluate(() => resetTicket());
     await t.advance(1000);
     assert(t.saves.length === 0 && await t.p.locator('.material-details').inputValue() === 'Keep this detail', 'Cancelled Reset changed details or saved');
     await t.p.evaluate(() => { window.confirm = () => true; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).evaluate(b => b.click());
+    await t.p.evaluate(() => resetTicket());
     await t.advance(800);
     await t.eventually(() => t.saves.length === 1, 'Confirmed Reset did not save');
     assert(JSON.stringify(t.stored().materialDetails) === '[""]' && JSON.stringify(t.stored().materials) === '[""]', 'Confirmed Reset retained material values');
@@ -189,10 +190,10 @@ async (page) => {
 
   await run('Reset cancellation keeps completion and confirmed reset clears it', { materials: ['Acrylic'], materialCompleted: [true] }, async t => {
     await t.p.evaluate(() => { window.confirm = () => false; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).click(); await t.advance(1000);
+    await t.p.evaluate(() => resetTicket()); await t.advance(1000);
     assert(t.saves.length === 0 && await t.p.getByRole('checkbox', { name: 'Completed 1', exact: true }).isChecked(), 'Cancelled reset changed completion');
     await t.p.evaluate(() => { window.confirm = () => true; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).click(); await t.advance(800);
+    await t.p.evaluate(() => resetTicket()); await t.advance(800);
     await t.eventually(() => t.saves.length > 0, 'Reset did not save');
     assert(JSON.stringify(t.stored().materialCompleted) === '[false]', 'Reset did not clear completion');
   });
