@@ -332,6 +332,18 @@
     background:#fff;
     cursor:default;
   }
+  .img-open{
+    display:none;
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    background:transparent;
+    cursor:zoom-in;
+  }
+  .img-box.has-image .img-open{display:block;}
+  .img-open:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;}
   .img-box img{
     position:absolute;
     inset:0;
@@ -383,6 +395,63 @@
     pointer-events:auto;
   }
   .img-btn:hover{background:#ef4444;}
+  @media (hover:none){
+    .img-box.has-image .img-actions{opacity:1;}
+  }
+
+  body.image-viewing{overflow:hidden;}
+  .image-viewer{
+    width:calc(100% - 24px);
+    height:calc(100% - 24px);
+    max-width:none;
+    max-height:none;
+    margin:auto;
+    padding:0;
+    border:1px solid #334155;
+    border-radius:10px;
+    background:#0f172a;
+    color:#fff;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+  }
+  .image-viewer[open]{display:flex;flex-direction:column;}
+  .image-viewer::backdrop{background:rgba(15,23,42,.8);}
+  .image-viewer-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-shrink:0;
+    padding:8px 12px;
+    border-bottom:1px solid #334155;
+  }
+  .image-viewer-toolbar button{
+    min-height:44px;
+    padding:8px 12px;
+    border:1px solid #64748b;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+  }
+  .image-viewer-toolbar button:hover{background:#334155;}
+  .image-viewer-toolbar button:focus-visible{outline:2px solid #38bdf8;outline-offset:2px;}
+  .image-viewer-stage{
+    display:flex;
+    flex:1;
+    min-height:0;
+    overflow:auto;
+    overscroll-behavior:contain;
+    padding:12px;
+  }
+  .image-viewer-image{
+    flex-shrink:0;
+    width:auto;
+    height:auto;
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    margin:auto;
+  }
+  .image-viewer.is-actual-size .image-viewer-image{max-width:none;max-height:none;}
 
   .js-fallback{
     background:#fef3c7;
@@ -464,7 +533,9 @@
     table.materials-data tr.material-is-completed > td{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
     .field input,.field textarea{border-color:#cbd5e1;}
     .job-name-input{border-bottom:1.5px solid rgba(255,255,255,.4);}
-    .img-actions,.img-btn{display:none !important;}
+    .img-actions,.img-btn,.image-viewer{display:none !important;}
+    .image-viewer::backdrop{background:transparent;}
+    .img-open,.img-open:focus-visible{cursor:default;outline:none;}
     .img-box{height:240px;min-height:240px;align-self:start;cursor:default;break-inside:avoid;page-break-inside:avoid;}
     .img-box:not(.has-image){
       background:#fff;
@@ -626,7 +697,9 @@
             <div class="t1">Upload Image</div>
             <div class="t2">Click or drag &amp; drop<br>JPG · PNG · GIF</div>
           </div>
-          <img id="imgPreview" alt="" style="display:none">
+          <button type="button" class="img-open" id="imagePreviewButton" onclick="event.stopPropagation(); openImagePreview()" aria-label="Open full-size reference image" aria-haspopup="dialog" title="Open full-size image">
+            <img id="imgPreview" alt="Reference image" style="display:none">
+          </button>
           <div class="img-actions">
             <button class="img-btn" onclick="event.stopPropagation(); changeImage()" title="Change image">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -683,6 +756,16 @@
     <span id="printDate"></span> &middot; <span id="footerTs"></span>
   </div>
 </div>
+
+<dialog class="image-viewer no-print" id="imageViewer" aria-label="Reference image preview">
+  <div class="image-viewer-toolbar">
+    <button type="button" id="imageViewerZoom" onclick="toggleImagePreviewSize()" aria-pressed="false">Actual size</button>
+    <button type="button" onclick="closeImagePreview()" autofocus aria-label="Close image preview">Close ×</button>
+  </div>
+  <div class="image-viewer-stage" id="imageViewerStage" tabindex="0" role="region" aria-label="Image; scroll to inspect at actual size">
+    <img class="image-viewer-image" id="imageViewerImage" alt="Reference image enlarged">
+  </div>
+</dialog>
 
 <div class="toast" id="toast">Saved</div>
 
@@ -878,6 +961,45 @@
   const imgPreview = document.getElementById('imgPreview');
   const imgPlaceholder = document.getElementById('imgPlaceholder');
 
+  // The viewer uses the displayed source without changing ticket/image state.
+  const imageViewer = document.getElementById('imageViewer');
+  const imageViewerImage = document.getElementById('imageViewerImage');
+  const imageViewerStage = document.getElementById('imageViewerStage');
+  const imageViewerZoom = document.getElementById('imageViewerZoom');
+
+  function openImagePreview(){
+    if(!imgBox.classList.contains('has-image') || imageViewer.open) return;
+    imageViewer.classList.remove('is-actual-size');
+    imageViewerZoom.textContent = 'Actual size';
+    imageViewerZoom.setAttribute('aria-pressed', 'false');
+    imageViewerImage.src = imgPreview.src;
+    imageViewer.showModal();
+    document.body.classList.add('image-viewing');
+    imageViewerStage.scrollTo(0, 0);
+  }
+
+  function closeImagePreview(){
+    if(imageViewer.open) imageViewer.close();
+    document.body.classList.remove('image-viewing');
+    imageViewerImage.removeAttribute('src');
+  }
+
+  function toggleImagePreviewSize(){
+    const actual = imageViewer.classList.toggle('is-actual-size');
+    imageViewerZoom.textContent = actual ? 'Fit to screen' : 'Actual size';
+    imageViewerZoom.setAttribute('aria-pressed', String(actual));
+    imageViewerStage.scrollTo(0, 0);
+  }
+
+  imageViewer.addEventListener('close', ()=>{
+    if(!imageViewer.open) closeImagePreview();
+  });
+  imageViewer.addEventListener('click', e=>{
+    const bounds = imageViewer.getBoundingClientRect();
+    if(e.target === imageViewer && (e.clientX < bounds.left || e.clientX > bounds.right || e.clientY < bounds.top || e.clientY > bounds.bottom)) closeImagePreview();
+  });
+  window.addEventListener('beforeprint', closeImagePreview);
+
   function handleImage(e){
     const file = e.target.files && e.target.files[0];
     if(!file) return;
@@ -897,6 +1019,7 @@
   }
 
   function removeImage(){
+    closeImagePreview();
     imgPreview.src = '';
     imgPreview.style.display = 'none';
     if(imgPlaceholder) imgPlaceholder.style.display = 'flex';
