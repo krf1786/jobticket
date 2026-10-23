@@ -58,8 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "69578352c0bd3cf64f41fb99ba72a69c1b72fed5ade270b04fc3d6be3441f53a",
-    "current_frontend_code_commit": "fbce9f3635b99ab3d0c2d221b7a1279d4514a733"
+    "frontend_sha256": "20fc02e262d91243b6ecc21123ebf8390f94d7488a82236849c4ab1121e4e2f1",
+    "current_frontend_code_commit": "c17112cc8f83ea84d03462fc773cefc4332def3b"
   },
   "excluded": [
     "private job payloads",
@@ -396,5 +396,24 @@
     "saved_image_verification": "Local synthetic restored bootstrap; live viewer used an unsaved scratch image only",
     "browser": "Chromium; Safari not run",
     "print_validation": "One-page local Chromium Letter PDF rendered and inspected; viewer/backdrop/focus outline absent and reference image retained. Production PDF/Teams unchanged."
+  },
+  "material_number_removal_deployment": {
+    "source_commit": "c17112cc8f83ea84d03462fc773cefc4332def3b",
+    "started_at_utc": "2026-10-23T01:05:25.946267+00:00",
+    "status": "live_verified",
+    "before_template_sha256": "69578352c0bd3cf64f41fb99ba72a69c1b72fed5ade270b04fc3d6be3441f53a",
+    "after_template_sha256": "20fc02e262d91243b6ecc21123ebf8390f94d7488a82236849c4ab1121e4e2f1",
+    "backup_directory": "/root/jobticket/release-backups/material-number-20261023T010525Z",
+    "database_backup_integrity": "ok",
+    "all_16_ticket_rows_unchanged": true,
+    "backend_unchanged": true,
+    "service_restarted": false,
+    "public_scratch_and_saved_hash_verified": true,
+    "rollback_executed": false,
+    "local_material_scenarios": 11,
+    "live_scratch_checks": 14,
+    "api_writes": 0,
+    "page_errors": [],
+    "blocked_requests": []
   }
 }
