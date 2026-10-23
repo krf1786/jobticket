@@ -58,8 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "20fc02e262d91243b6ecc21123ebf8390f94d7488a82236849c4ab1121e4e2f1",
-    "current_frontend_code_commit": "c17112cc8f83ea84d03462fc773cefc4332def3b"
+    "frontend_sha256": "7c6872113ce3e7d0dc715312c91fe6da5b98318449e0ff485a7e19a00755c7e9",
+    "current_frontend_code_commit": "0f324a838044dcaa49194569030d9849aa322960"
   },
   "excluded": [
     "private job payloads",
@@ -415,5 +415,27 @@
     "api_writes": 0,
     "page_errors": [],
     "blocked_requests": []
+  },
+  "material_width_deployment": {
+    "source_commit": "0f324a838044dcaa49194569030d9849aa322960",
+    "started_at_utc": "2026-10-23T01:38:42.722839+00:00",
+    "verified_at_utc": "2026-10-23T01:39:18.387220+00:00",
+    "status": "live_verified",
+    "before_template_sha256": "20fc02e262d91243b6ecc21123ebf8390f94d7488a82236849c4ab1121e4e2f1",
+    "after_template_sha256": "7c6872113ce3e7d0dc715312c91fe6da5b98318449e0ff485a7e19a00755c7e9",
+    "backup_directory": "/root/jobticket/release-backups/material-width-20261023T013842Z",
+    "database_backup_integrity": "ok",
+    "all_16_ticket_rows_unchanged": true,
+    "backend_unchanged": true,
+    "service_restarted": false,
+    "rollback_executed": false,
+    "public_scratch_and_saved_hash_verified": true,
+    "local_material_scenarios": 11,
+    "local_width_checks": 19,
+    "live_scratch_checks": 19,
+    "api_writes": 0,
+    "page_errors": [],
+    "blocked_requests": [],
+    "mobile_limit": "Long names may still clip on narrow phones; columns are wider with no viewport overflow"
   }
 }

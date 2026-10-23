@@ -92,3 +92,34 @@ It refuses to overwrite a newer template, restores only the previous template
 (`69578352c0bd3cf64f41fb99ba72a69c1b72fed5ade270b04fc3d6be3441f53a`),
 and does not restore the database or restart the service. Recheck saved/scratch
 rendering after rollback.
+
+## Wider Material column
+
+The Material column is now 176px on desktop/print and 40% at screen widths of
+600px and below, replacing 24%/20%. Details retain more width on desktop. All
+30 acrylic choices fit above the mobile breakpoint, including Black Frosted
+Acrylic and room for the browser dropdown indicator. Mobile columns are wider
+without page overflow; long names can still clip on narrow phones. Compact row
+height, numbering removal, completion and all JavaScript are unchanged.
+
+Code `0f324a838044dcaa49194569030d9849aa322960` passed 11 material scenarios,
+19 focused width/print checks, source hashes, syntax and preview safety checks.
+Screenshots were inspected. The same 19 focused checks passed live with zero API
+writes. Published atomically at **2026-10-23 01:38:42 UTC** (October 22 locally);
+current template SHA-256:
+`7c6872113ce3e7d0dc715312c91fe6da5b98318449e0ff485a7e19a00755c7e9`.
+Final audit at 01:39:18 UTC confirmed all 16 rows unchanged, unchanged backend
+and service process, and healthy service. PR #2 remains unmerged.
+
+Previous-template and integrity-checked SQLite backups plus guarded rollback
+are in `/root/jobticket/release-backups/material-width-20261023T013842Z/`.
+Rollback (not invoked):
+
+```sh
+python3 /root/jobticket/release-backups/material-width-20261023T013842Z/rollback.py
+```
+
+It guards against newer templates and restores only the previous template
+(`20fc02e262d91243b6ecc21123ebf8390f94d7488a82236849c4ab1121e4e2f1`),
+without restoring data or restarting the service. Production PDF/Teams delivery
+remains disabled and unverified.
