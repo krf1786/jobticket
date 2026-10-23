@@ -1,3 +1,4 @@
+// Reset has no UI button; legacy reset helper checks invoke it directly.
 // Run with Playwright CLI run-code --filename=scripts/material-details-checks.js.
 // Fresh session; preview.py --port 18765. Real UI, synthetic local HTTP only.
 async (page) => {
@@ -57,15 +58,17 @@ async (page) => {
       results.push({ name, passed: true });
     } catch (error) {
       results.push({ name, passed: false, error: error.message });
-    } finally { await p.close(); }
+    } finally { await p.unrouteAll({ behavior: 'wait' }); await p.close(); }
   }
 
   await run('Legacy tickets retain materials with blank adjacent details', { materials: ['Clear acrylic', 'White acrylic'] }, async t => {
     assert(JSON.stringify(await t.p.locator('#matBody input[data-row-input="mat"]').evaluateAll(nodes => nodes.map(n => n.value))) === '["Clear acrylic","White acrylic"]', 'Legacy material names changed');
     assert(JSON.stringify(await t.p.locator('.material-details').evaluateAll(nodes => nodes.map(n => n.value))) === '["",""]', 'Missing details were not restored as blank');
     assert(await t.p.getByRole('columnheader', { name: 'Material details', exact: true }).count() === 1, 'Separate Material details heading missing');
-    const widths = await t.p.locator('#matBody tr').first().evaluate(row => Array.from(row.cells).slice(1, 3).map(cell => cell.getBoundingClientRect().width));
-    assert(widths[0] / (widths[0] + widths[1]) >= .25 && widths[0] / (widths[0] + widths[1]) <= .31, 'Material column should use about 28 percent of editable width');
+    assert(await t.p.getByRole('columnheader', { name: '#', exact: true }).count() === 0 && await t.p.locator('#matBody .row-num').count() === 0, 'Materials numbering column must be absent');
+    assert(await t.p.locator('#prodBody .row-num').first().textContent() === '1', 'Production step numbering must remain');
+    const widths = await t.p.locator('#matBody tr').first().evaluate(row => [row.querySelector('[data-row-input="mat"]').closest('td'), row.querySelector('.material-details-cell')].map(cell => cell.getBoundingClientRect().width));
+    assert(widths[0] / (widths[0] + widths[1]) >= .40 && widths[0] / (widths[0] + widths[1]) <= .44, 'Material column should use about 42 percent of editable width');
     await t.advance(1000);
     assert(t.saves.length === 0, 'Restoring legacy data unexpectedly saved');
   });
@@ -77,7 +80,7 @@ async (page) => {
     assert(await t.p.locator('#matBody tr').count() === 1 && (await t.p.locator('.material-details').first().inputValue()).endsWith('\n'), 'Shift+Enter did not retain multiline details');
     const preservedDetails = await t.p.locator('.material-details').first().inputValue();
     await t.p.locator('.material-details').first().press('Enter');
-    assert(await t.p.locator('#matBody tr').count() === 2 && await t.p.locator('#matBody tr').last().locator('.row-num').textContent() === '2', 'Enter in details did not add the next numbered row');
+    assert(await t.p.locator('#matBody tr').count() === 2 && await t.p.getByLabel('Material 2', { exact: true }).count() === 1, 'Enter in details did not add the next material row');
     assert(await t.p.locator('.material-details').first().inputValue() === preservedDetails, 'Enter changed the existing details');
     assert(await t.p.locator('#matBody input[data-row-input="mat"]').nth(1).evaluate(n => n === document.activeElement), 'Enter did not focus the next Material field');
     await t.p.locator('#matBody input[data-row-input="mat"]').nth(1).fill('White acrylic');
@@ -98,11 +101,11 @@ async (page) => {
 
   await run('Reset cancellation preserves details; confirmed Reset clears them', { materials: ['Clear acrylic'], materialDetails: ['Keep this detail'] }, async t => {
     await t.p.evaluate(() => { window.confirm = () => false; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).evaluate(b => b.click());
+    await t.p.evaluate(() => resetTicket());
     await t.advance(1000);
     assert(t.saves.length === 0 && await t.p.locator('.material-details').inputValue() === 'Keep this detail', 'Cancelled Reset changed details or saved');
     await t.p.evaluate(() => { window.confirm = () => true; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).evaluate(b => b.click());
+    await t.p.evaluate(() => resetTicket());
     await t.advance(800);
     await t.eventually(() => t.saves.length === 1, 'Confirmed Reset did not save');
     assert(JSON.stringify(t.stored().materialDetails) === '[""]' && JSON.stringify(t.stored().materials) === '[""]', 'Confirmed Reset retained material values');
@@ -128,10 +131,10 @@ async (page) => {
       await t.advance(20);
       const layout = await t.p.evaluate(() => {
         const row = document.querySelector('#matBody tr'), detail = row.querySelector('textarea');
-        return { overflow: document.documentElement.scrollWidth > window.innerWidth + 1, columns: [row.cells[1], row.cells[2]].map(c => { const r = c.getBoundingClientRect(); return { x: r.x, right: r.right, width: r.width }; }), clipped: detail.scrollHeight > detail.clientHeight + 2 };
+        return { overflow: document.documentElement.scrollWidth > window.innerWidth + 1, columns: [row.querySelector('[data-row-input="mat"]').closest('td'), row.querySelector('.material-details-cell')].map(c => { const r = c.getBoundingClientRect(); return { x: r.x, right: r.right, width: r.width }; }), clipped: detail.scrollHeight > detail.clientHeight + 2 };
       });
       assert(!layout.overflow && layout.columns[1].right <= width, 'Material row overflows the narrow viewport');
-      assert(layout.columns[0].width < layout.columns[1].width * .5 && layout.columns[0].right <= layout.columns[1].x + 1, 'Narrow material columns overlap or lose the narrower material split');
+      assert(layout.columns[0].width < layout.columns[1].width * 1.1 && layout.columns[0].right <= layout.columns[1].x + 1, 'Narrow material columns overlap or details lose their usable width');
       assert(!layout.clipped, 'Wrapped material details are clipped on screen');
     }
     await t.p.screenshot({ path: 'output/playwright/materials-mobile.png', fullPage: true });
@@ -145,8 +148,8 @@ async (page) => {
     assert(await printed.locator('b').count() === 0, 'Details were interpreted as HTML');
     assert(await t.p.locator('.material-details').first().isHidden(), 'Print still uses a clipping textarea');
     assert(await t.p.locator('.material-name-print').textContent() === 'Long material description for print', 'Print lost the material name');
-    const printLayout = await printed.evaluate(node => ({ clipped: node.scrollWidth > node.clientWidth + 1, widths: [node.closest('tr').cells[1], node.closest('tr').cells[2]].map(cell => cell.getBoundingClientRect().width) }));
-    assert(!printLayout.clipped && printLayout.widths[0] < printLayout.widths[1] * .5, 'Print text overflows or material column is not narrower');
+    const printLayout = await printed.evaluate(node => ({ clipped: node.scrollWidth > node.clientWidth + 1, widths: [node.closest('tr').querySelector('[data-row-input="mat"]').closest('td'), node.closest('tr').querySelector('.material-details-cell')].map(cell => cell.getBoundingClientRect().width) }));
+    assert(!printLayout.clipped && printLayout.widths[0] < printLayout.widths[1] * .7, 'Print text overflows or material column is not narrower');
     await t.p.screenshot({ path: 'output/playwright/materials-print.png', fullPage: true });
     await t.p.pdf({ path: 'output/playwright/materials-print.pdf', printBackground: true, preferCSSPageSize: true });
     await t.p.emulateMedia({ media: 'screen' });
@@ -164,7 +167,7 @@ async (page) => {
   await run('Completion toggles highlight, saves, restores and stays aligned', { materials: ['Clear acrylic', 'White acrylic'], materialDetails: ['First detail', 'Second detail'] }, async t => {
     const first = t.p.getByRole('checkbox', { name: 'Completed 1', exact: true });
     assert(await first.count() === 1 && !(await first.isChecked()), 'Legacy row must start unchecked');
-    const ordinary = await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.cells[1]).backgroundColor);
+    const ordinary = await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.querySelector('[data-row-input="mat"]').closest('td')).backgroundColor);
     await first.check();
     assert(await t.p.locator('#matBody tr').first().evaluate(r => r.classList.contains('material-is-completed') && Array.from(r.cells).every(c => getComputedStyle(c).backgroundColor === 'rgb(240, 253, 244)')), 'Whole completed row must be very light green');
     await t.advance(800);
@@ -174,7 +177,7 @@ async (page) => {
     assert(await first.isChecked(), 'Reload lost completion');
     await first.uncheck(); await t.advance(800);
     await t.eventually(() => t.stored().materialCompleted[0] === false, 'Uncheck was not saved');
-    assert(await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.cells[1]).backgroundColor) === ordinary, 'Uncheck did not restore background');
+    assert(await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.querySelector('[data-row-input="mat"]').closest('td')).backgroundColor) === ordinary, 'Uncheck did not restore background');
     await t.p.getByRole('checkbox', { name: 'Completed 2', exact: true }).check();
     await t.p.locator('#matBody .row-delete').first().click(); await t.advance(800);
     await t.eventually(() => t.stored().materials.length === 1, 'Deletion did not save');
@@ -187,10 +190,10 @@ async (page) => {
 
   await run('Reset cancellation keeps completion and confirmed reset clears it', { materials: ['Acrylic'], materialCompleted: [true] }, async t => {
     await t.p.evaluate(() => { window.confirm = () => false; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).click(); await t.advance(1000);
+    await t.p.evaluate(() => resetTicket()); await t.advance(1000);
     assert(t.saves.length === 0 && await t.p.getByRole('checkbox', { name: 'Completed 1', exact: true }).isChecked(), 'Cancelled reset changed completion');
     await t.p.evaluate(() => { window.confirm = () => true; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).click(); await t.advance(800);
+    await t.p.evaluate(() => resetTicket()); await t.advance(800);
     await t.eventually(() => t.saves.length > 0, 'Reset did not save');
     assert(JSON.stringify(t.stored().materialCompleted) === '[false]', 'Reset did not clear completion');
   });
@@ -199,7 +202,7 @@ async (page) => {
     for (const width of [1200, 390, 320]) {
       await t.p.setViewportSize({ width, height: 1000 }); await t.advance(20);
       const layout = await t.p.locator('#matBody tr').first().evaluate(r => {
-        const box = r.querySelector('.material-completed').getBoundingClientRect(), detail = r.cells[2].getBoundingClientRect();
+        const box = r.querySelector('.material-completed').getBoundingClientRect(), detail = r.querySelector('.material-details-cell').getBoundingClientRect();
         return { overflow: document.documentElement.scrollWidth > innerWidth + 1, x: box.x, right: box.right, width: box.width, detailRight: detail.right, last: r.lastElementChild.contains(r.querySelector('.material-completed')) };
       });
       assert(!layout.overflow && layout.last && layout.x >= layout.detailRight && layout.right <= width && layout.width >= 16, 'Completion control is not usable at the far right');
@@ -209,7 +212,7 @@ async (page) => {
     await t.p.emulateMedia({ media: 'print' }); await t.advance(20);
     assert(await t.p.locator('.material-completion-print').first().isVisible(), 'Print completion indicator is missing');
     assert(await t.p.locator('.material-completion-print').first().textContent() === '[x]' && await t.p.locator('.material-completion-print').nth(1).textContent() === '[ ]', 'Printed checked state relies on color only');
-    assert(await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.cells[2]).backgroundColor) === 'rgb(240, 253, 244)', 'Print lost completed row highlight');
+    assert(await t.p.locator('#matBody tr').first().evaluate(r => getComputedStyle(r.querySelector('.material-details-cell')).backgroundColor) === 'rgb(240, 253, 244)', 'Print lost completed row highlight');
     await t.p.screenshot({ path: 'output/playwright/completed-print.png', fullPage: true });
     await t.p.pdf({ path: 'output/playwright/completed-print.pdf', printBackground: true, preferCSSPageSize: true });
   });

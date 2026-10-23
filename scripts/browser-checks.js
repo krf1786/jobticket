@@ -1,3 +1,4 @@
+// Reset has no UI button; legacy reset helper checks invoke it directly.
 // Run with Playwright CLI run-code --filename=scripts/browser-checks.js.
 // Start scripts/preview.py --port 18765 first. Uses synthetic data only.
 async (page) => {
@@ -108,7 +109,7 @@ async (page) => {
   check(true, 'Teams failure is reflected in status');
 
   await page.evaluate(() => { window.confirm = () => true; });
-  await page.getByRole('button', { name: 'Reset', exact: false }).click();
+  await page.evaluate(() => resetTicket());
   await waitSaved();
   check(await page.locator('#jobName').inputValue() === '' && await page.locator('#matBody tr').count() === 1 && await page.locator('#prodBody tr').count() === 1, 'Confirmed reset clears fields and retains one row per table');
   await loadSaved();

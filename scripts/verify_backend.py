@@ -110,11 +110,11 @@ try:
         check(not page.get_by_role('checkbox', name='Completed 1', exact=True).is_checked(), 'Old persisted ticket defaults completion to unchecked')
         before = state('LEGACY01')
         page.evaluate('window.confirm = () => false')
-        page.get_by_role('button', name='⟲ Reset').click()
+        page.evaluate('resetTicket()')
         page.wait_for_timeout(1000)
         check(state('LEGACY01') == before, 'Cancelled Reset leaves actual stored ticket unchanged')
         page.evaluate('window.confirm = () => true')
-        page.get_by_role('button', name='⟲ Reset').click()
+        page.evaluate('resetTicket()')
         for _ in range(100):
             if state('LEGACY01').get('materialDetails') == ['']: break
             page.wait_for_timeout(30)

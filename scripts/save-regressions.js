@@ -1,3 +1,4 @@
+// Reset has no UI button; legacy reset helper checks invoke it directly.
 // Playwright CLI: run-code --filename=scripts/save-regressions.js (fresh session).
 // Start preview.py --port 18765. Real template/DOM; only HTTP is mocked.
 // Clock control makes the debounce and old 900ms push race deterministic.
@@ -81,7 +82,7 @@ async (page) => {
 
   await scenario('Cancelled Reset schedules no save', async t => {
     await t.p.evaluate(() => { window.confirm = () => false; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).evaluate(b => b.click());
+    await t.p.evaluate(() => resetTicket());
     await t.advance(1200);
     assert(t.saves.length === 0, 'Cancelling Reset still emitted a PUT');
     assert(!(await t.guarded()), 'Cancelling Reset dirtied an unchanged ticket');
@@ -89,7 +90,7 @@ async (page) => {
 
   await scenario('Cancelled Reset preserves image in the next real edit', async t => {
     await t.p.evaluate(() => { window.confirm = () => false; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).evaluate(b => b.click());
+    await t.p.evaluate(() => resetTicket());
     await t.p.locator('#notes').fill('Edit after cancelled reset');
     await t.advance(800);
     await t.eventually(() => t.saves.length === 1, 'Expected the real edit to save');
@@ -99,7 +100,7 @@ async (page) => {
 
   await scenario('Confirmed Reset clears and saves the ticket', async t => {
     await t.p.evaluate(() => { window.confirm = () => true; });
-    await t.p.getByRole('button', { name: 'Reset', exact: false }).evaluate(b => b.click());
+    await t.p.evaluate(() => resetTicket());
     await t.advance(800);
     await t.eventually(() => t.saves.length === 1, 'Confirmed Reset did not save');
     assert(t.saves[0].state.image === null && t.saves[0].state.jobName === '', 'Confirmed Reset retained cleared fields');

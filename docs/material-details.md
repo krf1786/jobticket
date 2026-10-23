@@ -5,23 +5,27 @@ the save/reset/Teams fixes (`6ef71bb`). It is not part of the captured live base
 and was published with completion controls on October 22, 2026. See the
 [frontend release record](frontend-release.md) for the exact source/hash and live checks.
 
-Each row in Materials / Components now uses about 28% of its editable width
+Each row in Materials / Components now uses a 176px desktop column (about 42% of its editable width)
 for the Material dropdown and the rest for **Material details**. A compact
 Completed checkbox sits at the far right, after the delete control. The main
-job description bar, row number and reference image remain. This narrower split
+job description bar and reference image remain. Materials have no visible
+number column; Production Steps retain their numbering. This narrower split
 and completion control supersede the original equal-width layout.
 Single-line rows match the height of Production Steps, with a smaller 16px
 completion checkbox. Details wrap and grow with their content. Enter in either
-Material or Material details adds the next numbered row and focuses its Material
+Material or Material details adds the next row and focuses its Material
 field; Shift+Enter in details inserts a newline. Production instructions retain
 their existing Enter-for-newline behavior. Print uses plain-text mirrors
 for both values so long content wraps without an input or textarea clipping it.
 User text is assigned with `textContent`, including literal HTML-like text.
 
-Below 600px, the reference image moves under the table, the job information
-uses two columns, and the page fits the viewport instead of scaling a fixed
-letter-size sheet. The two material columns remain side by side. Desktop and
-print retain the existing letter-size page and reference-image placement.
+The annotated overview places Date, Qty, Due Date and Time in one row above
+Materials on the left, with the reference image alongside on the right. The image
+starts at 240px tall and stretches with the left column on screen, preserving its
+proportions without cropping. Production Steps and Notes remain full width below.
+At 760px and below, the image stacks below fields/Materials; the fields use two
+columns at 600px and below. Print retains the Letter layout and caps the image
+at 240px so long material lists cannot stretch it across pages.
 
 ## State and compatibility
 

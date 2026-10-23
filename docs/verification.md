@@ -166,3 +166,55 @@ configuration are unchanged.
 
 The [date-default publication](date-autofill-release.md) passed nine live checks
 with zero API writes. All 14 ticket rows remained unchanged.
+
+## Larger reference image below Notes
+
+The shared reference-image box now follows Notes across the full available
+width: 320px tall on desktop and 240px on small screens. Materials also use the
+full width. Existing markup IDs and every JavaScript block are unchanged, so
+upload/change/remove/drop, saved-image restoration and API state keep their
+existing paths. Images use contain sizing and the printed image box avoids
+page splitting.
+
+All **57 frontend scenarios** passed. A local synthetic browser probe passed
+12 layout/image checks across 1200px, 390px and 320px, including actual scratch
+FileReader upload and existing saved-image restoration, next edit and reload.
+No page errors or external requests occurred. Source/syntax/bootstrap/preview
+checks passed. Screen/mobile screenshots and rasterized Letter PDFs were
+inspected: a short ticket fits one page; a 65-line notes fixture uses three
+pages, retains every line, and keeps the reference image intact on the last
+page. These local print checks do not establish production PDF/Teams delivery.
+
+The [reference-image publication](reference-image-release.md) passed 15 live
+checks with zero API writes; all 16 saved ticket rows were unchanged.
+
+## Annotated overview layout follow-up
+
+The user's marked-up layout supersedes the image-below-Notes placement. Date,
+Qty, Due Date and Time sit above Materials in a left column; the image fills a
+right column below the full-width Job Information heading. Production Steps
+and Notes remain full width underneath. The overview stacks at 760px; native
+date/time fields keep a usable width. Images use contain sizing without intrinsic
+image dimensions inflating the grid. Print caps image height at 240px.
+
+All **57 frontend scenarios** and **45 focused layout/image checks** passed, with
+no JavaScript errors or external requests. The focused probe covered ten widths
+from 1200px through 320px, field order, compact material rows, portrait/landscape
+images and saved-image edit/reload. Source hashes, syntax, bootstrap and preview
+safety checks passed. All JavaScript blocks remain byte-identical to the previous
+release. Desktop/mobile screenshots were compared with the supplied layout.
+A synthetic five-row ticket fits one Letter page. A 45-material-row fixture uses
+two pages, retains all details, and keeps the reference image intact on page one.
+
+The [annotated sidebar publication](reference-sidebar-release.md) passed 30 live
+checks with zero API writes. All 16 ticket rows remained unchanged.
+
+## Full-size image preview
+
+The [viewer release](image-preview-release.md) passed 57 existing frontend
+scenarios and 35 focused viewer checks. Desktop/mobile screenshots and a Letter
+PDF were inspected. All 17 live scratch checks passed with zero API writes; all
+16 ticket rows were unchanged at the final server audit. Source hashes, syntax,
+bootstrap safety and preview API rejection passed. Saved-image restoration was
+verified with local synthetic data. These are Chromium/browser and local print
+checks, not Safari or production PDF/Teams delivery verification.

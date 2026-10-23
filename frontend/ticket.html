@@ -245,22 +245,25 @@
     display:flex;justify-content:space-between;
   }
 
+  .job-overview-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1.8fr) minmax(0,1fr);
+    gap:12px;
+    align-items:stretch;
+  }
+  .job-overview-left{display:flex;flex-direction:column;gap:8px;min-width:0;}
   .job-info-grid{
     display:grid;
-    grid-template-columns: 1.05fr .52fr 1.05fr .8fr;
-    gap:10px;
+    grid-template-columns:minmax(0,1.05fr) minmax(0,.52fr) minmax(0,1.05fr) minmax(0,.8fr);
+    gap:8px;
   }
-  .materials-layout{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) 188px;
-    gap:10px;
-    align-items:start;
-  }
+  .job-info-grid .field,.job-info-grid input{min-width:0;}
+  .materials-layout{min-width:0;}
   .materials-table-wrap{min-width:0;}
   table.materials-data{table-layout:fixed;}
   .materials-data input,.materials-data textarea{min-width:0;}
   table.materials-data tbody td{vertical-align:top;}
-  .material-name-heading{width:24%;}
+  .material-name-heading{width:176px;}
   table.materials-data .material-completion-cell{text-align:center;vertical-align:top;padding:0 2px;}
   table.materials-data input.material-completed{display:block;width:16px;height:16px;min-height:16px;padding:0;margin:2px auto;accent-color:#15803d;cursor:pointer;}
   table.materials-data tr.material-is-completed > td{background:#f0fdf4;}
@@ -303,7 +306,8 @@
   .img-box{
     position:relative;
     width:100%;
-    height:132px;
+    height:auto;
+    min-height:240px;
     border:1.5px dashed var(--line);
     border-radius:6px;
     background:
@@ -328,7 +332,21 @@
     background:#fff;
     cursor:default;
   }
+  .img-open{
+    display:none;
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    background:transparent;
+    cursor:zoom-in;
+  }
+  .img-box.has-image .img-open{display:block;}
+  .img-open:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;}
   .img-box img{
+    position:absolute;
+    inset:0;
     width:100%;
     height:100%;
     object-fit: contain;
@@ -377,22 +395,63 @@
     pointer-events:auto;
   }
   .img-btn:hover{background:#ef4444;}
-  .img-label{
-    position:absolute;
-    bottom:6px;left:6px;
-    background:rgba(15,23,42,.85);
-    color:#fff;
-    font-size:9px;
-    font-weight:600;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    padding:3px 7px;
-    border-radius:3px;
-    pointer-events:none;
-    opacity:0;
-    transition:opacity .15s;
+  @media (hover:none){
+    .img-box.has-image .img-actions{opacity:1;}
   }
-  .img-box.has-image .img-label{opacity:1;}
+
+  body.image-viewing{overflow:hidden;}
+  .image-viewer{
+    width:calc(100% - 24px);
+    height:calc(100% - 24px);
+    max-width:none;
+    max-height:none;
+    margin:auto;
+    padding:0;
+    border:1px solid #334155;
+    border-radius:10px;
+    background:#0f172a;
+    color:#fff;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+  }
+  .image-viewer[open]{display:flex;flex-direction:column;}
+  .image-viewer::backdrop{background:rgba(15,23,42,.8);}
+  .image-viewer-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-shrink:0;
+    padding:8px 12px;
+    border-bottom:1px solid #334155;
+  }
+  .image-viewer-toolbar button{
+    min-height:44px;
+    padding:8px 12px;
+    border:1px solid #64748b;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+  }
+  .image-viewer-toolbar button:hover{background:#334155;}
+  .image-viewer-toolbar button:focus-visible{outline:2px solid #38bdf8;outline-offset:2px;}
+  .image-viewer-stage{
+    display:flex;
+    flex:1;
+    min-height:0;
+    overflow:auto;
+    overscroll-behavior:contain;
+    padding:12px;
+  }
+  .image-viewer-image{
+    flex-shrink:0;
+    width:auto;
+    height:auto;
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    margin:auto;
+  }
+  .image-viewer.is-actual-size .image-viewer-image{max-width:none;max-height:none;}
 
   .js-fallback{
     background:#fef3c7;
@@ -474,8 +533,10 @@
     table.materials-data tr.material-is-completed > td{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
     .field input,.field textarea{border-color:#cbd5e1;}
     .job-name-input{border-bottom:1.5px solid rgba(255,255,255,.4);}
-    .img-actions,.img-btn{display:none !important;}
-    .img-box{cursor:default;}
+    .img-actions,.img-btn,.image-viewer{display:none !important;}
+    .image-viewer::backdrop{background:transparent;}
+    .img-open,.img-open:focus-visible{cursor:default;outline:none;}
+    .img-box{height:240px;min-height:240px;align-self:start;cursor:default;break-inside:avoid;page-break-inside:avoid;}
     .img-box:not(.has-image){
       background:#fff;
       border-color:#cbd5e1;
@@ -485,13 +546,15 @@
   @media screen and (max-width: 900px){
     .page{width:calc(100% - 24px);max-width:8.5in;margin:12px auto;}
   }
+  @media screen and (max-width: 760px){
+    .job-overview-grid{grid-template-columns:minmax(0,1fr);}
+    .img-box{height:240px;min-height:240px;}
+  }
   @media screen and (max-width: 600px){
     .hdr,.toolbar,.content{padding-left:12px;padding-right:12px;}
     .job-info-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
     .field{min-width:0;}
-    .materials-layout{grid-template-columns:minmax(0,1fr);}
-    .materials-layout .img-box{width:188px;justify-self:end;}
-    .material-name-heading{width:20%;}
+    .material-name-heading{width:40%;}
     .section-title{flex-wrap:wrap;}
     .section-hint{flex-basis:100%;margin-left:0;}
     table.data{table-layout:fixed;}
@@ -560,8 +623,6 @@
   <!-- TOOLBAR -->
   <div class="toolbar no-print">
     <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
-    <button class="btn btn-ghost" onclick="resetTicket()">⟲ Reset</button>
-    <button class="btn btn-ghost" onclick="checkDueDate()">📅 Check Due</button>
   </div>
 
   <noscript>
@@ -572,9 +633,11 @@
 
   <div class="content">
 
-    <!-- 01 JOB INFO -->
-    <section>
+    <!-- JOB INFORMATION, MATERIALS AND REFERENCE IMAGE -->
+    <section class="job-overview">
       <h2 class="section-title"><span class="num">01</span>Job Information</h2>
+      <div class="job-overview-grid">
+        <div class="job-overview-left">
       <div class="job-info-grid">
         <div class="field">
           <label>Date</label>
@@ -593,9 +656,8 @@
           <input type="time" id="timeField">
         </div>
       </div>
-    </section>
 
-    <!-- 02 MATERIALS -->
+        <!-- 02 MATERIALS -->
     <section>
       <h2 class="section-title">
         <span class="num">02</span>Materials / Components
@@ -606,7 +668,6 @@
           <table class="data materials-data">
             <thead>
               <tr>
-                <th style="width:32px">#</th>
                 <th class="material-name-heading">Material</th>
                 <th>Material details</th>
                 <th style="width:28px" class="no-print"></th>
@@ -615,6 +676,10 @@
             </thead>
             <tbody id="matBody"></tbody>
           </table>
+        </div>
+
+      </div>
+    </section>
         </div>
         <div class="img-box" id="imgBox" onclick="document.getElementById(&#39;imgInput&#39;).click()" title="Click to upload image">
           <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="handleImage(event)">
@@ -629,8 +694,9 @@
             <div class="t1">Upload Image</div>
             <div class="t2">Click or drag &amp; drop<br>JPG · PNG · GIF</div>
           </div>
-          <img id="imgPreview" alt="" style="display:none">
-          <div class="img-label">Ref Image</div>
+          <button type="button" class="img-open" id="imagePreviewButton" onclick="event.stopPropagation(); openImagePreview()" aria-label="Open full-size reference image" aria-haspopup="dialog" title="Open full-size image">
+            <img id="imgPreview" alt="Reference image" style="display:none">
+          </button>
           <div class="img-actions">
             <button class="img-btn" onclick="event.stopPropagation(); changeImage()" title="Change image">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -676,6 +742,7 @@
         <div class="notes-col">
           <textarea id="notes" placeholder="Additional notes, special instructions, floor reminders…"></textarea>
         </div>
+
       </div>
     </section>
 
@@ -687,13 +754,22 @@
   </div>
 </div>
 
+<dialog class="image-viewer no-print" id="imageViewer" aria-label="Reference image preview">
+  <div class="image-viewer-toolbar">
+    <button type="button" id="imageViewerZoom" onclick="toggleImagePreviewSize()" aria-pressed="false">Actual size</button>
+    <button type="button" onclick="closeImagePreview()" autofocus aria-label="Close image preview">Close ×</button>
+  </div>
+  <div class="image-viewer-stage" id="imageViewerStage" tabindex="0" role="region" aria-label="Image; scroll to inspect at actual size">
+    <img class="image-viewer-image" id="imageViewerImage" alt="Reference image enlarged">
+  </div>
+</dialog>
+
 <div class="toast" id="toast">Saved</div>
 
 <script>
   // ---------- Material rows ----------
   function createMaterialRowHTML(rowNum){
     return `
-      <td class="row-num">${rowNum}</td>
       <td><input type="text" list="acrylicOptions" placeholder="Type or pick…" data-row-input="mat" autocomplete="off" aria-label="Material ${rowNum}"/><span class="material-print material-name-print" aria-hidden="true"></span></td>
       <td class="material-details-cell"><textarea class="material-details" rows="1" placeholder="Add details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
       <td class="no-print"><button class="row-delete" onclick="deleteMaterialRow(this)" title="Delete row">×</button></td>
@@ -747,8 +823,6 @@
   function renumberMaterialRows(){
     const rows = document.querySelectorAll('#matBody tr');
     rows.forEach((row, idx) => {
-      const numCell = row.querySelector('.row-num');
-      if(numCell) numCell.textContent = idx + 1;
       row.querySelector('input').setAttribute('aria-label', 'Material ' + (idx + 1));
       row.querySelector('.material-details').setAttribute('aria-label', 'Material details ' + (idx + 1));
       row.querySelector('.material-completed').setAttribute('aria-label', 'Completed ' + (idx + 1));
@@ -881,6 +955,45 @@
   const imgPreview = document.getElementById('imgPreview');
   const imgPlaceholder = document.getElementById('imgPlaceholder');
 
+  // The viewer uses the displayed source without changing ticket/image state.
+  const imageViewer = document.getElementById('imageViewer');
+  const imageViewerImage = document.getElementById('imageViewerImage');
+  const imageViewerStage = document.getElementById('imageViewerStage');
+  const imageViewerZoom = document.getElementById('imageViewerZoom');
+
+  function openImagePreview(){
+    if(!imgBox.classList.contains('has-image') || imageViewer.open) return;
+    imageViewer.classList.remove('is-actual-size');
+    imageViewerZoom.textContent = 'Actual size';
+    imageViewerZoom.setAttribute('aria-pressed', 'false');
+    imageViewerImage.src = imgPreview.src;
+    imageViewer.showModal();
+    document.body.classList.add('image-viewing');
+    imageViewerStage.scrollTo(0, 0);
+  }
+
+  function closeImagePreview(){
+    if(imageViewer.open) imageViewer.close();
+    document.body.classList.remove('image-viewing');
+    imageViewerImage.removeAttribute('src');
+  }
+
+  function toggleImagePreviewSize(){
+    const actual = imageViewer.classList.toggle('is-actual-size');
+    imageViewerZoom.textContent = actual ? 'Fit to screen' : 'Actual size';
+    imageViewerZoom.setAttribute('aria-pressed', String(actual));
+    imageViewerStage.scrollTo(0, 0);
+  }
+
+  imageViewer.addEventListener('close', ()=>{
+    if(!imageViewer.open) closeImagePreview();
+  });
+  imageViewer.addEventListener('click', e=>{
+    const bounds = imageViewer.getBoundingClientRect();
+    if(e.target === imageViewer && (e.clientX < bounds.left || e.clientX > bounds.right || e.clientY < bounds.top || e.clientY > bounds.bottom)) closeImagePreview();
+  });
+  window.addEventListener('beforeprint', closeImagePreview);
+
   function handleImage(e){
     const file = e.target.files && e.target.files[0];
     if(!file) return;
@@ -900,6 +1013,7 @@
   }
 
   function removeImage(){
+    closeImagePreview();
     imgPreview.src = '';
     imgPreview.style.display = 'none';
     if(imgPlaceholder) imgPlaceholder.style.display = 'flex';

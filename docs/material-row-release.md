@@ -60,3 +60,66 @@ It refuses to overwrite a later template, atomically restores the previous
 corrected header/material template (`326bbf9f…`), and checks health. It does not
 restore the database or restart the service. Recheck scratch and saved rendering
 after rollback.
+
+## Remove Materials number column
+
+The Materials `#` header and number cells were removed in
+`c17112cc8f83ea84d03462fc773cefc4332def3b`. Production Step numbering remains.
+Material field accessibility labels still follow row order after add/delete;
+serialization and saved ticket data are unchanged. The eleven material browser
+scenarios passed, including save/reload, Return, deletion, completion, compact
+height, mobile and print. Positional test selectors were replaced with field
+selectors, and test teardown now waits for route callbacks to finish. Source
+hashes, syntax, safe bootstrap and preview API rejection passed. Desktop/mobile
+and print screenshots were inspected. No backend changes were made.
+
+Published atomically at **2026-10-23 01:05:25 UTC** (October 22 locally). Current
+template SHA-256: `20fc02e262d91243b6ecc21123ebf8390f94d7488a82236849c4ab1121e4e2f1`.
+All 14 live scratch checks passed with zero API writes and no browser errors.
+The final audit confirmed all 16 ticket rows unchanged. Backend sources and
+service process remained unchanged. PR #2 remains unmerged; production PDF/Teams
+delivery remains disabled and unverified.
+
+The previous template, consistent integrity-checked SQLite backup and guarded
+rollback are in `/root/jobticket/release-backups/material-number-20261023T010525Z/`.
+Prepared rollback (not invoked):
+
+```sh
+python3 /root/jobticket/release-backups/material-number-20261023T010525Z/rollback.py
+```
+
+It refuses to overwrite a newer template, restores only the previous template
+(`69578352c0bd3cf64f41fb99ba72a69c1b72fed5ade270b04fc3d6be3441f53a`),
+and does not restore the database or restart the service. Recheck saved/scratch
+rendering after rollback.
+
+## Wider Material column
+
+The Material column is now 176px on desktop/print and 40% at screen widths of
+600px and below, replacing 24%/20%. Details retain more width on desktop. All
+30 acrylic choices fit above the mobile breakpoint, including Black Frosted
+Acrylic and room for the browser dropdown indicator. Mobile columns are wider
+without page overflow; long names can still clip on narrow phones. Compact row
+height, numbering removal, completion and all JavaScript are unchanged.
+
+Code `0f324a838044dcaa49194569030d9849aa322960` passed 11 material scenarios,
+19 focused width/print checks, source hashes, syntax and preview safety checks.
+Screenshots were inspected. The same 19 focused checks passed live with zero API
+writes. Published atomically at **2026-10-23 01:38:42 UTC** (October 22 locally);
+current template SHA-256:
+`7c6872113ce3e7d0dc715312c91fe6da5b98318449e0ff485a7e19a00755c7e9`.
+Final audit at 01:39:18 UTC confirmed all 16 rows unchanged, unchanged backend
+and service process, and healthy service. PR #2 remains unmerged.
+
+Previous-template and integrity-checked SQLite backups plus guarded rollback
+are in `/root/jobticket/release-backups/material-width-20261023T013842Z/`.
+Rollback (not invoked):
+
+```sh
+python3 /root/jobticket/release-backups/material-width-20261023T013842Z/rollback.py
+```
+
+It guards against newer templates and restores only the previous template
+(`20fc02e262d91243b6ecc21123ebf8390f94d7488a82236849c4ab1121e4e2f1`),
+without restoring data or restarting the service. Production PDF/Teams delivery
+remains disabled and unverified.
