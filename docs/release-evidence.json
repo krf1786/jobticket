@@ -58,8 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "97724720c29af92ad17de6ea2bb5b33f7358bc6eea721b93a66c608af752dee8",
-    "current_frontend_code_commit": "88668569ed30b80f1c6f551f353c32295c40ceea"
+    "frontend_sha256": "69578352c0bd3cf64f41fb99ba72a69c1b72fed5ade270b04fc3d6be3441f53a",
+    "current_frontend_code_commit": "fbce9f3635b99ab3d0c2d221b7a1279d4514a733"
   },
   "excluded": [
     "private job payloads",
@@ -371,5 +371,30 @@
     "api_writes": 0,
     "page_errors": [],
     "blocked_requests": []
+  },
+  "image_preview_deployment": {
+    "source_commit": "fbce9f3635b99ab3d0c2d221b7a1279d4514a733",
+    "started_at_utc": "2026-10-23T00:57:42.453316+00:00",
+    "verified_at_utc": "2026-10-23T00:58:06.908196+00:00",
+    "status": "live_verified",
+    "changed_runtime_file": "ticket.html",
+    "before_template_sha256": "97724720c29af92ad17de6ea2bb5b33f7358bc6eea721b93a66c608af752dee8",
+    "after_template_sha256": "69578352c0bd3cf64f41fb99ba72a69c1b72fed5ade270b04fc3d6be3441f53a",
+    "backup_directory": "/root/jobticket/release-backups/image-preview-20261023T005742Z",
+    "database_backup_integrity": "ok",
+    "public_scratch_and_saved_hash_verified": true,
+    "all_16_ticket_rows_unchanged": true,
+    "backend_unchanged": true,
+    "service_restarted": false,
+    "live_rollback_executed": false,
+    "local_frontend_scenarios": 57,
+    "local_viewer_checks": 35,
+    "live_browser_checks": 17,
+    "api_writes": 0,
+    "page_errors": [],
+    "blocked_requests": [],
+    "saved_image_verification": "Local synthetic restored bootstrap; live viewer used an unsaved scratch image only",
+    "browser": "Chromium; Safari not run",
+    "print_validation": "One-page local Chromium Letter PDF rendered and inspected; viewer/backdrop/focus outline absent and reference image retained. Production PDF/Teams unchanged."
   }
 }

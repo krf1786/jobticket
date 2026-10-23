@@ -30,7 +30,9 @@ when Enter is pressed in Material details (Shift+Enter inserts a newline).
 
 The [reference-image box](docs/reference-sidebar-release.md) sits to the right of the job fields and Materials, with
 Production Steps and Notes full width underneath. The overview stacks on smaller
-screens, and images retain their full proportions.
+screens, and images retain their full proportions. Click an image to open its
+[full-size preview](docs/image-preview-release.md), with fit/actual-size views
+and Close/Escape dismissal.
 
 ## Local preview
 

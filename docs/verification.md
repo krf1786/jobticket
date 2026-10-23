@@ -208,3 +208,13 @@ two pages, retains all details, and keeps the reference image intact on page one
 
 The [annotated sidebar publication](reference-sidebar-release.md) passed 30 live
 checks with zero API writes. All 16 ticket rows remained unchanged.
+
+## Full-size image preview
+
+The [viewer release](image-preview-release.md) passed 57 existing frontend
+scenarios and 35 focused viewer checks. Desktop/mobile screenshots and a Letter
+PDF were inspected. All 17 live scratch checks passed with zero API writes; all
+16 ticket rows were unchanged at the final server audit. Source hashes, syntax,
+bootstrap safety and preview API rejection passed. Saved-image restoration was
+verified with local synthetic data. These are Chromium/browser and local print
+checks, not Safari or production PDF/Teams delivery verification.
