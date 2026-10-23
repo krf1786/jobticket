@@ -34,7 +34,7 @@ screens, and images retain their full proportions. Click an image to open its
 [full-size preview](docs/image-preview-release.md), with fit/actual-size views
 and Close/Escape dismissal.
 
-The toolbar offers Print and Check Due. The Reset button has been removed.
+The toolbar offers Print. Reset and Check Due buttons have been removed.
 
 ## Local preview
 
