@@ -91,3 +91,27 @@ and no Teams/SharePoint transport or image upload occurred. Real production
 Teams/PDF delivery remains unverified. Existing browser tabs should reload to
 receive the new layout; older-tab row conflicts are protected by the backend.
 PR #1 remains open and unmerged; publication used the authorized template swap.
+
+## Reset button removal
+
+The toolbar Reset button was removed in `fabb5a13f5116d444786f5f9d590d0cd8f953530`.
+Only that button markup changed in the runtime frontend; all JavaScript remains
+identical. Existing legacy reset regression cases now call the retained helper
+directly. All 57 frontend scenarios, source/syntax/bootstrap/preview checks and
+nine focused toolbar checks passed locally. The isolated backend verification
+script's legacy reset calls were updated but that integration suite was not rerun.
+
+Published atomically at **2026-10-23 02:08:17 UTC** (October 22 locally). Template
+SHA-256: `c691d89d053c79b26284b36914061e917764a8c81acc04a4844ba1da1c1dd304`.
+The same nine focused checks passed live: Reset is absent at desktop/mobile
+widths, Print and Check Due remain, Print still invokes printing and the toolbar
+is hidden in print. Screenshots were inspected. No API writes or browser errors
+occurred; all 16 saved rows were unchanged at the final audit. Backend sources
+and service process are unchanged. PR #2 remains unmerged.
+
+The previous template, integrity-checked SQLite backup and guarded rollback are
+in `/root/jobticket/release-backups/reset-button-20261023T020817Z/`. Rollback,
+not invoked: `python3 /root/jobticket/release-backups/reset-button-20261023T020817Z/rollback.py`.
+It refuses to overwrite a newer template and restores only the previous template,
+without restoring data or restarting the service. Production PDF/Teams delivery
+remains disabled and unverified.

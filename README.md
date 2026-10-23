@@ -34,6 +34,8 @@ screens, and images retain their full proportions. Click an image to open its
 [full-size preview](docs/image-preview-release.md), with fit/actual-size views
 and Close/Escape dismissal.
 
+The toolbar offers Print and Check Due. The Reset button has been removed.
+
 ## Local preview
 
 Requires Python 3 (standard library only):
