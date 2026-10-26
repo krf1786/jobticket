@@ -48,7 +48,7 @@
 
 **Files:** manifests, attachment release documentation, guarded release/audit scripts outside Git.
 
-- [ ] Obtain independent code/data-safety review and fix material findings.
-- [ ] Back up current app/template and consistent SQLite, verify expected deployed hashes, stage and atomically publish changed runtime files, restart and check health; prepare guarded rollback.
-- [ ] Verify one restored synthetic ticket upload/download/save/reload and the actual 100 MB boundary without touching customer tickets. Compare all customer rows.
-- [ ] Record honest evidence and push a separate unmerged PR based on the existing frontend branch; preserve original dirty checkout.
+- [x] Obtain independent code/data-safety review and fix material findings.
+- [x] Back up current app/template and consistent SQLite, verify expected deployed hashes, stage and atomically publish changed runtime files, restart and check health; prepare guarded rollback.
+- [x] Verify one restored synthetic ticket upload/download/save/reload and the actual 100 MB boundary without touching customer tickets. Compare all customer rows.
+- [x] Record honest evidence and push a separate unmerged PR based on the existing frontend branch; preserve original dirty checkout.
