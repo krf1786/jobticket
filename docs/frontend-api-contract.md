@@ -21,7 +21,9 @@ with script-safe JSON. Never embed raw request data or credentials in either.
 
 State has strings `jobName`, `date`, `qty`, `due`, `time`, `notes`; a `materials`
 array of strings; a new `materialDetails` array of strings aligned by material
-row index; `materialCompleted: boolean[]` aligned by the same index; a `steps` array of `{op, instr}` objects; and `image`, a URL
+row index; `materialCompleted: boolean[]` aligned by the same index;
+`materialRowIds: string[]` and `materialFiles: (null | {id,name,size,url})[]` aligned
+with stable row identity; a `steps` array of `{op, instr}` objects; and `image`, a URL
 or null. Blank arrays are restored as one blank row. The frontend sends quantity
 as a string and uses the native date/time input values. Tickets without
 `materialDetails` retain their original materials and show blank details.
@@ -43,6 +45,8 @@ All paths below start with `prefix + '/api/' + encodeURIComponent(jobId)`.
 | Method and suffix | Request | Response consumed by the client |
 | --- | --- | --- |
 | `PUT` (no suffix) | JSON state; `Content-Type: application/json`, debounced 800ms after edits; requests are serialized and newer local revisions are drained in order. | Requires a successful HTTP status and parseable JSON; only the revision actually sent is acknowledged as saved. |
+| `POST /attachments` | Multipart `file`, existing saved ticket required; maximum100MB. | Returns `{ok:true,file:{id,name,size,url}}`; the row saves that canonical descriptor. |
+| `GET /attachments/{id}` | Owning job and opaque file ID. | Original-byte download with attachment disposition; never inline file execution. |
 | `POST /image` | `FormData` with one `file` field. | Requires a successful HTTP status and JSON with `url`; displays that URL and queues a state save. |
 | `GET /sync` | No body, initially and every 30 seconds when ready. | `error` selects failure; `stale` selects queued; otherwise `pushedAt` selects current/not-yet-pushed. |
 | `POST /push` | No body; explicit Update Teams copy click; waits for all current local edits to save successfully. No request is dispatched if saving fails. | Successful HTTP status and JSON `ok` are required. A completion for an older local revision cannot mark newer edits current. |
@@ -74,3 +78,8 @@ of responses does not establish what the server guarantees.
 
 Local preview responses and browser mocks are explicitly synthetic and are
 not production implementations of this contract.
+
+Attachment saves carry request-only `materialFileBase` acknowledged file IDs.
+The backend checks ownership and concurrency before changing state, returning409
+for stale attachment references. Legacy omission handling rejects ambiguous row
+changes when attachments exist. See [attachment details](material-attachments.md).

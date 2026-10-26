@@ -29,6 +29,22 @@ def load(name, path):
     return module
 
 
+def load_isolated_backend(root):
+    """Load every runtime sibling from disposable copies, with no live DB imports."""
+    modules = {}
+    for name in ('app', 'graph', 'pdf', 'corkboard', 'attachments'):
+        source = SOURCE / (name + '.py')
+        if source.exists():
+            shutil.copyfile(source, root / source.name)
+    for name in ('graph', 'pdf', 'corkboard', 'attachments'):
+        source = root / (name + '.py')
+        if source.exists():
+            modules[name] = load('isolated_' + name, source)
+    # Only the background worker is suppressed; request handlers/storage stay real.
+    with patch.dict(sys.modules, modules), patch.object(threading.Thread, 'start'):
+        return load('isolated_app', root / 'app.py')
+
+
 class Request:
     def __init__(self, data):
         self.data = copy.deepcopy(data)
@@ -56,13 +72,7 @@ class BackendTests(unittest.TestCase):
         connection_patch.start()
         self.addCleanup(connection_patch.stop)
         self.addCleanup(lambda: [conn.close() for conn in connections])
-        for name in ('app.py', 'graph.py', 'pdf.py'):
-            shutil.copyfile(SOURCE / name, root / name)
-        graph = load('isolated_graph', root / 'graph.py')
-        pdf = load('isolated_pdf', root / 'pdf.py')
-        # Suppress only import-time background work in this synthetic database.
-        with patch.dict(sys.modules, {'graph': graph, 'pdf': pdf}), patch.object(threading.Thread, 'start'):
-            self.app = load('isolated_app', root / 'app.py')
+        self.app = load_isolated_backend(root)
         self.app.graph.enabled = lambda: True
         self.app.graph.status = lambda: {'enabled': True, 'missing': []}
         self.app.pdf.available = lambda: True

@@ -58,8 +58,8 @@
     "teams_enabled": false,
     "production_pdf_renderer_available": false,
     "production_teams_delivery_verified": false,
-    "frontend_sha256": "a572d7740587098dbe4850f59adc1c24d0fc65f0ead1fc3a05d6c7b69f019f97",
-    "current_frontend_code_commit": "25f7c47c919e3feaf8e4744c6ac78651511076f8"
+    "frontend_sha256": "2dc3fd4e1b0b0741ec7e00ca4af249509ffd64f5590196bd5100d4a0648f80d5",
+    "current_frontend_code_commit": "31d7de0c1555c879a64dca5ae64543be7e34a7a1"
   },
   "excluded": [
     "private job payloads",
@@ -480,5 +480,43 @@
     "api_writes": 0,
     "page_errors": [],
     "blocked_requests": []
+  },
+  "material_attachment_deployment": {
+    "source_commit": "31d7de0c1555c879a64dca5ae64543be7e34a7a1",
+    "started_at_utc": "2026-10-26T23:11:23.932189+00:00",
+    "verified_at_utc": "2026-10-26T23:14:40.093636+00:00",
+    "status": "live_verified",
+    "max_file_bytes": 104857600,
+    "max_attachment_request_bytes": 105906176,
+    "backup_directory": "/root/jobticket/release-backups/attachments-20261026T231040Z-b6b22a63",
+    "backup_integrity": {
+      "tickets.db": "ok",
+      "corkboard.db": "ok"
+    },
+    "service_restarted": true,
+    "corkboard_code_config_and_data_unchanged": true,
+    "all_18_ticket_rows_unchanged_after_restoration": true,
+    "owned_synthetic_ticket_restored_exactly": true,
+    "owned_test_uploads_removed": true,
+    "live_write_scope": "VERIFY-MATERIALS-20261021 only",
+    "customer_ticket_writes": 0,
+    "runtime_sha256": {
+      "app.py": "f6838435b3cf01c784987f260db25a37c14b5379c0fb7b6d419450a94adba047",
+      "attachments.py": "a470635ef841b7a79203628c204dfd9991ebbcfe75ddc1331cbd1b7418a766f8",
+      "ticket.html": "2dc3fd4e1b0b0741ec7e00ca4af249509ffd64f5590196bd5100d4a0648f80d5",
+      "static/material-attachments.js": "449e2b04dd8dcf5f2ab888f1c0f6c267778aad674d68d36fc70e07dad465cbd2"
+    },
+    "local_backend_tests": 40,
+    "local_attachment_browser_checks": 31,
+    "existing_frontend_scenarios": 92,
+    "existing_backend_integration_checks": 40,
+    "isolated_production_runtime_checks": 7,
+    "live_checks": 18,
+    "browser_page_errors": [],
+    "unauthorized_requests": [],
+    "rollback_executed": false,
+    "production_graph_renderer_enabled": false,
+    "production_teams_delivery_verified": false,
+    "first_cleanup_helper_error": "SQLite Row serialization fixed; exact restoration and full live run repeated successfully"
   }
 }

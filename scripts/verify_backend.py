@@ -32,8 +32,8 @@ def check(value, name):
     checks.append(name)
 
 isolation = Path(tempfile.mkdtemp(prefix='backend-', dir=ROOT))
-for name in ['app.py', 'graph.py', 'pdf.py']:
-    shutil.copyfile(REPO / 'backend' / name, isolation / name)
+for source in (REPO / 'backend').glob('*.py'):
+    shutil.copyfile(source, isolation / source.name)
 shutil.copyfile(REPO / 'frontend/ticket.html', isolation / 'ticket.html')
 shutil.copytree(REPO / 'frontend/static', isolation / 'static')
 sys.path.insert(0, str(isolation))

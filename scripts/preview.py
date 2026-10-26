@@ -69,6 +69,8 @@ class PreviewHandler(BaseHTTPRequestHandler):
             return self.reject_api()
         # Explicit allowlist; never serve raw captures, .git, or arbitrary files.
         assets = {PREFIX + "/static/fonts.css": ROOT / "frontend/static/fonts.css"}
+        for filename in ('material-attachments.js', 'corkboard-preview.js'):
+            assets[PREFIX + '/static/' + filename] = ROOT / 'frontend/static' / filename
         for weight in (400, 600, 700):
             filename = f"inter-latin-{weight}-normal.woff2"
             assets[PREFIX + "/static/fonts/" + filename] = ROOT / "frontend/static/fonts" / filename
