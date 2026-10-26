@@ -219,13 +219,13 @@ bootstrap safety and preview API rejection passed. Saved-image restoration was
 verified with local synthetic data. These are Chromium/browser and local print
 checks, not Safari or production PDF/Teams delivery verification.
 
-## Material file attachments — October26
+## Material file attachments — October 26
 
-[Attachment release](attachments-release.md):40 backend/storage tests,31 new real
-isolated browser checks,92 existing frontend scenarios and40 existing real
+[Attachment release](attachments-release.md): 40 backend/storage tests, 31 new real
+isolated browser checks, 92 existing frontend scenarios and 40 existing real
 backend/PDF integration checks passed. The independent review findings were
-fixed and regression-tested. A fresh production-venv rehearsal passed7 checks.
-All18 public live checks passed, including exact100MiB original-byte transfer
-andone-byte-over rejection. The owned synthetic ticket was restored exactly;
-all18 saved ticket rows and corkboard data were unchanged. Local print/isolated
+fixed and regression-tested. A fresh production-venv rehearsal passed 7 checks.
+All 18 public live checks passed, including exact 100 MiB original-byte transfer
+and one-byte-over rejection. The owned synthetic ticket was restored exactly;
+all 18 saved ticket rows and corkboard data were unchanged. Local print/isolated
 Graph mocks do not establish production Teams/PDF delivery, which remains disabled.
