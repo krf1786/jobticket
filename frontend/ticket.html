@@ -269,7 +269,25 @@
   table.materials-data tr.material-is-completed > td{background:#f0fdf4;}
   table.materials-data tr.material-is-completed input:not([type="checkbox"]),table.materials-data tr.material-is-completed textarea{background:transparent;}
   .material-completion-print{display:none;font-family:monospace;font-weight:700;white-space:nowrap;}
-  .material-details-cell{border-left:1px solid #e2e8f0;}
+  .material-details-cell{border-left:1px solid #e2e8f0;position:relative;}
+  table.data .has-attachment-control textarea.material-details{padding-right:25px;}
+  .material-file-attach{position:absolute;right:3px;top:0;width:20px;height:20px;font-size:12px;border-radius:3px;}
+  .material-file-attach:hover{background:#e0f2fe;}
+  .material-file-attach:focus-visible,.material-file-line button:focus-visible{outline:2px solid var(--accent);}
+  .material-file-attach:disabled{opacity:.4;cursor:default;}
+  .material-file-line{display:flex;align-items:center;gap:5px;min-width:0;padding:2px 5px;font-size:9px;}
+  .material-file-line[hidden],.material-file-status[hidden]{display:none;}
+  .material-file-download{color:#0369a1;text-decoration:underline;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+  .material-file-print{display:none;}
+  .material-file-line button{flex-shrink:0;color:#475569;font-size:9px;min-height:18px;}
+  .material-file-line button:hover{color:#b91c1c;}
+  .material-file-status{font-size:9px;color:#0369a1;padding:2px 5px;overflow-wrap:anywhere;}
+  .material-file-status.is-error{color:#b91c1c;}
+  @media print{
+    .material-file-line{display:block;}
+    .material-file-line[hidden]{display:none;}
+    .material-file-print{display:block;white-space:normal;overflow-wrap:anywhere;color:#111827;}
+  }
   table.data textarea.material-details{display:block;overflow-wrap:anywhere;}
   .material-print{display:none;white-space:pre-wrap;overflow-wrap:anywhere;padding:2px 5px;}
   .notes-grid{
@@ -555,6 +573,8 @@
     .job-info-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
     .field{min-width:0;}
     .material-name-heading{width:40%;}
+    .material-file-line{flex-wrap:wrap;gap:2px 6px;}
+    .material-file-download{flex-basis:100%;}
     .section-title{flex-wrap:wrap;}
     .section-hint{flex-basis:100%;margin-left:0;}
     table.data{table-layout:fixed;}
@@ -766,12 +786,14 @@
 
 <div class="toast" id="toast">Saved</div>
 
+<script>window.__TICKET__ = __BOOTSTRAP__;</script>
+<script src="/jobticket/static/material-attachments.js?v=20261026-100mb"></script>
 <script>
   // ---------- Material rows ----------
   function createMaterialRowHTML(rowNum){
     return `
       <td><input type="text" list="acrylicOptions" placeholder="Type or pick…" data-row-input="mat" autocomplete="off" aria-label="Material ${rowNum}"/><span class="material-print material-name-print" aria-hidden="true"></span></td>
-      <td class="material-details-cell"><textarea class="material-details" rows="1" placeholder="Add details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
+      <td class="material-details-cell"><textarea class="material-details" rows="1" placeholder="Details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
       <td class="no-print"><button class="row-delete" onclick="deleteMaterialRow(this)" title="Delete row">×</button></td>
       <td class="material-completion-cell"><input type="checkbox" class="material-completed" aria-label="Completed ${rowNum}"/><span class="material-completion-print" aria-hidden="true">[ ]</span></td>
     `;
@@ -801,6 +823,7 @@
     const tr = document.createElement('tr');
     tr.innerHTML = createMaterialRowHTML(rowNum);
     tbody.appendChild(tr);
+    MaterialAttachments.initializeRow(tr);
     tr.addEventListener('input', function(){ updateMaterialRow(tr); });
     updateMaterialRow(tr);
     if(focusFirst){
@@ -813,6 +836,7 @@
   function deleteMaterialRow(btn){
     const tbody = document.getElementById('matBody');
     if(tbody.children.length > 1){
+      MaterialAttachments.cancel(btn.closest('tr'));
       btn.closest('tr').remove();
       renumberMaterialRows();
     } else {
@@ -826,6 +850,7 @@
       row.querySelector('input').setAttribute('aria-label', 'Material ' + (idx + 1));
       row.querySelector('.material-details').setAttribute('aria-label', 'Material details ' + (idx + 1));
       row.querySelector('.material-completed').setAttribute('aria-label', 'Completed ' + (idx + 1));
+      MaterialAttachments.labels(row);
     });
   }
 
@@ -877,6 +902,7 @@
     tbody.addEventListener('keydown', function(e){
       // Details use Shift+Enter for newlines; production instructions keep Enter.
       if(e.key === 'Enter' && !e.isComposing){
+        if(!e.target.matches('input[data-row-input],textarea[data-row-input],textarea.material-details')) return;
         if(e.target.tagName === 'TEXTAREA' &&
            (!e.target.classList.contains('material-details') || e.shiftKey)) return;
         e.preventDefault();
@@ -1058,6 +1084,7 @@
     autofillTicketDate();
     removeImage();
 
+    document.querySelectorAll('#matBody tr').forEach(MaterialAttachments.cancel);
     document.getElementById('matBody').innerHTML = '';
     document.getElementById('prodBody').innerHTML = '';
     addMaterialRow(false);
@@ -1104,7 +1131,7 @@
 
 
 
-<script>window.__TICKET__ = __BOOTSTRAP__;</script>
+
 <script>
 /* ---------- Job Ticket save layer (added for the server-backed version) ---------- */
 (function () {
@@ -1225,6 +1252,7 @@
       materials: mats.length ? mats : [''],
       materialDetails: materialDetails.length ? materialDetails : [''],
       materialCompleted: materialCompleted.length ? materialCompleted : [false],
+      ...MaterialAttachments.rowState(),
       steps: steps.length ? steps : [{ op: '', instr: '' }],
       image: (img && img.src && img.style.display !== 'none') ? currentImageUrl : null
     };
@@ -1252,8 +1280,11 @@
       if (inp) inp.value = val || '';
       tr.querySelector('.material-details').value = typeof materialDetails[idx] === 'string' ? materialDetails[idx] : '';
       tr.querySelector('.material-completed').checked = materialCompleted[idx] === true;
+      MaterialAttachments.restoreRow(tr, (s.materialRowIds || [])[idx], (s.materialFiles || [])[idx]);
       updateMaterialRow(tr);
     });
+
+    MaterialAttachments.acknowledge(MaterialAttachments.rowState());
 
     var steps = (s.steps && s.steps.length) ? s.steps : [{ op: '', instr: '' }];
     $('prodBody').innerHTML = '';
@@ -1302,10 +1333,12 @@
     if (inFlight) return inFlight.then(function (ok) { return ok ? save() : false; });
     if (!dirty) return Promise.resolve(true);
     var requestRevision = revision;
-    var body = JSON.stringify(collect());
+    var requestState = collect();
+    var body = JSON.stringify(requestState);
     inFlight = fetch(API, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: body })
-      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (r) { if (!r.ok) { var error = new Error('HTTP ' + r.status); error.status = r.status; throw error; } return r.json(); })
       .then(function () {
+        MaterialAttachments.acknowledge(requestState);
         savedRevision = requestRevision;
         dirty = revision !== savedRevision;
         if (dirty) status('Saving…', 'busy');
@@ -1313,7 +1346,7 @@
         if (teams) setTeams('update queued', 'pending');
         return true;
       })
-      .catch(function () { status('Not saved — check connection', 'error'); return false; })
+      .catch(function (error) { status(error.status === 409 ? 'Ticket changed elsewhere — reload before saving' : 'Not saved — check connection', 'error'); return false; })
       .then(function (ok) {
         inFlight = null;
         return ok;
@@ -1322,8 +1355,9 @@
   }
 
   /* ---- what counts as a change ---- */
-  document.addEventListener('input', scheduleSave, true);
-  document.addEventListener('change', scheduleSave, true);
+  function editableChange(e) { if (!e.target.matches('.material-file-input')) scheduleSave(); }
+  document.addEventListener('input', editableChange, true);
+  document.addEventListener('change', editableChange, true);
   ['matBody', 'prodBody'].forEach(function (id) {
     var el = $(id);
     if (el && window.MutationObserver) {
@@ -1332,7 +1366,7 @@
   });
 
   window.addEventListener('beforeunload', function (e) {
-    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+    if (dirty || MaterialAttachments.pendingCount() > 0) { e.preventDefault(); e.returnValue = ''; }
   });
 
   /* ---- image upload goes to the server, not into the page ---- */

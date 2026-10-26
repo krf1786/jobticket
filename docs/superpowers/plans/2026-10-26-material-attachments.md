@@ -29,9 +29,9 @@
 **Consumes:** Existing FastAPI app, DB_PATH, PREFIX, get_ticket and material JSON arrays.
 **Produces:** POST /jobticket/api/{job}/attachments -> {ok:true,file:{id,name,size,url}}; GET /jobticket/api/{job}/attachments/{id} -> original file download. State fields materialRowIds:string[] and materialFiles:(null|metadata)[] aligned with materials.
 
-- [ ] Write real isolated HTTP/SQLite tests; prove new upload/download and legacy protections fail before implementation.
-- [ ] Implement streaming bounds, canonical registry metadata, safe downloads, stable-ID validation and omission protection.
-- [ ] Adapt existing isolated test harnesses to include deployed corkboard/new module; run unittest discovery.
+- [x] Write real isolated HTTP/SQLite tests; prove new upload/download and legacy protections fail before implementation.
+- [x] Implement streaming bounds, canonical registry metadata, safe downloads, stable-ID validation and omission protection.
+- [x] Adapt existing isolated test harnesses to include deployed corkboard/new module; run unittest discovery.
 
 ### Task 2: Row controls and browser integration (root)
 
@@ -39,10 +39,10 @@
 **Consumes:** Task 1 HTTP contract and canonical metadata; the existing serialized save queue.
 **Produces:** Attach/Download/Replace/Remove UI, stable IDs in collect/restore, pending-upload unload protection and printable names.
 
-- [ ] Write browser tests against a real isolated backend; demonstrate missing attachment behavior.
-- [ ] Implement compact controls, size validation, upload generation guards, failed-replacement retention and row-safe persistence.
-- [ ] Test exact bytes and saved reload, keyboard, scratch behavior, duplicate rows, removal, failure and print.
-- [ ] Run current frontend suites and real backend integration; inspect rendered desktop/mobile/print.
+- [x] Write browser tests against a real isolated backend; demonstrate missing attachment behavior.
+- [x] Implement compact controls, size validation, upload generation guards, failed-replacement retention and row-safe persistence.
+- [x] Test exact bytes and saved reload, keyboard, scratch behavior, duplicate rows, removal, failure and print.
+- [x] Run current frontend suites and real backend integration; inspect rendered desktop/mobile/print.
 
 ### Task 3: Review and release
 
