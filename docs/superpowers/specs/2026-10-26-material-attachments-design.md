@@ -1,6 +1,6 @@
 # Material file attachments
 
-Status: proposed for user approval; no product code changed.
+Status: approved by the user on October 26, with a 100 MB limit.
 
 ## Outcome and approach
 
@@ -10,7 +10,7 @@ the user chose direct attachments so the ticket can carry its own file copy.
 
 ## Proposed behavior
 
-- One file per material row, initially up to 50 MB. PDF, Illustrator and other
+- One file per material row, up to 100 MB (104,857,600 bytes). PDF, Illustrator and other
   production files are downloaded as files; uploaded content is not executed.
 - A compact Attach file control in the material-details cell. Once attached,
   show its filename and Download, Replace and Remove controls. Empty rows keep
