@@ -326,6 +326,9 @@ def job_ticket(job: str, name: str = ""):
     return HTMLResponse(render(state, row["job_id"], row["job_name"]))
 
 
+from corkboard import create_router as create_corkboard_router
+app.include_router(create_corkboard_router(BASE / "corkboard.db"))
+
 app.mount(f"{PREFIX}/static", StaticFiles(directory=STATIC), name="static")
 
 if __name__ == "__main__":
