@@ -550,5 +550,43 @@
     "rollback_executed": false,
     "graph_renderer_enabled": false,
     "production_pdf_teams_delivery_verified": false
+  },
+  "text_formatting_and_qty_deployment": {
+    "source_commit": "54f6cd0a4d8f1854a46db33416fef6d8b082c977",
+    "initial_source_commit": "6cacd633956bf100b1f9907a8bd05ff488a80a5b",
+    "started_at_utc": "2026-11-02T23:27:27.497042+00:00",
+    "css_followup_verified_at_utc": "2026-11-02T23:31:59.328403+00:00",
+    "fixture_restored_at_utc": "2026-11-02T23:33:11.635621+00:00",
+    "status": "live_verified",
+    "backup_directory": "/root/jobticket/release-backups/formatting-20261102T232720Z-f628e01f",
+    "database_backup_integrity": {
+      "tickets.db": "ok",
+      "corkboard.db": "ok"
+    },
+    "service_restarted": true,
+    "css_followup_restarted": false,
+    "runtime_sha256": {
+      "app.py": "cd819a1fea6c4adb2512ac537446e2927a687c68ef24394b07ee4c47806bccad",
+      "ticket.html": "57fed31e7da85552443347c319841e8dbe227098a3347fe6de985637ab19eabd",
+      "rich_text.py": "44b943a9db6780b50332fd75d1a280724cf41bd3db3c6812675a68473ed0a75a",
+      "static/ticket-rich-text.js": "99ae724d4f612d3d93df43309e3519acbd76f98835fa1adadcfc707be026fb48",
+      "static/ticket-rich-text.css": "19ef9f5ee48525592c02e86f34657483b3c3d23dcb9875a068db7d0bdb70099e"
+    },
+    "backend_tests": 63,
+    "focused_integration_checks": 50,
+    "save_header_date_image_checks": 60,
+    "variable_data_checks": 24,
+    "standalone_editor_fixture": "passed",
+    "live_checks": 22,
+    "live_put_requests": 1,
+    "live_write_scope": "VERIFY-MATERIALS-20261021 only",
+    "all_25_ticket_rows_unchanged_after_exact_restoration": true,
+    "attachment_registry_and_corkboard_rows_unchanged": true,
+    "protected_runtime_assets_retained": 13,
+    "page_errors": [],
+    "unauthorized_requests": [],
+    "rollback_executed": false,
+    "graph_renderer_enabled": false,
+    "production_teams_pdf_delivery_verified": false
   }
 }

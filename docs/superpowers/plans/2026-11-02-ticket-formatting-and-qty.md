@@ -65,7 +65,7 @@
 
 ### Task 4: Independent review and release
 
-- [ ] Fresh reviewer checks full diff, spec, tests and Review Focus; fix important findings with failing/passing regressions.
-- [ ] Recheck production app/template/module/static/config hashes and health. Preserve newer corkboard module/config. Prepare guarded atomic replacement of only changed runtime code/assets, consistent DB backups, production compile and code-only rollback.
-- [ ] Publish exact verified commit, restart only for backend changes and verify normalized public source/health. Use only labeled synthetic fixture for live feature writes, guard final savedAt/state and restore original JSON/timestamps exactly. Audit all other tickets/attachments/board data.
-- [ ] Record release evidence, push feature branch and open/attach draft PR without merging. Final report distinguishes implementation/local/live verification and remaining limits.
+- [x] Fresh reviewer checks full diff, spec, tests and Review Focus; fix important findings with failing/passing regressions.
+- [x] Recheck production app/template/module/static/config hashes and health. Preserve newer corkboard module/config. Prepare guarded atomic replacement of only changed runtime code/assets, consistent DB backups, production compile and code-only rollback.
+- [x] Publish exact verified commit, restart only for backend changes and verify normalized public source/health. Use only labeled synthetic fixture for live feature writes, guard final savedAt/state and restore original JSON/timestamps exactly. Audit all other tickets/attachments/board data.
+- [x] Record release evidence, push feature branch and open/attach draft PR without merging. Final report distinguishes implementation/local/live verification and remaining limits.
