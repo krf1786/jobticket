@@ -1,6 +1,7 @@
 # Job Ticket text formatting
 
-Status: proposed. Kyle requested three highlighter colors, bold, font size,
+Status: approved by Kyle on November 2, 2026, with the additional material QTY
+column below. Kyle requested three highlighter colors, bold, font size,
 text color and additional formatting, and chose all text fields including job
 names and material names. This proposal is for the Job Ticket editor.
 
@@ -71,6 +72,12 @@ becomes necessary, choose and document it before implementation; do not add a
 runtime CDN dependency or external data service.
 
 ## Boundaries and verification
+
+Add a narrow **QTY** column between Material and Material Details, wide enough
+for two digits. Each row starts blank and accepts a nonnegative whole-number
+quantity. Column width is a layout choice, not a two-digit maximum. Quantities
+save/reload, remain aligned through row addition/deletion/reset and print. Older
+tabs must not silently erase meaningful quantities or guess their row mapping.
 
 Preserve all ticket fields, images, 100 MB attachments, material completion,
 saved job identity, date defaults, serialized saves and toolbar removals. No
