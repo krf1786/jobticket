@@ -156,7 +156,7 @@ def default_state(job_name: str) -> dict:
     return {
         "jobName": job_name, "date": "", "qty": "", "due": "", "time": "",
         "materials": [""], "steps": [{"op": "", "instr": ""}],
-        "notes": "", "image": None,
+        "notes": "", "image": None, "variableData": False,
     }
 
 
@@ -246,6 +246,8 @@ async def api_put(job: str, request: Request):
         raise HTTPException(400, "body must be JSON")
     if not isinstance(state, dict):
         raise HTTPException(400, "body must be a JSON object")
+    if "variableData" in state and not isinstance(state["variableData"], bool):
+        raise HTTPException(400, "variableData must be a boolean")
 
     job_name = str(state.get("jobName") or "")
     with _lock, db() as conn:
@@ -253,6 +255,8 @@ async def api_put(job: str, request: Request):
         now = time.time()
         if previous:
             previous_state = json.loads(previous["data"])
+            if "variableData" not in state and "variableData" in previous_state:
+                state["variableData"] = previous_state["variableData"]
             preserve_material_fields(state, previous_state)
             attachments.prepare_material_fields(state, previous_state, conn, job_id, PREFIX)
             # updated_at doubles as the saved revision. Keep it strictly

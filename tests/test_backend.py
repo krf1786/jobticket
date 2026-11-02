@@ -116,6 +116,28 @@ class BackendTests(unittest.TestCase):
         self.put(self.legacy(notes='A second old-tab edit'))
         self.assertEqual(self.state().get('materialDetails'), self.base['materialDetails'])
 
+    def test_old_tabs_preserve_variable_data_when_omitted(self):
+        self.put(dict(self.base, variableData=True))
+        self.put(dict(self.base, notes='An older tab edited notes'))
+        self.assertIs(self.state().get('variableData'), True)
+        self.assertEqual(self.state()['notes'], 'An older tab edited notes')
+
+    def test_variable_data_can_be_explicitly_unchecked(self):
+        self.put(dict(self.base, variableData=True))
+        self.put(dict(self.base, variableData=False))
+        self.assertIs(self.state().get('variableData'), False)
+        self.put(dict(self.base, notes='Another old-tab edit'))
+        self.assertIs(self.state().get('variableData'), False)
+
+    def test_variable_data_requires_a_boolean_without_writing(self):
+        before = self.app.api_get('TEST01')
+        for invalid in ('false', 'true', 0, 1, None, [], {}):
+            with self.subTest(value=invalid):
+                with self.assertRaises(self.app.HTTPException) as error:
+                    self.put(dict(self.base, variableData=invalid))
+                self.assertEqual(error.exception.status_code, 400)
+                self.assertEqual(self.app.api_get('TEST01'), before)
+
     def test_legacy_material_changes_with_details_reject_without_writing(self):
         for materials in (['White acrylic'], ['White acrylic', 'Clear acrylic'], ['Renamed acrylic', 'White acrylic'], ['']):
             with self.subTest(materials=materials):
