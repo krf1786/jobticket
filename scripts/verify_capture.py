@@ -42,11 +42,11 @@ def main():
         hostile = bootstrap(True)
         hostile["jobName"] = hostile["state"]["jobName"] = "</script><script>alert(1)</script>__TITLE____BOOTSTRAP__"
         safe = render(hostile)
-        assert len(re.findall(r"<script\b", safe)) == 5
+        assert len(re.findall(r"<script\b", safe)) == 6
         assert json.loads(re.search(r"window\.__TICKET__ = (.*?);</script>", safe, re.S)[1]) == hostile
         script_nodes = re.findall(r"<script([^>]*)>(.*?)</script>", render(bootstrap(True)), re.S)
         external = [attrs for attrs, body in script_nodes if 'src=' in attrs]
-        assert external == [' src="/jobticket/static/material-attachments.js?v=20261026-100mb"', ' src="/jobticket/static/corkboard-preview.js?v=20261026-shared-board"']
+        assert external == [' src="/jobticket/static/material-attachments.js?v=20261026-100mb"', ' src="/jobticket/static/ticket-rich-text.js?v=20261102-formatting-qty"', ' src="/jobticket/static/corkboard-preview.js?v=20261026-shared-board"']
         scripts = [body for attrs, body in script_nodes if 'src=' not in attrs]
         assert len(scripts) == 3
         for index, script in enumerate(scripts):
@@ -54,7 +54,7 @@ def main():
             path.write_text(script)
             subprocess.run(["node", "--check", str(path)], check=True)
 
-    for filename in ('material-attachments.js', 'corkboard-preview.js'):
+    for filename in ('material-attachments.js', 'corkboard-preview.js', 'ticket-rich-text.js'):
         subprocess.run(['node', '--check', str(ROOT / 'frontend/static' / filename)], check=True)
 
     server = ThreadingHTTPServer(("127.0.0.1", 0), PreviewHandler)
@@ -62,7 +62,7 @@ def main():
     worker.start()
     base = f"http://127.0.0.1:{server.server_port}"
     try:
-        for path in ("/jobticket/static/material-attachments.js", "/jobticket/static/corkboard-preview.js", "/jobticket/", "/jobticket/DEMO01", "/jobticket/static/fonts.css", "/jobticket/static/fonts/inter-latin-400-normal.woff2"):
+        for path in ("/jobticket/static/ticket-rich-text.js", "/jobticket/static/ticket-rich-text.css", "/jobticket/static/material-attachments.js", "/jobticket/static/corkboard-preview.js", "/jobticket/", "/jobticket/DEMO01", "/jobticket/static/fonts.css", "/jobticket/static/fonts/inter-latin-400-normal.woff2"):
             with urlopen(base + path) as response:
                 assert response.status == 200
                 assert response.headers["X-Preview-Only"] == "no-storage-no-upstream"

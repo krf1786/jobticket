@@ -105,7 +105,9 @@ with tempfile.TemporaryDirectory(prefix='jobticket-variable-data-ui-') as direct
         board_before = client.get('/jobticket/corkboard/api').json()
 
         def unchanged_adjacent(expected):
-            return {key: value for key, value in expected.items() if key != 'variableData'} == original_state
+            return ({key: value for key, value in expected.items() if key not in ('variableData', 'richText', 'productionRowIds', 'materialQuantities')} == original_state
+                    and expected.get('richText') == {'version': 1, 'fields': {}}
+                    and expected.get('materialQuantities') == [''] * len(original_state['materials']))
 
         def legacy_payload():
             return {key: value for key, value in state().items()

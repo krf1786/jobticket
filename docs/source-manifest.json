@@ -30,7 +30,7 @@
     "assessment": "Older template; backend modules subsequently matched deployed source byte for byte; installer not included or executed"
   },
   "files": {
-    "frontend/ticket.html": "c919a65b677f2efe029800e06f054cc9631dea48ec9fcb71940e534f839a47e8",
+    "frontend/ticket.html": "57fed31e7da85552443347c319841e8dbe227098a3347fe6de985637ab19eabd",
     "frontend/static/fonts.css": "701248aa011a9e8ed0d69c8847b04e193cd67693f695868ad16fd738fe7e9f42",
     "frontend/TAILWIND-LICENSE.txt": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985",
     "frontend/static/fonts/OFL.txt": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345",
@@ -38,7 +38,9 @@
     "frontend/static/fonts/inter-latin-600-normal.woff2": "f9a06e79cd3a2a20951c0f0e28f66dd0e6d3fda73911d640a2125c8fcb78f21a",
     "frontend/static/fonts/inter-latin-700-normal.woff2": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491",
     "frontend/static/corkboard-preview.js": "8cad7f1cd7a2d0e322f3db77324f4413521ad8aff66b2cb17c6b3e5c7c59c589",
-    "frontend/static/material-attachments.js": "449e2b04dd8dcf5f2ab888f1c0f6c267778aad674d68d36fc70e07dad465cbd2"
+    "frontend/static/material-attachments.js": "449e2b04dd8dcf5f2ab888f1c0f6c267778aad674d68d36fc70e07dad465cbd2",
+    "frontend/static/ticket-rich-text.js": "99ae724d4f612d3d93df43309e3519acbd76f98835fa1adadcfc707be026fb48",
+    "frontend/static/ticket-rich-text.css": "19ef9f5ee48525592c02e86f34657483b3c3d23dcb9875a068db7d0bdb70099e"
   },
   "captured_template": {
     "commit": "57f8f6b28005d7511b67fc95c40b6bbd7695bd69",

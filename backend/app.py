@@ -20,7 +20,7 @@ from fastapi import FastAPI, HTTPException, Request, UploadFile, File
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-import graph, pdf, attachments
+import graph, pdf, attachments, rich_text
 
 BASE     = pathlib.Path(__file__).resolve().parent
 DB_PATH  = BASE / "tickets.db"
@@ -259,6 +259,7 @@ async def api_put(job: str, request: Request):
                 state["variableData"] = previous_state["variableData"]
             preserve_material_fields(state, previous_state)
             attachments.prepare_material_fields(state, previous_state, conn, job_id, PREFIX)
+            rich_text.prepare_state(state, previous_state)
             # updated_at doubles as the saved revision. Keep it strictly
             # increasing even for same-tick saves or a backwards clock step.
             now = max(now, math.nextafter(previous["updated_at"], math.inf))
@@ -266,6 +267,7 @@ async def api_put(job: str, request: Request):
                          (job_name, json.dumps(state), now, job_id))
         else:
             attachments.prepare_material_fields(state, None, conn, job_id, PREFIX)
+            rich_text.prepare_state(state, None)
             conn.execute("INSERT INTO tickets (job_id, job_name, data, created_at, updated_at)"
                          " VALUES (?,?,?,?,?)", (job_id, job_name, json.dumps(state), now, now))
     return {"ok": True, "savedAt": now}
