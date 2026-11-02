@@ -40,7 +40,7 @@
     "frontend/static/corkboard-preview.js": "8cad7f1cd7a2d0e322f3db77324f4413521ad8aff66b2cb17c6b3e5c7c59c589",
     "frontend/static/material-attachments.js": "449e2b04dd8dcf5f2ab888f1c0f6c267778aad674d68d36fc70e07dad465cbd2",
     "frontend/static/ticket-rich-text.js": "99ae724d4f612d3d93df43309e3519acbd76f98835fa1adadcfc707be026fb48",
-    "frontend/static/ticket-rich-text.css": "c750cc5e39c518bdfaa60bfd00d8af5c6bce9093b3fd38da1b50b75cc23bc1d5"
+    "frontend/static/ticket-rich-text.css": "19ef9f5ee48525592c02e86f34657483b3c3d23dcb9875a068db7d0bdb70099e"
   },
   "captured_template": {
     "commit": "57f8f6b28005d7511b67fc95c40b6bbd7695bd69",
