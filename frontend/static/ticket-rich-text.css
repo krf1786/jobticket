@@ -4,3 +4,7 @@
 
 /* Visual ticket exports are SVGs; keep editing controls out of their image. */
 svg .rich-toolbar,svg .rich-suggest-button,svg .rich-suggestions{display:none!important}
+
+/* Keep Print and save status together, followed by one compact formatting row. */
+.toolbar #saveStatus{order:1}.toolbar .rich-toolbar{order:2;flex:0 0 100%;padding:0}
+svg .material-quantity-buttons{display:none!important}
