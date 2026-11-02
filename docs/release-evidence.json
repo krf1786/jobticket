@@ -518,5 +518,37 @@
     "production_graph_renderer_enabled": false,
     "production_teams_delivery_verified": false,
     "first_cleanup_helper_error": "SQLite Row serialization fixed; exact restoration and full live run repeated successfully"
+  },
+  "variable_data_deployment": {
+    "source_commit": "16fa549cfda586e793c8d9a335d1c4efa2a62f59",
+    "started_at_utc": "2026-11-02T21:19:35.478672+00:00",
+    "verified_at_utc": "2026-11-02T21:20:28.531615+00:00",
+    "status": "live_verified",
+    "backup_directory": "/root/jobticket/release-backups/variable-data-20261102T211931Z-9aa0300a",
+    "database_backup_integrity": {
+      "tickets.db": "ok",
+      "corkboard.db": "ok"
+    },
+    "runtime_sha256": {
+      "app.py": "be82c24344b99c000195c909958154c8449ae9b27e3ee3f0b5f81ec361b7e41f",
+      "ticket.html": "c919a65b677f2efe029800e06f054cc9631dea48ec9fcb71940e534f839a47e8"
+    },
+    "service_restarted": true,
+    "protected_runtime_files_unchanged": 13,
+    "all_25_ticket_rows_unchanged_after_restoration": true,
+    "attachment_registry_and_corkboard_rows_unchanged": true,
+    "synthetic_ticket_restored_exactly": true,
+    "live_write_scope": "VERIFY-MATERIALS-20261021 only",
+    "live_put_requests": 2,
+    "customer_ticket_writes": 0,
+    "backend_tests": 43,
+    "focused_isolated_checks": 24,
+    "existing_frontend_scenarios": 45,
+    "live_checks": 16,
+    "browser_page_errors": [],
+    "unauthorized_requests": [],
+    "rollback_executed": false,
+    "graph_renderer_enabled": false,
+    "production_pdf_teams_delivery_verified": false
   }
 }

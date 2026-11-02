@@ -87,6 +87,17 @@
     border-radius:4px;padding:1px 6px;
     font-size:9px;letter-spacing:.05em;
   }
+  .variable-data-control{
+    display:inline-flex;align-items:center;gap:5px;margin-left:8px;
+    cursor:pointer;letter-spacing:normal;text-transform:none;
+    flex-shrink:0;
+  }
+  .variable-data-control input{
+    width:16px;height:16px;margin:0;accent-color:#15803d;cursor:pointer;
+  }
+  .variable-data-label{display:none;color:#15803d;font-size:10px;font-weight:700;}
+  .variable-data-control input:checked + .variable-data-label{display:inline;}
+  .variable-data-control{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
   .section-hint{
     margin-left:auto;
     font-size:8.5px;
@@ -655,7 +666,7 @@
 
     <!-- JOB INFORMATION, MATERIALS AND REFERENCE IMAGE -->
     <section class="job-overview">
-      <h2 class="section-title"><span class="num">01</span>Job Information</h2>
+      <h2 class="section-title"><span class="num">01</span>Job Information<label class="variable-data-control" title="Variable Data"><input type="checkbox" id="variableData" aria-label="Variable Data"><span class="variable-data-label">Variable Data</span></label></h2>
       <div class="job-overview-grid">
         <div class="job-overview-left">
       <div class="job-info-grid">
@@ -1081,6 +1092,7 @@
     if(!confirm('Clear all fields and start fresh?')) return;
     const ids = ['jobName','dateField','timeField','qtyField','dueField','notes'];
     ids.forEach(id=>{ const el = document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('variableData').checked = false;
     autofillTicketDate();
     removeImage();
 
@@ -1244,6 +1256,7 @@
     var img = $('imgPreview');
     return {
       jobName: $('jobName').value,
+      variableData: $('variableData').checked,
       date:    $('dateField').value,
       qty:     $('qtyField').value,
       due:     $('dueField').value,
@@ -1263,6 +1276,7 @@
   /* ---- write the form ---- */
   function restore(s) {
     if (!s) return;
+    $('variableData').checked = s.variableData === true;
     if (s.jobName) $('jobName').value = s.jobName;
     ['date:dateField', 'qty:qtyField', 'due:dueField', 'time:timeField', 'notes:notes']
       .forEach(function (pair) {
