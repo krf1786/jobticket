@@ -38,12 +38,16 @@ def row_data(state, field):
     return rows
 
 
-def fields_for(state):
+def fields_for(state, needed=None):
     fields = {k: state.get(k, '') for k in ('jobName', 'notes')}
     for row_id, index in zip(state.get('materialRowIds', []), range(len(state.get('materials', [])))):
         fields[f'material:{row_id}:name'] = state['materials'][index]
-        details = state.get('materialDetails', [])
-        fields[f'material:{row_id}:details'] = details[index] if index < len(details) else ''
+        key = f'material:{row_id}:details'
+        if needed is None or key in needed:
+            details = state.get('materialDetails', [])
+            if not isinstance(details, list):
+                invalid('Material details must be an array of strings.')
+            fields[key] = details[index] if index < len(details) else ''
     for row_id, row in zip(state.get('productionRowIds', []), state.get('steps', [])):
         if not isinstance(row, dict):
             invalid('Invalid production row.')
@@ -103,10 +107,14 @@ def prepare_state(state: dict, previous: dict | None) -> None:
     previous = previous or {}
     materials = row_data(state, 'materials')
     steps = row_data(state, 'steps')
+    if 'materialDetails' in state:
+        details = state['materialDetails']
+        if (not isinstance(details, list) or len(details) > MAX_ROWS
+                or any(not isinstance(value, str) for value in details)):
+            invalid('Material details must be an array of strings.')
     material_ids = ids_for(state, 'materialRowIds', materials)
     production_ids = ids_for(state, 'productionRowIds', steps)
     old_rich = normalize(previous.get('richText', EMPTY))
-    old_fields = fields_for(previous)
     if production_ids is None and 'productionRowIds' in previous and steps == previous.get('steps', []):
         state['productionRowIds'] = copy.deepcopy(previous['productionRowIds'])
     if material_ids is None and 'materialRowIds' in previous and unchanged_materials(state, previous):
@@ -122,6 +130,7 @@ def prepare_state(state: dict, previous: dict | None) -> None:
         # Omitted sidecars are old clients. Exact IDs permit intentional row
         # deletion, while missing IDs cannot establish which duplicate survived.
         preserved = {}
+        old_fields = fields_for(previous, old_rich['fields']) if old_rich['fields'] else {}
         for key, runs in old_rich['fields'].items():
             if key in fields:
                 if fields[key] != old_fields.get(key):

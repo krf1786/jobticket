@@ -75,3 +75,70 @@ class RichTextTests(unittest.TestCase):
         old=self.state(); old['materialQuantities']=['7','21']; s=self.state(); s['materialRowIds']=['m2','m1']; s['materialDetails']=['b','a']; prepare_state(s,old); self.assertEqual(s['materialQuantities'],['21','7'])
 
 if __name__=='__main__': unittest.main()
+
+class RichTextApiShapeTests(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from test_backend import load_isolated_backend
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        import sqlite3
+        from unittest.mock import patch
+        connections=[]
+        original_connect=sqlite3.connect
+        def connect(*args, **kwargs):
+            kwargs['check_same_thread']=False
+            conn=original_connect(*args, **kwargs); connections.append(conn); return conn
+        connection_patch=patch.object(sqlite3,'connect',connect)
+        connection_patch.start()
+        self.addCleanup(connection_patch.stop)
+        self.addCleanup(lambda: [conn.close() for conn in connections])
+        self.app = load_isolated_backend(Path(self.directory.name))
+        self.base = {'jobName':'SHAPE01 test','notes':'','materials':['Same'],
+                     'materialDetails':['detail'],'materialRowIds':['m1'],'materialFiles':[None],
+                     'steps':[], 'productionRowIds':[], 'richText':copy.deepcopy(EMPTY)}
+        self.assertEqual(self.request('PUT',self.base).status_code,200)
+    def request(self, method, state=None):
+        import asyncio
+        import httpx
+        async def send():
+            async with httpx.AsyncClient(transport=httpx.ASGITransport(app=self.app.app,raise_app_exceptions=False),base_url='http://testserver') as client:
+                return await client.request(method,'/jobticket/api/SHAPE01',**({'json':state} if state is not None else {}))
+        return asyncio.run(send())
+    def test_malformed_material_details_rejected_without_write(self):
+        before=self.request('GET').json()
+        for value in (None,17,{'0':'detail'}):
+            with self.subTest(value=value):
+                state=copy.deepcopy(self.base); state['materialDetails']=value
+                self.assertEqual(self.request('PUT',state).status_code,400)
+                self.assertEqual(self.request('GET').json(),before)
+    def test_unformatted_legacy_malformed_details_can_be_repaired(self):
+        import json
+        for value in (None,17,{'0':'detail'}):
+            with self.subTest(value=value):
+                legacy=copy.deepcopy(self.base); legacy.pop('richText'); legacy['materialDetails']=value
+                with self.app.db() as conn:
+                    conn.execute('UPDATE tickets SET data=? WHERE job_id=?',(json.dumps(legacy),'SHAPE01'))
+                self.assertEqual(self.request('PUT',copy.deepcopy(self.base)).status_code,200)
+                self.assertEqual(self.request('GET').json()['state']['materialDetails'],['detail'])
+    def test_legacy_bad_details_with_unrelated_formatting_can_be_repaired(self):
+        import json
+        legacy=copy.deepcopy(self.base)
+        legacy['richText']['fields']['jobName']=[{'text':legacy['jobName'],'bold':True}]
+        legacy['materialDetails']=None
+        with self.app.db() as conn:
+            conn.execute('UPDATE tickets SET data=? WHERE job_id=?',(json.dumps(legacy),'SHAPE01'))
+        state=copy.deepcopy(self.base); state.pop('richText')
+        self.assertEqual(self.request('PUT',state).status_code,200)
+        self.assertEqual(self.request('GET').json()['state']['richText'],legacy['richText'])
+    def test_legacy_bad_formatted_details_rejects_without_guessing(self):
+        import json
+        legacy=copy.deepcopy(self.base)
+        legacy['richText']['fields']['material:m1:details']=[{'text':'detail','bold':True}]
+        legacy['materialDetails']=None
+        with self.app.db() as conn:
+            conn.execute('UPDATE tickets SET data=? WHERE job_id=?',(json.dumps(legacy),'SHAPE01'))
+        before=self.request('GET').json()
+        state=copy.deepcopy(self.base); state.pop('richText')
+        self.assertEqual(self.request('PUT',state).status_code,400)
+        self.assertEqual(self.request('GET').json(),before)
