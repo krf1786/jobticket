@@ -36,10 +36,10 @@
 
 **Interface:** `prepare_state(state:dict, previous:dict|None)->None`, called after attachments.prepare_material_fields and before any ticket write. It validates/normalizes richText, productionRowIds and materialQuantities, strips richTextBase and preserves safe legacy omissions. Raise FastAPI HTTPException400 for invalid input,409 for stale/ambiguous saves; no DB/files/network side effects.
 
-- [ ] Write failing tests for runs/plain equality, malicious keys/colors/sizes, Unicode, valid marks, exact false/empty clearing, stale baseline, stable production IDs, old-tab preservation/rejection, QTY alignment/validation and duplicate-row deletion.
-- [ ] Run with existing venv Python unittest; watch expected missing-module/behavior failures.
-- [ ] Implement prepare_state with bounded counts/text/runs, literal data only. Preserve omitted formatted fields only when associated exact text/identity still exists; reject ambiguous formatted-row changes. Preserve omitted QTY by safe IDs or unchanged arrays, reject ambiguous meaningful values.
-- [ ] Run tests and existing backend/storage tests; report results. Only own files may be committed.
+- [x] Write failing tests for runs/plain equality, malicious keys/colors/sizes, Unicode, valid marks, exact false/empty clearing, stale baseline, stable production IDs, old-tab preservation/rejection, QTY alignment/validation and duplicate-row deletion.
+- [x] Run with existing venv Python unittest; watch expected missing-module/behavior failures.
+- [x] Implement prepare_state with bounded counts/text/runs, literal data only. Preserve omitted formatted fields only when associated exact text/identity still exists; reject ambiguous formatted-row changes. Preserve omitted QTY by safe IDs or unchanged arrays, reject ambiguous meaningful values.
+- [x] Run tests and existing backend/storage tests; report results. Only own files may be committed.
 
 ### Task 2: Rich editing module (independent browser module)
 
@@ -47,21 +47,21 @@
 
 **Interfaces:** expose `window.TicketRichText={mountAll(root=document),restore(state),collect(),acknowledge(sentState),sync(source),focus(source),isToolbarControl(target)}`. Native inputs/textareas marked `data-rich-key` remain in DOM with their IDs/value/row attributes, hidden only after mounting. Their visible sibling `.rich-editor[data-rich-key]` is the editing surface. `collect()` returns `{richText,richTextBase}`. restore reads state.richText, binds only exact matching plain strings, resets editing history; acknowledge uses only the sent snapshot, never newer edits. sync reflects programmatic source.value changes, clearing obsolete marks; focus targets visible editor.
 
-- [ ] Write/run failing standalone browser fixtures for exact strings/Unicode, selected bold/italic/underline/size/color/three highlights, collapsed typing, Clear Formatting, undo/redo, literal paste, selector focus and suggestions.
-- [ ] Implement safe text-node/span rendering and model/history. Never store or trust arbitrary HTML. Mount toolbar in `.toolbar` but keep it separate from status/Print. Toolbar controls must retain selection, expose accessible labels/states, support touch/narrow layouts and be hidden in print.
-- [ ] Synchronize source.value and emit one bubbling source input for actual text/format edits. Proxy Enter to the native source as a cancelable KeyboardEvent so existing row/header handlers run; if uncanceled, insert line break only for multiline editors. Keep native clipboard/selection editing safe and support IME.
-- [ ] Material sources with list=acrylicOptions expose an accessible suggestion picker using the same options. Hidden sources remain the plain contract; no transparent overlays. Hide obsolete plain print mirrors in rich hosts; formatted editor prints directly.
-- [ ] Run fixture checks; report exact API/selection/history limits and results. Only own files may be committed.
+- [x] Write/run failing standalone browser fixtures for exact strings/Unicode, selected bold/italic/underline/size/color/three highlights, collapsed typing, Clear Formatting, undo/redo, literal paste, selector focus and suggestions.
+- [x] Implement safe text-node/span rendering and model/history. Never store or trust arbitrary HTML. Mount toolbar in `.toolbar` but keep it separate from status/Print. Toolbar controls must retain selection, expose accessible labels/states, support touch/narrow layouts and be hidden in print.
+- [x] Synchronize source.value and emit one bubbling source input for actual text/format edits. Proxy Enter to the native source as a cancelable KeyboardEvent so existing row/header handlers run; if uncanceled, insert line break only for multiline editors. Keep native clipboard/selection editing safe and support IME.
+- [x] Material sources with list=acrylicOptions expose an accessible suggestion picker using the same options. Hidden sources remain the plain contract; no transparent overlays. Hide obsolete plain print mirrors in rich hosts; formatted editor prints directly.
+- [x] Run fixture checks; report exact API/selection/history limits and results. Only own files may be committed.
 
 ### Task 3: Ticket integration and QTY (root)
 
 **Files:** modify `frontend/ticket.html`, `backend/app.py`, test loaders/preview scripts and appropriate current-source manifests; create `scripts/formatting-checks.py`.
 
-- [ ] Add backend import/call and isolation loader support for rich_text, then run Task1 and all existing backend tests.
-- [ ] Add QTY heading/input/print mirror (36px minimum desktop/print, 34px narrow); use explicit material-name selectors so the new numeric input cannot steal material identity. Add collect/restore/reset and row labels. QTY Enter adds next material row.
-- [ ] Load new CSS/JS before row initialization. Tag native prose sources with stable formatting keys after assigning/restoring row IDs. Mount new rows, restore full state after plain restoration, collect sidecar/IDs, acknowledge only sent snapshots, use visible-editor focus and ignore rich toolbar/view input events in generic autosave (source events save).
-- [ ] Verify real isolated API/browser save/reload, selected formatting across fields, quantity alignment/duplicate deletion, suggestions, Enter/newlines, files/completion/Variable Data/header/date regressions, legacy/stale save failures, undo/redo/paste, mobile and long formatted print. Adapt obsolete test selectors to actual visible editors rather than bypassing UI behavior.
-- [ ] Inspect screenshots/rasterized PDFs and current preview export. Update hashes and documentation after final code; commit verified source.
+- [x] Add backend import/call and isolation loader support for rich_text, then run Task1 and all existing backend tests.
+- [x] Add QTY heading/input/print mirror (36px minimum desktop/print, 34px narrow); use explicit material-name selectors so the new numeric input cannot steal material identity. Add collect/restore/reset and row labels. QTY Enter adds next material row.
+- [x] Load new CSS/JS before row initialization. Tag native prose sources with stable formatting keys after assigning/restoring row IDs. Mount new rows, restore full state after plain restoration, collect sidecar/IDs, acknowledge only sent snapshots, use visible-editor focus and ignore rich toolbar/view input events in generic autosave (source events save).
+- [x] Verify real isolated API/browser save/reload, selected formatting across fields, quantity alignment/duplicate deletion, suggestions, Enter/newlines, files/completion/Variable Data/header/date regressions, legacy/stale save failures, undo/redo/paste, mobile and long formatted print. Adapt obsolete test selectors to actual visible editors rather than bypassing UI behavior.
+- [x] Inspect screenshots/rasterized PDFs and current preview export. Update hashes and documentation after final code; commit verified source.
 
 ### Task 4: Independent review and release
 

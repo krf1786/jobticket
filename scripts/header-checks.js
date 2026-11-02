@@ -46,14 +46,14 @@ async (page) => {
   await run('Scratch job-name input fills both red numbers without saving or navigation', false, {}, async t => {
     const placeholder = await t.p.locator('#jobNo').evaluate(n => getComputedStyle(n, '::placeholder').color);
     assert(placeholder === 'rgb(239, 68, 68)', 'Empty scratch number placeholder should remain red');
-    await t.p.locator('#jobName').fill('sb-4321 - Synthetic header'); await t.pair('SB4321');
-    await t.p.locator('#jobName').press('Enter'); await t.p.waitForTimeout(1000);
+    await t.p.locator('.rich-editor[data-rich-key="jobName"]').fill('sb-4321 - Synthetic header'); await t.pair('SB4321');
+    await t.p.locator('.rich-editor[data-rich-key="jobName"]').press('Enter'); await t.p.waitForTimeout(1000);
     assert(t.puts.length === 0 && t.navigations.length === 0 && t.p.url().endsWith('/jobticket/'), 'Scratch header entry must not create or save a ticket');
   });
   await run('Scratch direct number edits update right mirror and print', false, {}, async t => {
     await t.p.locator('#jobNo').fill('sb9876');
     assert(await t.p.locator('#jobNoRight').textContent() === 'SB9876', 'Direct scratch number edit did not update mirror');
-    await t.p.locator('#jobName').fill('SB9876 synthetic'); await t.pair('SB9876');
+    await t.p.locator('.rich-editor[data-rich-key="jobName"]').fill('SB9876 synthetic'); await t.pair('SB9876');
     await t.p.emulateMedia({ media: 'print' }); await t.pair('SB9876');
     assert(await t.p.locator('.toolbar').isHidden(), 'Print toolbar should stay hidden');
     await t.p.screenshot({ path: 'output/playwright/header-scratch-print.png', fullPage: true });
@@ -71,11 +71,11 @@ async (page) => {
     await t.p.emulateMedia({ media: 'print' }); await t.pair('DEMO01');
   });
   await run('Saved name edits persist while reload restores ticket identity and navigation', true, { jobName: 'Synthetic' }, async t => {
-    await t.p.locator('#jobName').fill('sb 4321 - Edited synthetic'); await t.pair('SB4321');
+    await t.p.locator('.rich-editor[data-rich-key="jobName"]').fill('sb 4321 - Edited synthetic'); await t.pair('SB4321');
     await t.p.waitForFunction(() => /^Saved/.test(saveStatus.textContent));
     assert(t.puts.length > 0 && t.state().jobName === 'sb 4321 - Edited synthetic', 'Saved name edit did not persist');
     await t.p.reload(); await t.pair('DEMO01');
-    await t.p.locator('#jobName').press('Enter'); await t.p.waitForURL('**/SB4321?*');
+    await t.p.locator('.rich-editor[data-rich-key="jobName"]').press('Enter'); await t.p.waitForURL('**/SB4321?*');
     assert(t.navigations.length === 1 && new URL(t.p.url()).searchParams.get('name') === t.state().jobName, 'Saved Enter navigation changed');
   });
   await run('Saved direct number edits retain mirror and Enter navigation', true, { jobName: 'Synthetic' }, async t => {

@@ -5,6 +5,7 @@
 <title>__TITLE__ · Job Ticket</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/jobticket/static/fonts.css">
+<link rel="stylesheet" href="/jobticket/static/ticket-rich-text.css?v=20261102-formatting-qty">
 <style>
   :root{
     --ink:#0f172a;
@@ -275,6 +276,9 @@
   .materials-data input,.materials-data textarea{min-width:0;}
   table.materials-data tbody td{vertical-align:top;}
   .material-name-heading{width:176px;}
+  .material-quantity-heading{width:36px;text-align:center;letter-spacing:0;}
+  table.materials-data input.material-quantity{padding:2px 1px;text-align:center;min-width:0;}
+  .material-quantity-print{text-align:center;padding:2px 1px;}
   table.materials-data .material-completion-cell{text-align:center;vertical-align:top;padding:0 2px;}
   table.materials-data input.material-completed{display:block;width:16px;height:16px;min-height:16px;padding:0;margin:2px auto;accent-color:#15803d;cursor:pointer;}
   table.materials-data tr.material-is-completed > td{background:#f0fdf4;}
@@ -594,6 +598,12 @@
     table.materials-data input[data-row-input="mat"]{line-height:1.2;}
     .footer{padding:4px 12px;flex-wrap:wrap;gap:4px;}
   }
+  @media screen and (max-width: 420px){
+    .material-name-heading{width:32%;}
+    .material-quantity-heading{width:34px;}
+    .material-delete-heading{width:22px !important;}
+    .material-completion-heading{width:26px !important;padding-left:2px;padding-right:2px;letter-spacing:0;font-size:8px;}
+  }
 </style>
 <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.z-10{z-index:10}.mb-1{margin-bottom:0.25rem}.ml-3{margin-left:0.75rem}.flex{display:flex}.min-w-0{min-width:0px}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.items-center{align-items:center}.justify-between{justify-content:space-between}.text-right{text-align:right}.text-\[9px\]{font-size:9px}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-tight{line-height:1.25}.tracking-\[\.2em\]{letter-spacing:.2em}.text-sky-100{--tw-text-opacity:1;color:rgb(224 242 254 / var(--tw-text-opacity, 1))}.text-sky-200{--tw-text-opacity:1;color:rgb(186 230 253 / var(--tw-text-opacity, 1))}.opacity-80{opacity:0.8}</style></head>
 <body>
@@ -645,7 +655,7 @@
       <div class="text-[9px] tracking-[.2em] uppercase text-sky-200 font-semibold mb-1">Job Ticket</div>
       <input type="text" id="jobNo" class="job-no job-no-input" value="" placeholder="SB0000" autocomplete="off" title="Edit job number, press Enter to open">
       <div class="job-no-line">
-        <input type="text" id="jobName" class="job-name-input" value="" placeholder="Enter job name…" autocomplete="off">
+      <input type="text" id="jobName" class="job-name-input" value="" placeholder="Enter job name…" autocomplete="off" aria-label="Job name" data-rich-key="jobName" data-rich-single>
         <div class="job-no-right" id="jobNoRight" title="Click to copy" onclick="copyJobNo('jobNoRight')"></div>
       </div>
     </div>
@@ -700,9 +710,10 @@
             <thead>
               <tr>
                 <th class="material-name-heading">Material</th>
+                <th class="material-quantity-heading">QTY</th>
                 <th>Material details</th>
-                <th style="width:28px" class="no-print"></th>
-                <th style="width:36px" title="Completed" aria-label="Completed">Done</th>
+                <th style="width:28px" class="material-delete-heading no-print"></th>
+                <th style="width:36px" class="material-completion-heading" title="Completed" aria-label="Completed">Done</th>
               </tr>
             </thead>
             <tbody id="matBody"></tbody>
@@ -771,7 +782,7 @@
       <h2 class="section-title"><span class="num">04</span>Notes</h2>
       <div class="notes-grid">
         <div class="notes-col">
-          <textarea id="notes" placeholder="Additional notes, special instructions, floor reminders…"></textarea>
+          <textarea id="notes" placeholder="Additional notes, special instructions, floor reminders…" aria-label="Notes" data-rich-key="notes"></textarea>
         </div>
 
       </div>
@@ -799,11 +810,37 @@
 
 <script>window.__TICKET__ = __BOOTSTRAP__;</script>
 <script src="/jobticket/static/material-attachments.js?v=20261026-100mb"></script>
+<script src="/jobticket/static/ticket-rich-text.js?v=20261102-formatting-qty"></script>
 <script>
+  function focusTicketField(source){
+    if(window.TicketRichText) TicketRichText.focus(source);
+    else if(source) source.focus();
+  }
+  function configureRichField(source,key,single){
+    if(!source) return;
+    source.dataset.richKey=key;
+    if(single) source.setAttribute('data-rich-single','');
+    const editor=source.nextElementSibling;
+    if(editor && editor.classList.contains('rich-editor')){
+      editor.dataset.richKey=key;
+      editor.setAttribute('aria-label',source.getAttribute('aria-label') || source.placeholder || key);
+    }
+  }
+  function configureMaterialRich(row){
+    configureRichField(row.querySelector('input[data-row-input="mat"]'),'material:'+row.materialRowId+':name',true);
+    configureRichField(row.querySelector('.material-details'),'material:'+row.materialRowId+':details',false);
+    if(window.TicketRichText) TicketRichText.mountAll(row);
+  }
+  function configureProductionRich(row){
+    configureRichField(row.querySelector('input'),'production:'+row.productionRowId+':op',true);
+    configureRichField(row.querySelector('textarea'),'production:'+row.productionRowId+':instr',false);
+    if(window.TicketRichText) TicketRichText.mountAll(row);
+  }
   // ---------- Material rows ----------
   function createMaterialRowHTML(rowNum){
     return `
       <td><input type="text" list="acrylicOptions" placeholder="Type or pick…" data-row-input="mat" autocomplete="off" aria-label="Material ${rowNum}"/><span class="material-print material-name-print" aria-hidden="true"></span></td>
+      <td class="material-quantity-cell"><input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="9" class="material-quantity" aria-label="Material quantity ${rowNum}"/><span class="material-print material-quantity-print" aria-hidden="true"></span></td>
       <td class="material-details-cell"><textarea class="material-details" rows="1" placeholder="Details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
       <td class="no-print"><button class="row-delete" onclick="deleteMaterialRow(this)" title="Delete row">×</button></td>
       <td class="material-completion-cell"><input type="checkbox" class="material-completed" aria-label="Completed ${rowNum}"/><span class="material-completion-print" aria-hidden="true">[ ]</span></td>
@@ -811,15 +848,16 @@
   }
 
   function updateMaterialRow(tr){
-    const material = tr.querySelector('input');
+    const material = tr.querySelector('input[data-row-input="mat"]');
     const details = tr.querySelector('.material-details');
     const completed = tr.querySelector('.material-completed').checked;
     tr.classList.toggle('material-is-completed', completed);
     tr.querySelector('.material-completion-print').textContent = completed ? '[x]' : '[ ]';
     tr.querySelector('.material-name-print').textContent = material.value;
     tr.querySelector('.material-details-print').textContent = details.value;
-    details.style.height = 'auto';
-    details.style.height = details.scrollHeight + 'px';
+    tr.querySelector('.material-quantity-print').textContent = tr.querySelector('.material-quantity').value;
+    if(window.TicketRichText){TicketRichText.sync(material);TicketRichText.sync(details);}
+    if(!details.hidden){details.style.height = 'auto';details.style.height = details.scrollHeight + 'px';}
   }
 
   function resizeMaterialRows(){
@@ -835,11 +873,11 @@
     tr.innerHTML = createMaterialRowHTML(rowNum);
     tbody.appendChild(tr);
     MaterialAttachments.initializeRow(tr);
+    configureMaterialRich(tr);
     tr.addEventListener('input', function(){ updateMaterialRow(tr); });
     updateMaterialRow(tr);
     if(focusFirst){
-      const firstInput = tr.querySelector('input');
-      if(firstInput) firstInput.focus();
+      focusTicketField(tr.querySelector('input[data-row-input="mat"]'));
     }
     return tr;
   }
@@ -858,10 +896,12 @@
   function renumberMaterialRows(){
     const rows = document.querySelectorAll('#matBody tr');
     rows.forEach((row, idx) => {
-      row.querySelector('input').setAttribute('aria-label', 'Material ' + (idx + 1));
+      row.querySelector('input[data-row-input="mat"]').setAttribute('aria-label', 'Material ' + (idx + 1));
+      row.querySelector('.material-quantity').setAttribute('aria-label', 'Material quantity ' + (idx + 1));
       row.querySelector('.material-details').setAttribute('aria-label', 'Material details ' + (idx + 1));
       row.querySelector('.material-completed').setAttribute('aria-label', 'Completed ' + (idx + 1));
       MaterialAttachments.labels(row);
+      configureMaterialRich(row);
     });
   }
 
@@ -869,8 +909,8 @@
   function createProductionRowHTML(rowNum){
     return `
       <td class="row-num">${rowNum}</td>
-      <td><input type="text" placeholder=" " data-row-input="prod"/></td>
-      <td><textarea placeholder=" " data-row-input="prod"></textarea></td>
+      <td><input type="text" placeholder=" " data-row-input="prod" aria-label="Operation ${rowNum}"/></td>
+      <td><textarea placeholder=" " data-row-input="prod" aria-label="Instructions ${rowNum}"></textarea></td>
       <td class="no-print"><button class="row-delete" onclick="deleteProductionRow(this)" title="Delete row">×</button></td>
     `;
   }
@@ -880,10 +920,12 @@
     const rowNum = tbody.children.length + 1;
     const tr = document.createElement('tr');
     tr.innerHTML = createProductionRowHTML(rowNum);
+    tr.productionRowId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'prod-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
     tbody.appendChild(tr);
+    configureProductionRich(tr);
     if(focusFirst){
       const firstInput = tr.querySelector('input');
-      if(firstInput) firstInput.focus();
+      focusTicketField(firstInput);
     }
     return tr;
   }
@@ -903,6 +945,9 @@
     rows.forEach((row, idx) => {
       const numCell = row.querySelector('.row-num');
       if(numCell) numCell.textContent = idx + 1;
+      row.querySelector('input').setAttribute('aria-label','Operation '+(idx+1));
+      row.querySelector('textarea').setAttribute('aria-label','Instructions '+(idx+1));
+      configureProductionRich(row);
     });
   }
 
@@ -913,7 +958,7 @@
     tbody.addEventListener('keydown', function(e){
       // Details use Shift+Enter for newlines; production instructions keep Enter.
       if(e.key === 'Enter' && !e.isComposing){
-        if(!e.target.matches('input[data-row-input],textarea[data-row-input],textarea.material-details')) return;
+        if(!e.target.matches('input[data-row-input],input.material-quantity,textarea[data-row-input],textarea.material-details')) return;
         if(e.target.tagName === 'TEXTAREA' &&
            (!e.target.classList.contains('material-details') || e.shiftKey)) return;
         e.preventDefault();
@@ -941,6 +986,7 @@
     handleEnterAddRow('matBody', addMaterialRow);
     handleEnterAddRow('prodBody', addProductionRow);
     setupNotesAutoResize();
+    if(window.TicketRichText) TicketRichText.mountAll();
   })();
 
   // ---------- Default to today's local calendar date ----------
@@ -1092,6 +1138,7 @@
     if(!confirm('Clear all fields and start fresh?')) return;
     const ids = ['jobName','dateField','timeField','qtyField','dueField','notes'];
     ids.forEach(id=>{ const el = document.getElementById(id); if(el) el.value=''; });
+    if(window.TicketRichText) ids.forEach(id=>TicketRichText.sync(document.getElementById(id)));
     document.getElementById('variableData').checked = false;
     autofillTicketDate();
     removeImage();
@@ -1240,7 +1287,7 @@
   /* ---- read the form ---- */
   function collect() {
     var mats = [].map.call(document.querySelectorAll('#matBody tr'), function (tr) {
-      var i = tr.querySelector('input');
+      var i = tr.querySelector('input[data-row-input="mat"]');
       return i ? i.value : '';
     });
     var materialDetails = [].map.call(document.querySelectorAll('#matBody tr'), function (tr) {
@@ -1265,7 +1312,10 @@
       materials: mats.length ? mats : [''],
       materialDetails: materialDetails.length ? materialDetails : [''],
       materialCompleted: materialCompleted.length ? materialCompleted : [false],
+      materialQuantities: [].map.call(document.querySelectorAll('#matBody tr'),function(tr){return tr.querySelector('.material-quantity').value;}),
       ...MaterialAttachments.rowState(),
+      ...(window.TicketRichText ? TicketRichText.collect() : {}),
+      productionRowIds: [].map.call(document.querySelectorAll('#prodBody tr'),function(tr){return tr.productionRowId;}),
       steps: steps.length ? steps : [{ op: '', instr: '' }],
       image: (img && img.src && img.style.display !== 'none') ? currentImageUrl : null
     };
@@ -1290,11 +1340,13 @@
     $('matBody').innerHTML = '';
     mats.forEach(function (val, idx) {
       var tr = addMaterialRow(false);
-      var inp = tr.querySelector('input');
+      var inp = tr.querySelector('input[data-row-input="mat"]');
       if (inp) inp.value = val || '';
       tr.querySelector('.material-details').value = typeof materialDetails[idx] === 'string' ? materialDetails[idx] : '';
       tr.querySelector('.material-completed').checked = materialCompleted[idx] === true;
+      tr.querySelector('.material-quantity').value = typeof (s.materialQuantities || [])[idx] === 'string' ? s.materialQuantities[idx] : '';
       MaterialAttachments.restoreRow(tr, (s.materialRowIds || [])[idx], (s.materialFiles || [])[idx]);
+      configureMaterialRich(tr);
       updateMaterialRow(tr);
     });
 
@@ -1302,12 +1354,17 @@
 
     var steps = (s.steps && s.steps.length) ? s.steps : [{ op: '', instr: '' }];
     $('prodBody').innerHTML = '';
-    steps.forEach(function (st) {
+    steps.forEach(function (st,index) {
       var tr = addProductionRow(false);
       var inp = tr.querySelector('input'), ta = tr.querySelector('textarea');
       if (inp) inp.value = (st && st.op) || '';
       if (ta) ta.value = (st && st.instr) || '';
+      const savedId=(s.productionRowIds || [])[index];
+      if(typeof savedId==='string' && /^[A-Za-z0-9_-]{1,128}$/.test(savedId)) tr.productionRowId=savedId;
+      configureProductionRich(tr);
     });
+
+    if(window.TicketRichText) TicketRichText.restore(s);
 
     if (s.image) showImage(s.image);
 
@@ -1353,6 +1410,7 @@
       .then(function (r) { if (!r.ok) { var error = new Error('HTTP ' + r.status); error.status = r.status; throw error; } return r.json(); })
       .then(function () {
         MaterialAttachments.acknowledge(requestState);
+        if(window.TicketRichText) TicketRichText.acknowledge(requestState);
         savedRevision = requestRevision;
         dirty = revision !== savedRevision;
         if (dirty) status('Saving…', 'busy');
@@ -1369,7 +1427,11 @@
   }
 
   /* ---- what counts as a change ---- */
-  function editableChange(e) { if (!e.target.matches('.material-file-input')) scheduleSave(); }
+  function editableChange(e) {
+    if(e.target.matches('.material-file-input') || e.target.closest('.rich-editor') ||
+       (window.TicketRichText && TicketRichText.isToolbarControl(e.target))) return;
+    scheduleSave();
+  }
   document.addEventListener('input', editableChange, true);
   document.addEventListener('change', editableChange, true);
   ['matBody', 'prodBody'].forEach(function (id) {

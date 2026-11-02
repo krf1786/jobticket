@@ -91,7 +91,7 @@ async (page) => {
   await scenario('Cancelled Reset preserves image in the next real edit', async t => {
     await t.p.evaluate(() => { window.confirm = () => false; });
     await t.p.evaluate(() => resetTicket());
-    await t.p.locator('#notes').fill('Edit after cancelled reset');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Edit after cancelled reset');
     await t.advance(800);
     await t.eventually(() => t.saves.length === 1, 'Expected the real edit to save');
     assert(t.saves[0].state.image === image, 'Cancelled Reset cleared the saved image reference');
@@ -109,10 +109,10 @@ async (page) => {
   });
 
   await scenario('Older save success keeps newer edits dirty', async t => {
-    await t.p.locator('#notes').fill('First revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('First revision');
     await t.advance(800);
     await t.eventually(() => t.saves.length === 1, 'First save missing');
-    await t.p.locator('#notes').fill('Newer revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Newer revision');
     await t.advance(800);
     assert(t.saves.length === 1, 'Concurrent PUTs can overwrite newer state');
     await t.replySave(0);
@@ -126,10 +126,10 @@ async (page) => {
   });
 
   await scenario('Failed follow-up save retains unload protection and can retry', async t => {
-    await t.p.locator('#notes').fill('First revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('First revision');
     await t.advance(800);
     await t.eventually(() => t.saves.length === 1, 'First save missing');
-    await t.p.locator('#notes').fill('Newer revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Newer revision');
     await t.advance(800);
     await t.replySave(0);
     await t.advance(200);
@@ -137,7 +137,7 @@ async (page) => {
     await t.replySave(1, 503);
     await t.eventually(async () => (await t.status()).includes('Not saved'), 'Failed follow-up had no error state');
     assert(await t.guarded(), 'Failed newer save has no unload protection');
-    await t.p.locator('#notes').fill('Retry revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Retry revision');
     await t.advance(800);
     await t.eventually(() => t.saves.length === 3, 'Retry save missing');
     await t.replySave(2);
@@ -145,7 +145,7 @@ async (page) => {
   });
 
   await scenario('Teams waits for a slow save and sends only one push', async t => {
-    await t.p.locator('#notes').fill('Latest revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Latest revision');
     await t.clickTeams();
     await t.eventually(() => t.saves.length === 1, 'Push did not request a save');
     await t.clickTeams();
@@ -160,7 +160,7 @@ async (page) => {
   });
 
   await scenario('Teams does not push after a failed save', async t => {
-    await t.p.locator('#notes').fill('Unstored revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Unstored revision');
     await t.clickTeams();
     await t.eventually(() => t.saves.length === 1, 'Push did not request save');
     await t.replySave(0, 503);
@@ -171,10 +171,10 @@ async (page) => {
   });
 
   await scenario('Teams drains edits made during the awaited save before pushing', async t => {
-    await t.p.locator('#notes').fill('First revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('First revision');
     await t.clickTeams();
     await t.eventually(() => t.saves.length === 1, 'Initial save missing');
-    await t.p.locator('#notes').fill('Latest revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Latest revision');
     await t.advance(800);
     await t.replySave(0);
     await t.advance(1000);
@@ -190,17 +190,17 @@ async (page) => {
     await t.clickTeams();
     await t.advance(1);
     await t.eventually(() => t.pushes.length === 1, 'Clean ticket did not push');
-    await t.p.locator('#notes').fill('Edit made after push started');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Edit made after push started');
     await t.replyPush(0);
     assert((await t.teams()) !== 'Teams: copy current', 'Old push completion marked newer edits current');
     assert(await t.guarded(), 'Edit during push lost unload protection');
   });
 
   await scenario('A failed latest revision prevents a waiting Teams push', async t => {
-    await t.p.locator('#notes').fill('First revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('First revision');
     await t.clickTeams();
     await t.eventually(() => t.saves.length === 1, 'Initial save missing');
-    await t.p.locator('#notes').fill('Latest revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Latest revision');
     await t.replySave(0);
     await t.advance(800);
     await t.eventually(() => t.saves.length === 2, 'Latest save missing');
@@ -214,7 +214,7 @@ async (page) => {
     await t.clickTeams();
     await t.advance(1);
     await t.eventually(() => t.pushes.length === 1, 'Initial push missing');
-    await t.p.locator('#notes').fill('Saved after push started');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('Saved after push started');
     await t.advance(800);
     await t.eventually(() => t.saves.length === 1, 'Newer save missing');
     await t.replySave(0);
@@ -227,7 +227,7 @@ async (page) => {
     t.holdPolls();
     await t.advance(30000);
     await t.eventually(() => t.polls.length > 0, 'Expected scheduled sync poll');
-    await t.p.locator('#notes').fill('New unsaved revision');
+    await t.p.locator('.rich-editor[data-rich-key="notes"]').fill('New unsaved revision');
     await t.polls[0].fulfill({ json: { ready: true, error: '', stale: false, pushedAt: 1 } });
     await t.p.waitForTimeout(30);
     assert((await t.teams()) !== 'Teams: copy current', 'Older poll marked unsaved edits current');
