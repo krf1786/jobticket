@@ -32,11 +32,11 @@ def load(name, path):
 def load_isolated_backend(root):
     """Load every runtime sibling from disposable copies, with no live DB imports."""
     modules = {}
-    for name in ('app', 'graph', 'pdf', 'corkboard', 'attachments'):
+    for name in ('app', 'graph', 'pdf', 'corkboard', 'attachments', 'rich_text'):
         source = SOURCE / (name + '.py')
         if source.exists():
             shutil.copyfile(source, root / source.name)
-    for name in ('graph', 'pdf', 'corkboard', 'attachments'):
+    for name in ('graph', 'pdf', 'corkboard', 'attachments', 'rich_text'):
         source = root / (name + '.py')
         if source.exists():
             modules[name] = load('isolated_' + name, source)
