@@ -70,6 +70,14 @@ async (page) => {
     assert(await t.p.getByRole('checkbox', { name: 'Completed 1', exact: true }).isChecked(), 'Header restore disturbed completion');
     await t.p.emulateMedia({ media: 'print' }); await t.pair('DEMO01');
   });
+  await run('Formatting-only job-name changes retain saved identity', true, { jobName: 'SB9999 quoted reference' }, async t => {
+    const e = t.p.locator('.rich-editor[data-rich-key="jobName"]');
+    await e.focus(); await t.p.keyboard.press('ControlOrMeta+a');
+    await t.p.getByRole('button',{name:'Bold',exact:true}).click(); await t.pair('DEMO01');
+    await t.p.getByRole('button',{name:'Clear Formatting',exact:true}).click(); await t.pair('DEMO01');
+    await t.p.keyboard.press('ControlOrMeta+z'); await t.pair('DEMO01');
+    await t.p.keyboard.press('ControlOrMeta+Shift+z'); await t.pair('DEMO01');
+  });
   await run('Saved name edits persist while reload restores ticket identity and navigation', true, { jobName: 'Synthetic' }, async t => {
     await t.p.locator('.rich-editor[data-rich-key="jobName"]').fill('sb 4321 - Edited synthetic'); await t.pair('SB4321');
     await t.p.waitForFunction(() => /^Saved/.test(saveStatus.textContent));

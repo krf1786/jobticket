@@ -840,14 +840,56 @@
   function createMaterialRowHTML(rowNum){
     return `
       <td><input type="text" list="acrylicOptions" placeholder="Type or pick…" data-row-input="mat" autocomplete="off" aria-label="Material ${rowNum}"/><span class="material-print material-name-print" aria-hidden="true"></span></td>
-      <td class="material-quantity-cell"><input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="9" class="material-quantity" aria-label="Material quantity ${rowNum}"/><span class="material-print material-quantity-print" aria-hidden="true"></span></td>
+      <td class="material-quantity-cell"><input type="text" inputmode="numeric" pattern="[0-9]{0,9}" class="material-quantity" aria-label="Material quantity ${rowNum}"/><span class="material-print material-quantity-print" aria-hidden="true"></span></td>
       <td class="material-details-cell"><textarea class="material-details" rows="1" placeholder="Details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
       <td class="no-print"><button class="row-delete" onclick="deleteMaterialRow(this)" title="Delete row">×</button></td>
       <td class="material-completion-cell"><input type="checkbox" class="material-completed" aria-label="Completed ${rowNum}"/><span class="material-completion-print" aria-hidden="true">[ ]</span></td>
     `;
   }
 
+  // Keep the last accepted integer; rejected edits never enter the save payload.
+  const validMaterialQuantity = value => /^[0-9]{0,9}$/.test(value);
+  function quantityFeedback(input, invalid) {
+    if (invalid) {
+      input.setAttribute('aria-invalid', 'true');
+      input.title = 'Quantity rejected — enter a whole number of up to 9 digits, or leave blank.';
+      input.style.outline = '2px solid #ef4444';
+      const feedback = document.getElementById('saveStatus');
+      if (feedback) feedback.textContent = input.title;
+    } else {
+      input.removeAttribute('aria-invalid'); input.title = ''; input.style.outline = '';
+    }
+  }
+  document.addEventListener('beforeinput', function (event) {
+    const input = event.target;
+    if (!input.matches?.('.material-quantity') || event.isComposing || event.data == null) return;
+    const next = input.value.slice(0, input.selectionStart) + event.data + input.value.slice(input.selectionEnd);
+    if (!validMaterialQuantity(next.trim())) { event.preventDefault(); quantityFeedback(input, true); }
+  }, true);
+  document.addEventListener('paste', function (event) {
+    const input = event.target;
+    if (!input.matches?.('.material-quantity')) return;
+    event.preventDefault();
+    const text = event.clipboardData.getData('text/plain');
+    const next = (input.value.slice(0, input.selectionStart) + text + input.value.slice(input.selectionEnd)).trim();
+    if (!validMaterialQuantity(next)) { quantityFeedback(input, true); return; }
+    input.value = next;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }, true);
+  document.addEventListener('input', function (event) {
+    const input = event.target;
+    if (!input.matches?.('.material-quantity')) return;
+    const value = input.value.trim();
+    if (validMaterialQuantity(value)) {
+      input.value = value; input.dataset.validQuantity = value; quantityFeedback(input, false);
+    } else {
+      input.value = input.dataset.validQuantity || ''; quantityFeedback(input, true);
+    }
+  }, true);
+
   function updateMaterialRow(tr){
+    const quantity = tr.querySelector('.material-quantity');
+    if (validMaterialQuantity(quantity.value)) quantity.dataset.validQuantity = quantity.value;
     const material = tr.querySelector('input[data-row-input="mat"]');
     const details = tr.querySelector('.material-details');
     const completed = tr.querySelector('.material-completed').checked;
@@ -1265,7 +1307,12 @@
       noRightEl.style.display = '';
     }
     if (nameEl) {
-      nameEl.addEventListener('input', pullJobNoFromName);
+      var lastPlainName = nameEl.value;
+      nameEl.addEventListener('input', function () {
+        if (nameEl.value === lastPlainName) return;
+        lastPlainName = nameEl.value;
+        pullJobNoFromName();
+      });
       nameEl.addEventListener('keydown', function (e) {
         if (e.key !== 'Enter' || !B.saving) return;
         var v = extractJobNoFromText(nameEl.value);
@@ -1414,6 +1461,7 @@
         savedRevision = requestRevision;
         dirty = revision !== savedRevision;
         if (dirty) status('Saving…', 'busy');
+        else if (document.querySelector('.material-quantity[aria-invalid="true"]')) status('Other edits saved — quantity rejected; enter a whole number up to 9 digits', 'error');
         else status('Saved ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), 'ok');
         if (teams) setTeams('update queued', 'pending');
         return true;
