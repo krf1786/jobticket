@@ -1,5 +1,9 @@
 # Material attachment release — October 26, 2026
 
+See the [November 3 multiple-file follow-up](multiple-attachments-release.md) for
+the current per-row behavior and deployment hashes. This record describes the
+original single-file release.
+
 Direct attachments with a 100 MB file limit are live. Runtime code is from
 `31d7de0c1555c879a64dca5ae64543be7e34a7a1`.
 

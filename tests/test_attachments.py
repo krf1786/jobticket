@@ -408,6 +408,130 @@ class AttachmentTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'revision': 0, 'initialized': False, 'pins': []})
 
+    def multiple_attached(self):
+        first = self.upload(b'first bytes', 'front.ai').json()['file']
+        second = self.upload(b'second bytes', 'back.pdf').json()['file']
+        state = dict(self.base, materialRowIds=['row-first', 'row-second'],
+                     materialFiles=[[first, second], []], materialFileBase={})
+        self.assertEqual(self.put(state).status_code, 200)
+        state['materialFileBase'] = {'row-first': [first['id'], second['id']], 'row-second': []}
+        return state, first, second
+
+    def test_multiple_files_canonicalize_each_owned_reference_and_strip_baseline(self):
+        first = self.upload(b'first', 'front.ai').json()['file']
+        second = self.upload(b'second', 'back.pdf').json()['file']
+        forged = dict(first, name='forged', size=-1, url='https://invalid.example/')
+        state = dict(self.base, materialRowIds=['row-first', 'row-second'],
+                     materialFiles=[[forged, {'id': second['id']}], []], materialFileBase={})
+        response = self.put(state)
+        self.assertEqual(response.status_code, 200, response.text)
+        saved = self.ticket()['state']
+        self.assertEqual(saved['materialFiles'], [[first, second], []])
+        self.assertNotIn('materialFileBase', saved)
+        self.assertEqual(self.request('GET', first['url']).content, b'first')
+        self.assertEqual(self.request('GET', second['url']).content, b'second')
+
+    def test_multiple_append_replace_remove_and_row_reorder_keep_other_files(self):
+        state, first, second = self.multiple_attached()
+        third = self.upload(b'third bytes', 'print.pdf').json()['file']
+        appended = dict(state, materialFiles=[[first, second, third], []])
+        self.assertEqual(self.put(appended).status_code, 200)
+        replacement = self.upload(b'new front bytes', 'front-v2.ai').json()['file']
+        replaced = dict(appended, materialFiles=[[replacement, second, third], []],
+                        materialFileBase={'row-first': [first['id'], second['id'], third['id']], 'row-second': []})
+        self.assertEqual(self.put(replaced).status_code, 200)
+        reordered = dict(replaced, materialDetails=['Second cut', 'First cut'], materialCompleted=[True, False],
+                         materialRowIds=['row-second', 'row-first'], materialFiles=[[], [replacement, third]],
+                         materialFileBase={'row-first': [replacement['id'], second['id'], third['id']], 'row-second': []})
+        self.assertEqual(self.put(reordered).status_code, 200)
+        self.assertEqual(self.ticket()['state']['materialFiles'], [[], [replacement, third]])
+        self.assertEqual(self.ticket()['state']['materialRowIds'], ['row-second', 'row-first'])
+        self.assertEqual(self.request('GET', second['url']).content, b'second bytes')
+        self.assertEqual(self.request('GET', first['url']).content, b'first bytes')
+        self.assertEqual(len(self.stored_files()), 4)
+
+    def test_legacy_single_file_baseline_can_upgrade_without_changing_other_rows(self):
+        legacy, first = self.attached()
+        second = self.upload(b'second bytes', 'back.pdf').json()['file']
+        upgraded = dict(legacy, materialFiles=[[first, second], []])
+        self.assertEqual(self.put(upgraded).status_code, 200)
+        before = self.ticket()
+        # A tab from before the upgrade acknowledges only the first file.
+        self.assertEqual(self.put(dict(legacy, notes='stale old tab')).status_code, 409)
+        self.assertEqual(self.put(dict(legacy, materialFiles=[None, None])).status_code, 409)
+        self.assertEqual(self.ticket(), before)
+        # A single-file client may keep editing a row which still has one file.
+        current = dict(upgraded, materialFiles=[[first], []],
+                       materialFileBase={'row-first': [first['id'], second['id']], 'row-second': []})
+        self.assertEqual(self.put(current).status_code, 200)
+        self.assertEqual(self.put(dict(legacy, notes='compatible single-file edit')).status_code, 200)
+        self.assertEqual(self.ticket()['state']['materialFiles'], [first, None])
+
+    def test_multi_baseline_detects_removed_reordered_and_new_files(self):
+        state, first, second = self.multiple_attached()
+        stale_bases = [
+            {'row-first': [first['id']], 'row-second': []},
+            {'row-first': [second['id'], first['id']], 'row-second': []},
+            {'row-first': [], 'row-second': []},
+            {'row-second': []},
+        ]
+        for baseline in stale_bases:
+            with self.subTest(baseline=baseline):
+                before = self.ticket()
+                response = self.put(dict(state, materialFiles=[[], []], materialFileBase=baseline))
+                self.assertEqual(response.status_code, 409, response.text)
+                self.assertEqual(self.ticket(), before)
+        removed_row = dict(state, materials=['Acrylic'], materialDetails=['Second cut'], materialCompleted=[True],
+                           materialRowIds=['row-second'], materialFiles=[[]], materialFileBase={'row-second': []})
+        self.assertEqual(self.put(removed_row).status_code, 409)
+        removed_row['materialFileBase'] = state['materialFileBase']
+        self.assertEqual(self.put(removed_row).status_code, 200)
+        self.assertEqual(self.ticket()['state']['materialFiles'], [[]])
+        self.assertEqual(self.put(state).status_code, 409)
+
+    def test_multi_rows_reject_invalid_duplicate_and_unowned_files_atomically(self):
+        state, first, second = self.multiple_attached()
+        self.assertEqual(self.put(self.base, 'OTHER01').status_code, 200)
+        foreign = self.upload(b'other bytes', 'private.ai', job='OTHER01').json()['file']
+        invalid_entries = [[first, first], [first, None], [first, []], [first, 'not metadata'],
+                           [first, {}], [first, {'id': '../path'}],
+                           [first, {'id': 'f' * 32}], [first, foreign]]
+        for entry in invalid_entries:
+            with self.subTest(entry=entry):
+                before = self.ticket()
+                response = self.put(dict(state, materialFiles=[entry, []]))
+                self.assertEqual(response.status_code, 400, response.text)
+                self.assertEqual(self.ticket(), before)
+        self.assertEqual(self.request('GET', second['url']).status_code, 200)
+
+    def test_multi_baseline_rejects_invalid_values_before_writing(self):
+        state, first, _ = self.multiple_attached()
+        for value in ([first['id'], first['id']], [None], [1], [[]], [{}], ['../path']):
+            with self.subTest(value=value):
+                before = self.ticket()
+                response = self.put(dict(state, materialFileBase={'row-first': value, 'row-second': []}))
+                self.assertEqual(response.status_code, 400, response.text)
+                self.assertEqual(self.ticket(), before)
+
+    def test_legacy_omission_preserves_multi_files_and_rejects_ambiguous_rows(self):
+        state, first, second = self.multiple_attached()
+        legacy = {key: value for key, value in state.items()
+                  if key not in ('materialRowIds', 'materialFiles', 'materialFileBase')}
+        self.assertEqual(self.put(dict(legacy, notes='unrelated legacy edit')).status_code, 200)
+        self.assertEqual(self.ticket()['state']['materialFiles'], [[first, second], []])
+        before = self.ticket()
+        self.assertEqual(self.put(dict(legacy, materialDetails=['changed', 'Second cut'])).status_code, 409)
+        self.assertEqual(self.ticket(), before)
+
+    def test_empty_multi_rows_allow_legacy_row_changes_without_stale_ids(self):
+        empty = dict(self.base, materialRowIds=['row-first', 'row-second'], materialFiles=[[], []])
+        self.assertEqual(self.put(empty).status_code, 200)
+        changed = dict(self.base, materials=['New'], materialDetails=['New details'], materialCompleted=[False])
+        self.assertEqual(self.put(changed).status_code, 200)
+        saved = self.ticket()['state']
+        self.assertNotIn('materialRowIds', saved)
+        self.assertNotIn('materialFiles', saved)
+
 
 if __name__ == '__main__':
     unittest.main()
