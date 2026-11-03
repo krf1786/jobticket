@@ -8,3 +8,17 @@ svg .rich-toolbar,svg .rich-suggest-button,svg .rich-suggestions{display:none!im
 /* Keep Print and save status together, followed by one compact formatting row. */
 .toolbar #saveStatus{order:1}.toolbar .rich-toolbar{order:2;flex:0 0 100%;padding:0}
 svg .material-quantity-buttons{display:none!important}
+
+/* Familiar formatter icons keep the desktop tools on one compact row. */
+.toolbar .rich-toolbar{order:0;flex:0 1 auto;width:auto}
+.rich-toolbar .rich-icon-button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;width:28px;height:28px;padding:4px;border-color:transparent;background:transparent;cursor:pointer}
+.rich-toolbar .rich-icon-button:hover:not([aria-pressed=true]),.rich-toolbar .rich-color-control:hover{background:#e2e8f0}
+.rich-toolbar .rich-icon-button:focus-visible,.rich-toolbar .rich-color-control:focus-within{outline:2px solid #0ea5e9;outline-offset:1px}
+.rich-icon-letter{display:block;width:18px;height:18px;font-size:17px;line-height:18px;text-align:center;pointer-events:none;user-select:none}
+.rich-icon-bold{font-weight:800}.rich-icon-italic{font-family:Georgia,serif;font-style:italic;font-weight:600}.rich-icon-underline{font-weight:600;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+.rich-icon-button svg{flex-shrink:0;pointer-events:none}
+.rich-toolbar select{width:50px;min-width:50px;padding-left:4px;padding-right:4px}
+.rich-toolbar .rich-color-control{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;width:28px;height:28px;border:1px solid transparent;border-radius:4px;cursor:pointer}
+.rich-color-glyph{font-weight:700;font-size:16px;line-height:18px;color:#0f172a;border-bottom:3px solid var(--rich-color,#111827);padding:0 2px;pointer-events:none;user-select:none}
+.rich-toolbar .rich-color-control input[type=color]{position:absolute;inset:0;width:100%;height:100%;min-height:0;opacity:0;padding:0;margin:0;cursor:pointer}
+@media screen and (max-width:600px){.toolbar .rich-toolbar{order:2;flex:0 0 100%;width:100%}}
