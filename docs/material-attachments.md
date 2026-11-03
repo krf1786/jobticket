@@ -59,4 +59,5 @@ Run `python scripts/attachment-checks.py` using the existing release-check Pytho
 and Playwright browser cache for the real isolated API/SQLite/browser workflow.
 The harness copies only source/static into temporary directories, has no Graph
 credentials and never accesses production. Existing browser checks use the
-loopback-only `scripts/preview.py`. See [release evidence](attachments-release.md).
+loopback-only `scripts/preview.py`. See [the multiple-file release evidence](multiple-attachments-release.md)
+and [the original storage release](attachments-release.md).

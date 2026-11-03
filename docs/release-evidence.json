@@ -676,5 +676,38 @@
     "service_restarted": false,
     "rollback_executed": false,
     "production_teams_pdf_delivery_verified": false
+  },
+  "multiple_material_attachments_deployment": {
+    "source_commit": "7dc5b0372ac4ebf129df1b93c05fe2ebe4c5495a",
+    "published_at_utc": "2026-11-03T21:54:31.647909+00:00",
+    "fixture_restored_at_utc": "2026-11-03T21:57:16.609552+00:00",
+    "status": "live_verified",
+    "backup_directory": "/root/jobticket/release-backups/multi-attachments-20261103T215408Z-0fcd8a69",
+    "consistent_database_backups_integrity": "ok",
+    "runtime_sha256": {
+      "attachments.py": "b5cd554f837993938b2aeb754e144f21218f5e306445a4643a89026bb9cf752d",
+      "static/material-attachments.js": "e91f4760da57cc6173c25403351e6c74020d56fd067d8f1780764fddaaeb4668",
+      "ticket.html": "5d0d7a66375e92a3cd62147ef225cb5dc361283df3786710471ea8b9e3c37e3b"
+    },
+    "backend_storage_tests": 71,
+    "attachment_browser_integration_checks": 41,
+    "formatting_regression_checks": 50,
+    "private_release_helper_checks": 22,
+    "live_browser_checks": 17,
+    "live_write_scope": "VERIFY-MATERIALS-20261021 only",
+    "live_upload_requests": 4,
+    "live_put_requests": 4,
+    "customer_ticket_writes": 0,
+    "synthetic_ticket_restored_exactly": true,
+    "owned_test_upload_records_and_bytes_removed": 4,
+    "all_27_ticket_rows_unchanged_after_exact_restoration": true,
+    "attachment_registry_storage_and_corkboard_unchanged": true,
+    "protected_runtime_files_unchanged": 15,
+    "service_restarted_once": true,
+    "page_errors": [],
+    "unauthorized_requests": [],
+    "rollback_executed": false,
+    "rollback_refuses_incompatible_array_data": true,
+    "production_teams_pdf_delivery_verified": false
   }
 }
