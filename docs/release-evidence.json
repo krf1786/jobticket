@@ -648,5 +648,33 @@
     "unauthorized_requests": [],
     "service_restarted": false,
     "rollback_executed": false
+  },
+  "job_name_print_color_deployment": {
+    "source_commit": "4ae6bf6d37a3f95a2ec39371f885b4629212445e",
+    "published_at_utc": "2026-11-03T02:07:20.702870+00:00",
+    "status": "live_verified",
+    "backup_directory": "/root/jobticket/release-backups/name-grey-20261103T020702Z-217e3eca",
+    "runtime_sha256": {
+      "ticket.html": "573a42e5e178e4a3ce88d0a699a1cf7f0678e3ca3c37a6c798ad9d3f2736acf7"
+    },
+    "default_job_name_color": "#9ca3af",
+    "print_backgrounds_off_pdf_visually_verified": true,
+    "custom_job_name_colors_preserved": true,
+    "clear_formatting_returns_to_gray": true,
+    "job_numbers_remain_red": true,
+    "per_database_backup_integrity": "ok",
+    "protected_runtime_assets_retained": 17,
+    "service_pid_unchanged": true,
+    "backend_unchanged": true,
+    "live_browser_get_requests": 9,
+    "live_ticket_write_requests": 0,
+    "all_25_ticket_rows_unchanged": true,
+    "attachment_registry_and_corkboard_unchanged": true,
+    "final_read_only_audit": "passed",
+    "page_errors": [],
+    "unauthorized_requests": [],
+    "service_restarted": false,
+    "rollback_executed": false,
+    "production_teams_pdf_delivery_verified": false
   }
 }
