@@ -617,5 +617,36 @@
     "unauthorized_requests": [],
     "rollback_executed": false,
     "service_restarted": false
+  },
+  "formatter_icons_deployment": {
+    "source_commit": "1e7f2f88145ee93f18aaed0822b5ecd65c753eac",
+    "published_at_utc": "2026-11-03T00:21:45.919065+00:00",
+    "status": "live_verified",
+    "backup_directory": "/root/jobticket/release-backups/icons-20261103T002126Z-3e399e27",
+    "per_database_backup_integrity": "ok",
+    "service_pid_unchanged": true,
+    "backend_unchanged": true,
+    "protected_runtime_assets_retained": 15,
+    "runtime_sha256": {
+      "ticket.html": "dd40796aba5790b999276c9c043a28dd1d8d5c621f38e1abd327813e437da2a9",
+      "static/ticket-rich-text.js": "6243345ba4c3f2533b82357d5da431a21096c3f593b1cccd38ba3ad740b85bd1",
+      "static/ticket-rich-text.css": "bfdf4946c9a155157d9bacfc7b3d38e527402624777c0e9ae32059a3acd89b3b"
+    },
+    "focused_checks": 63,
+    "formatting_regression_checks": 50,
+    "editor_fixture": "passed",
+    "live_checks": 22,
+    "live_ticket_write_requests": 0,
+    "toolbar_heights": {
+      "1200": 45,
+      "390": 79,
+      "320": 111
+    },
+    "all_25_ticket_rows_unchanged": true,
+    "attachment_registry_and_corkboard_unchanged": true,
+    "page_errors": [],
+    "unauthorized_requests": [],
+    "service_restarted": false,
+    "rollback_executed": false
   }
 }
