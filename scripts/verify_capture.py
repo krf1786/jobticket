@@ -46,7 +46,7 @@ def main():
         assert json.loads(re.search(r"window\.__TICKET__ = (.*?);</script>", safe, re.S)[1]) == hostile
         script_nodes = re.findall(r"<script([^>]*)>(.*?)</script>", render(bootstrap(True)), re.S)
         external = [attrs for attrs, body in script_nodes if 'src=' in attrs]
-        assert external == [' src="/jobticket/static/material-attachments.js?v=20261026-100mb"', ' src="/jobticket/static/ticket-rich-text.js?v=20261102-formatting-qty"', ' src="/jobticket/static/corkboard-preview.js?v=20261026-shared-board"']
+        assert external == [' src="/jobticket/static/material-attachments.js?v=20261026-100mb"', ' src="/jobticket/static/ticket-rich-text.js?v=20261102-formatter-icons"', ' src="/jobticket/static/corkboard-preview.js?v=20261026-shared-board"']
         scripts = [body for attrs, body in script_nodes if 'src=' not in attrs]
         assert len(scripts) == 3
         for index, script in enumerate(scripts):
