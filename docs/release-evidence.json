@@ -588,5 +588,34 @@
     "rollback_executed": false,
     "graph_renderer_enabled": false,
     "production_teams_pdf_delivery_verified": false
+  },
+  "compact_toolbar_qty_controls_deployment": {
+    "source_commit": "476e9a8b2a97923f3417bb21e4af787b461a46d3",
+    "published_at_utc": "2026-11-02T23:59:12.503603+00:00",
+    "fixture_restored_at_utc": "2026-11-03T00:00:40.753280+00:00",
+    "status": "live_verified",
+    "backup_directory": "/root/jobticket/release-backups/compact-20261102T235901Z-7c8f88b0",
+    "per_database_backup_integrity": "ok",
+    "service_pid_unchanged": true,
+    "backend_unchanged": true,
+    "protected_runtime_assets_retained": 16,
+    "runtime_sha256": {
+      "ticket.html": "3ce3f67266414af0c4622e93d45d5d6d289d23d481097da0294b22ba04ae718a",
+      "static/ticket-rich-text.css": "8d46407604002088b9f8825bdfceb5e120d70b91371d671e9326b41bb9453b57"
+    },
+    "toolbar_height_before": 131.5,
+    "toolbar_height_after": 79,
+    "desktop_material_row_height": 21,
+    "focused_isolated_checks": 52,
+    "formatting_regression_checks": 50,
+    "live_checks": 16,
+    "live_put_requests": 1,
+    "live_write_scope": "VERIFY-MATERIALS-20261021 only",
+    "all_25_ticket_rows_unchanged_after_exact_restoration": true,
+    "attachment_registry_and_corkboard_unchanged": true,
+    "page_errors": [],
+    "unauthorized_requests": [],
+    "rollback_executed": false,
+    "service_restarted": false
   }
 }

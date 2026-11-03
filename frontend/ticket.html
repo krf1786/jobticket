@@ -5,7 +5,7 @@
 <title>__TITLE__ · Job Ticket</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/jobticket/static/fonts.css">
-<link rel="stylesheet" href="/jobticket/static/ticket-rich-text.css?v=20261102-formatting-qty">
+<link rel="stylesheet" href="/jobticket/static/ticket-rich-text.css?v=20261102-compact-qty">
 <style>
   :root{
     --ink:#0f172a;
@@ -230,8 +230,8 @@
   .btn-ghost{background:#f1f5f9;color:#0f172a;}
   .btn-ghost:hover{background:#e2e8f0;}
   .toolbar{
-    display:flex;gap:8px;flex-wrap:wrap;
-    padding:10px 22px;
+    display:flex;gap:6px;flex-wrap:wrap;align-items:center;
+    padding:6px 22px;
     background:#f8fafc;
     border-bottom:1px solid var(--line);
   }
@@ -276,8 +276,13 @@
   .materials-data input,.materials-data textarea{min-width:0;}
   table.materials-data tbody td{vertical-align:top;}
   .material-name-heading{width:176px;}
-  .material-quantity-heading{width:36px;text-align:center;letter-spacing:0;}
-  table.materials-data input.material-quantity{padding:2px 1px;text-align:center;min-width:0;}
+  .material-quantity-heading{width:48px;text-align:center;letter-spacing:0;}
+  .material-quantity-control{display:grid;grid-template-columns:minmax(0,1fr) 12px;align-items:center;gap:1px;height:20px;}
+  table.materials-data input.material-quantity{height:20px;line-height:16px;padding:2px 1px;text-align:center;min-width:0;}
+  .material-quantity-buttons{display:grid;grid-template-rows:10px 10px;}
+  .quantity-step{display:block;width:12px;height:10px;padding:0;border:0;border-radius:2px;background:transparent;color:#475569;font-size:8px;line-height:8px;cursor:pointer;}
+  .quantity-step:hover{background:#e2e8f0;}
+  .quantity-step:focus-visible{outline:2px solid var(--accent);outline-offset:0;}
   .material-quantity-print{text-align:center;padding:2px 1px;}
   table.materials-data .material-completion-cell{text-align:center;vertical-align:top;padding:0 2px;}
   table.materials-data input.material-completed{display:block;width:16px;height:16px;min-height:16px;padding:0;margin:2px auto;accent-color:#15803d;cursor:pointer;}
@@ -563,6 +568,7 @@
     .materials-data input,.materials-data textarea{display:none !important;}
     .material-print{display:block;}
     .material-completion-print{display:block;}
+    .material-quantity-control{display:none !important;}
     table.materials-data tr.material-is-completed > td{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
     .field input,.field textarea{border-color:#cbd5e1;}
     .job-name-input{border-bottom:1.5px solid rgba(255,255,255,.4);}
@@ -599,10 +605,10 @@
     .footer{padding:4px 12px;flex-wrap:wrap;gap:4px;}
   }
   @media screen and (max-width: 420px){
-    .material-name-heading{width:32%;}
-    .material-quantity-heading{width:34px;}
-    .material-delete-heading{width:22px !important;}
-    .material-completion-heading{width:26px !important;padding-left:2px;padding-right:2px;letter-spacing:0;font-size:8px;}
+    .material-name-heading{width:31%;}
+    .material-quantity-heading{width:44px;}
+    .material-delete-heading{width:20px !important;}
+    table.materials-data thead th.material-completion-heading{width:28px !important;padding-left:2px;padding-right:2px;letter-spacing:0;font-size:8px;}
   }
 </style>
 <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.z-10{z-index:10}.mb-1{margin-bottom:0.25rem}.ml-3{margin-left:0.75rem}.flex{display:flex}.min-w-0{min-width:0px}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.items-center{align-items:center}.justify-between{justify-content:space-between}.text-right{text-align:right}.text-\[9px\]{font-size:9px}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-tight{line-height:1.25}.tracking-\[\.2em\]{letter-spacing:.2em}.text-sky-100{--tw-text-opacity:1;color:rgb(224 242 254 / var(--tw-text-opacity, 1))}.text-sky-200{--tw-text-opacity:1;color:rgb(186 230 253 / var(--tw-text-opacity, 1))}.opacity-80{opacity:0.8}</style></head>
@@ -709,8 +715,8 @@
           <table class="data materials-data">
             <thead>
               <tr>
-                <th class="material-name-heading">Material</th>
                 <th class="material-quantity-heading">QTY</th>
+                <th class="material-name-heading">Material</th>
                 <th>Material details</th>
                 <th style="width:28px" class="material-delete-heading no-print"></th>
                 <th style="width:36px" class="material-completion-heading" title="Completed" aria-label="Completed">Done</th>
@@ -839,8 +845,8 @@
   // ---------- Material rows ----------
   function createMaterialRowHTML(rowNum){
     return `
+      <td class="material-quantity-cell"><div class="material-quantity-control"><input type="text" inputmode="numeric" pattern="[0-9]{0,9}" class="material-quantity" aria-label="Material quantity ${rowNum}"/><div class="material-quantity-buttons no-print"><button type="button" class="quantity-step quantity-step-up" onclick="adjustMaterialQuantity(this,1)" aria-label="Increase material quantity ${rowNum}" title="Increase quantity">▲</button><button type="button" class="quantity-step quantity-step-down" onclick="adjustMaterialQuantity(this,-1)" aria-label="Decrease material quantity ${rowNum}" title="Decrease quantity">▼</button></div></div><span class="material-print material-quantity-print" aria-hidden="true"></span></td>
       <td><input type="text" list="acrylicOptions" placeholder="Type or pick…" data-row-input="mat" autocomplete="off" aria-label="Material ${rowNum}"/><span class="material-print material-name-print" aria-hidden="true"></span></td>
-      <td class="material-quantity-cell"><input type="text" inputmode="numeric" pattern="[0-9]{0,9}" class="material-quantity" aria-label="Material quantity ${rowNum}"/><span class="material-print material-quantity-print" aria-hidden="true"></span></td>
       <td class="material-details-cell"><textarea class="material-details" rows="1" placeholder="Details…" aria-label="Material details ${rowNum}"></textarea><span class="material-print material-details-print" aria-hidden="true"></span></td>
       <td class="no-print"><button class="row-delete" onclick="deleteMaterialRow(this)" title="Delete row">×</button></td>
       <td class="material-completion-cell"><input type="checkbox" class="material-completed" aria-label="Completed ${rowNum}"/><span class="material-completion-print" aria-hidden="true">[ ]</span></td>
@@ -849,6 +855,25 @@
 
   // Keep the last accepted integer; rejected edits never enter the save payload.
   const validMaterialQuantity = value => /^[0-9]{0,9}$/.test(value);
+  function adjustMaterialQuantity(control,direction){
+    const input=control.closest('.material-quantity-cell').querySelector('.material-quantity');
+    const value=input.value.trim();
+    const accepted=validMaterialQuantity(value) ? value : (input.dataset.validQuantity || '');
+    const next=String(Math.max(0,Math.min(999999999,Number(accepted || 0)+direction)));
+    const rejected=input.hasAttribute('aria-invalid');
+    input.focus();
+    if(next===input.value && !rejected) return;
+    input.value=next;
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+  }
+  document.addEventListener('keydown',function(event){
+    if(event.isComposing || event.ctrlKey || event.metaKey || event.altKey ||
+       !event.target.matches?.('.material-quantity')) return;
+    if(event.key==='ArrowUp' || event.key==='ArrowDown'){
+      event.preventDefault();
+      adjustMaterialQuantity(event.target,event.key==='ArrowUp' ? 1 : -1);
+    }
+  });
   function quantityFeedback(input, invalid) {
     if (invalid) {
       input.setAttribute('aria-invalid', 'true');
@@ -940,6 +965,8 @@
     rows.forEach((row, idx) => {
       row.querySelector('input[data-row-input="mat"]').setAttribute('aria-label', 'Material ' + (idx + 1));
       row.querySelector('.material-quantity').setAttribute('aria-label', 'Material quantity ' + (idx + 1));
+      row.querySelector('.quantity-step-up').setAttribute('aria-label','Increase material quantity '+(idx+1));
+      row.querySelector('.quantity-step-down').setAttribute('aria-label','Decrease material quantity '+(idx+1));
       row.querySelector('.material-details').setAttribute('aria-label', 'Material details ' + (idx + 1));
       row.querySelector('.material-completed').setAttribute('aria-label', 'Completed ' + (idx + 1));
       MaterialAttachments.labels(row);
