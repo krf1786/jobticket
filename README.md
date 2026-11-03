@@ -36,8 +36,8 @@ and Close/Escape dismissal.
 
 The toolbar offers Print. Reset and Check Due buttons have been removed.
 
-Saved material rows support [production-file attachments](docs/material-attachments.md),
-up to100 MB per row, with Download, Replace and Remove. Scratch tickets cannot
+Saved material rows support [multiple production-file attachments](docs/material-attachments.md),
+up to100 MB per file, with individual Download, Replace and Remove. Scratch tickets cannot
 create persistent attachments.
 
 ## Local preview
